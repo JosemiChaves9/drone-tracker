@@ -1,0 +1,12 @@
+{
+  "name": "drone-tracker",
+  "private": "true",
+  "version": "1.0.0",
+  "license": "MIT",
+  "workspaces": [
+    "workspaces/*"
+  ],
+  "scripts": {
+    "start": " --cwd workspaces/frontend start"
+  }
+}
