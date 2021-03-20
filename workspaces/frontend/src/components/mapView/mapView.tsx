@@ -18,14 +18,6 @@ const MapView = () => {
 
   const [actualPos, setActualPos] = useState(startPos);
 
-  const checkIfArrived = () => {
-    if (actualPos.lat && actualPos.lng < finalPos.lng && finalPos.lat) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   //Generate array first, and then iterate in this array
 
   const changeLocation = async () => {
