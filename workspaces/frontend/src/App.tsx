@@ -1,4 +1,3 @@
-import './App.css';
 import 'startbootstrap-sb-admin-2/scss/sb-admin-2.scss';
 import MapView from './components/mapView/mapView';
 
