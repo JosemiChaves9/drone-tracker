@@ -20,16 +20,25 @@ const MapView = () => {
 
   //Generate array first, and then iterate in this array
 
+  const generateRoute = () => {
+    return {
+      lat: (startPos.lat - finalPos.lat) / 100,
+      lng: (startPos.lng - finalPos.lng) / 100,
+    };
+  };
+
   const changeLocation = async () => {
-    while (actualPos.lat && actualPos.lng > finalPos.lng && finalPos.lat) {
+    setActualPos(startPos);
+    const { lat, lng } = generateRoute();
+    for (let i = 0; i < 100; i++) {
       await new Promise((res) => {
-        console.log(actualPos);
-        setTimeout(() => res(''), 500);
+        setTimeout(() => res(''), 50);
       });
       setActualPos((prevPos) => {
+        console.log(prevPos);
         return {
-          lat: prevPos.lat + 0.0032135,
-          lng: prevPos.lng - 0.0096791,
+          lat: prevPos.lat - lat,
+          lng: prevPos.lng - lng,
         };
       });
     }
@@ -47,7 +56,7 @@ const MapView = () => {
               <div>
                 <MapContainer
                   center={latLng(actualPos)}
-                  zoom={13}
+                  zoom={12}
                   scrollWheelZoom={true}>
                   <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

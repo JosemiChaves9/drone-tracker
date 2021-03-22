@@ -7,6 +7,6 @@
     "workspaces/*"
   ],
   "scripts": {
-    "start": " --cwd workspaces/frontend start"
+    "start": "yarn workspace frontend start"
   }
 }
