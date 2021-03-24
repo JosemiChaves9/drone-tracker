@@ -4,41 +4,34 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Sidebar } from '../sidebar';
 import { NavBar } from '../navbar/navBar';
 import './mapViewStyles.scss';
+import { generateRoute } from 'geo-route-generator';
 
 const MapView = () => {
   const startPos = {
-    lat: 39.539705,
-    lng: 2.740096,
+    lat: 45.385348723467,
+    lng: -72.644464557683,
   };
 
   const finalPos = {
-    lat: 39.57184,
-    lng: 2.643305,
+    lat: 29.384348971766,
+    lng: -85.526861831764,
   };
 
   const [actualPos, setActualPos] = useState(startPos);
 
-  //Generate array first, and then iterate in this array
-
-  const generateRoute = () => {
-    return {
-      lat: (startPos.lat - finalPos.lat) / 100,
-      lng: (startPos.lng - finalPos.lng) / 100,
-    };
-  };
+  const route = generateRoute(startPos, finalPos, 100);
 
   const changeLocation = async () => {
     setActualPos(startPos);
-    const { lat, lng } = generateRoute();
     for (let i = 0; i < 100; i++) {
       await new Promise((res) => {
-        setTimeout(() => res(''), 50);
+        setTimeout(() => res(''), 200);
       });
-      setActualPos((prevPos) => {
-        console.log(prevPos);
+      setActualPos(() => {
+        console.log(route[i]);
         return {
-          lat: prevPos.lat - lat,
-          lng: prevPos.lng - lng,
+          lat: route[i].lat,
+          lng: route[i].lng,
         };
       });
     }
