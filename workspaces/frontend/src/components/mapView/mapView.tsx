@@ -4,43 +4,36 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Sidebar } from '../sidebar';
 import { NavBar } from '../navbar/navBar';
 import './mapViewStyles.scss';
+import { generateRoute } from 'geo-route-generator';
 
 const MapView = () => {
   const startPos = {
-    lat: 40.0,
-    lng: 1.0,
+    lat: 45.385348723467,
+    lng: -72.644464557683,
   };
 
   const finalPos = {
-    lat: 40.1,
-    lng: 1.100001,
+    lat: 29.384348971766,
+    lng: -85.526861831764,
   };
 
   const [actualPos, setActualPos] = useState(startPos);
 
-  const checkIfArrived = () => {
-    if (actualPos.lat && actualPos.lng < finalPos.lng && finalPos.lat) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const steps = 100;
 
-  //Generate array first, and then iterate in this array
+  const route = generateRoute(startPos, finalPos, steps);
 
-  const changeLocation = async () => {
-    while (actualPos.lat && actualPos.lng < finalPos.lng && finalPos.lat) {
-      await new Promise((res) => {
-        console.log(actualPos);
-        setTimeout(() => res(''), 500);
-      });
-      setActualPos((prevPos) => {
+  const changeLocation = (i: number = 0) => {
+    setTimeout(() => {
+      setActualPos(() => {
+        console.log(`Index ${i} lat: ${route[i].lat}, lng: ${route[i].lng}`);
         return {
-          lat: prevPos.lat + 0.01,
-          lng: prevPos.lng + 0.01,
+          lat: route[i].lat,
+          lng: route[i].lng,
         };
       });
-    }
+      i < steps - 1 && changeLocation(i + 1);
+    }, 100);
   };
 
   return (
@@ -55,8 +48,8 @@ const MapView = () => {
               <div>
                 <MapContainer
                   center={latLng(actualPos)}
-                  zoom={8}
-                  scrollWheelZoom={false}>
+                  zoom={5}
+                  scrollWheelZoom={true}>
                   <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
