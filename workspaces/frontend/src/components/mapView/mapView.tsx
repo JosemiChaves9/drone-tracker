@@ -5,7 +5,6 @@ import { Sidebar } from '../sidebar';
 import { NavBar } from '../navbar/navBar';
 import './mapViewStyles.scss';
 import { generateRoute } from 'geo-route-generator';
-import { start } from 'node:repl';
 
 const MapView = () => {
   const startPos = {
@@ -20,21 +19,21 @@ const MapView = () => {
 
   const [actualPos, setActualPos] = useState(startPos);
 
-  const steps = 50;
+  const steps = 100;
 
   const route = generateRoute(startPos, finalPos, steps);
 
   const changeLocation = (i: number = 0) => {
     setTimeout(() => {
       setActualPos(() => {
-        console.log(route[i]);
+        console.log(`Index ${i} lat: ${route[i].lat}, lng: ${route[i].lng}`);
         return {
           lat: route[i].lat,
           lng: route[i].lng,
         };
       });
       i < steps - 1 && changeLocation(i + 1);
-    }, 500);
+    }, 100);
   };
 
   return (
