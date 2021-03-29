@@ -5,6 +5,7 @@ import { Sidebar } from '../sidebar';
 import { NavBar } from '../navbar/navBar';
 import './mapViewStyles.scss';
 import { generateRoute } from 'geo-route-generator';
+import { start } from 'node:repl';
 
 const MapView = () => {
   const startPos = {
@@ -19,14 +20,12 @@ const MapView = () => {
 
   const [actualPos, setActualPos] = useState(startPos);
 
-  const route = generateRoute(startPos, finalPos, 100);
+  const steps = 50;
 
-  const changeLocation = async () => {
-    setActualPos(startPos);
-    for (let i = 0; i < 100; i++) {
-      await new Promise((res) => {
-        setTimeout(() => res(''), 200);
-      });
+  const route = generateRoute(startPos, finalPos, steps);
+
+  const changeLocation = (i: number = 0) => {
+    setTimeout(() => {
       setActualPos(() => {
         console.log(route[i]);
         return {
@@ -34,7 +33,8 @@ const MapView = () => {
           lng: route[i].lng,
         };
       });
-    }
+      i < steps - 1 && changeLocation(i + 1);
+    }, 500);
   };
 
   return (
@@ -49,7 +49,7 @@ const MapView = () => {
               <div>
                 <MapContainer
                   center={latLng(actualPos)}
-                  zoom={12}
+                  zoom={5}
                   scrollWheelZoom={true}>
                   <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
