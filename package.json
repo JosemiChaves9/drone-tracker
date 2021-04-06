@@ -7,6 +7,7 @@
     "workspaces/*"
   ],
   "scripts": {
-    "start": "yarn workspace frontend start"
+    "startFront": "yarn workspace frontend start",
+    "startBack": "yarn workspace backend start"
   }
 }
