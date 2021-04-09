@@ -1,11 +1,25 @@
 import Express from 'express';
-import { connectDb } from './dbConnection';
+import { DbService } from './dbServices';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = Express();
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () =>
-  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`)
+DbService.connect().then(
+  () => {
+    app.listen(PORT, () =>
+      console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`)
+    );
+  },
+  () => {
+    throw new Error(`can't connect to DB`);
+  }
 );
 
-connectDb();
+app.get('/drones', function (req, res) {
+  DbService.getDrones().then((rows) => {
+    res.send(rows);
+  });
+});

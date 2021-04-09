@@ -4,7 +4,7 @@ export const connectDb = () => {
   const client = new Client({
     user: 'postgres',
     password: 'password',
-    host: 'localhost',
+    host: 'db',
     port: 5432,
     database: 'postgres',
   });
@@ -12,5 +12,7 @@ export const connectDb = () => {
     .connect()
     .then(() =>
       console.log(`💽[database]: Database connected in port ${client.port}`)
-    );
+    )
+    .then(() => client.query('SELECT * FROM public.test WHERE if LIKE "1"'))
+    .then((results) => console.log(results.rows));
 };
