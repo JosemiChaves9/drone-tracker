@@ -8,13 +8,13 @@ import { generateRoute } from 'geo-route-generator';
 
 const MapView = () => {
   const startPos = {
-    lat: 45.385348723467,
-    lng: -72.644464557683,
+    lat: 40.413599,
+    lng: -3.709558,
   };
 
   const finalPos = {
-    lat: 29.384348971766,
-    lng: -85.526861831764,
+    lat: -47.190444,
+    lng: -69.286307,
   };
 
   const [actualPos, setActualPos] = useState(startPos);

@@ -1,0 +1,48 @@
+version: "3"
+services:
+  db:
+   image: postgres
+   restart: always
+   ports:
+     - "5432:5432"
+   environment:
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=password
+   networks:
+     - mb-net
+   volumes: 
+     - pgdata:/var/lib/postgresql/data
+  backend:
+    image: node:12-alpine
+    networks:
+      - mb-net
+    ports:
+      - "4000:4000"
+      - "9223:9223"
+    depends_on:
+     - db
+    working_dir: /usr/app/src
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/usr/app/src
+    command: ["yarn", "workspace", "backend", "run", "start"]
+  frontend:
+    working_dir: /usr/app/src
+    image: node:12-alpine
+    networks:
+      - mb-net
+    ports:
+      - "3000:3000"
+      - "9222:9222"
+    working_dir: /usr/app/src
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/usr/app/src
+    command: ["yarn", "workspace", "frontend", "run", "start"]
+volumes:
+ pgdata:
+networks:
+  mb-net:
+    driver: bridge
