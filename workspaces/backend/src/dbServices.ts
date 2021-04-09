@@ -34,4 +34,9 @@ export class DbService {
     const result = await client.query('SELECT * FROM public.drones');
     return result.rows;
   }
+
+  static async getBases() {
+    const result = await client.query('SELECT * FROM public.bases');
+    return result.rows;
+  }
 }

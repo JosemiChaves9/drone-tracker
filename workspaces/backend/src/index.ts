@@ -23,3 +23,9 @@ app.get('/drones', function (req, res) {
     res.send(rows);
   });
 });
+
+app.get('/bases', function (req, res) {
+  DbService.getBases().then((rows) => {
+    res.send(rows);
+  });
+});
