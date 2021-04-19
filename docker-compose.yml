@@ -29,7 +29,7 @@ services:
     command: ["yarn", "workspace", "backend", "run", "start"]
   frontend:
     working_dir: /usr/app/src
-    image: node:12-alpine
+    image: node:15-alpine
     networks:
       - mb-net
     ports:
