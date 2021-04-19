@@ -1,5 +1,5 @@
 import 'startbootstrap-sb-admin-2/scss/sb-admin-2.scss';
-import MapView from './components/mapView/mapView';
+import MapView from './components/mapView';
 
 function App() {
   return (

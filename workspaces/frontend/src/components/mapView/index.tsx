@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Sidebar } from '../sidebar';
 import { NavBar } from '../navbar/navBar';
-import './mapViewStyles.scss';
+import './indexStyles.scss';
 import { generateRoute } from 'geo-route-generator';
 
 const MapView = () => {
