@@ -39,4 +39,26 @@ export class DbService {
     const result = await client.query('SELECT * FROM public.bases');
     return result.rows;
   }
+
+  static async getDroneByName(droneName: string) {
+    console.log(droneName);
+    const result = await client.query(
+      `SELECT *  FROM public.drones WHERE name='${droneName}'`
+    );
+    return result.rows;
+  }
+
+  static async getBaseByName(baseName: string) {
+    const result = await client.query(
+      `SELECT * FROM public.bases WHERE name='${baseName}`
+    );
+    return result.rows;
+  }
+
+  static async getBasesByCity(cityName: string) {
+    const result = await client.query(
+      `SELECT * FROM public.bases WHERE city LIKE '${cityName}'`
+    );
+    return result.rows;
+  }
 }
