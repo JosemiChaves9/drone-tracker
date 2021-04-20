@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './index.scss';
 
 export const Page404 = () => {
@@ -16,10 +17,10 @@ export const Page404 = () => {
                   <p className='lead'>
                     This requested URL was not found on this server.
                   </p>
-                  <a href='index.html'>
+                  <Link to='/'>
                     <i className='fas fa-arrow-left mr-1'></i>
                     Return to Dashboard
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
