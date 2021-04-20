@@ -23,8 +23,6 @@ export const BasesView = () => {
     });
   }, []);
 
-  console.log(process.env);
-
   return (
     <BaseLayout>
       <div>
