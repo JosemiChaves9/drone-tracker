@@ -99,7 +99,6 @@ export const BaseLayout = (props: any) => {
                 <div
                   className='dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in'
                   aria-labelledby='alertsDropdown'>
-                  <h6 className='dropdown-header'>Alerts Center</h6>
                   <a
                     className='dropdown-item d-flex align-items-center'
                     href='#'>
@@ -147,7 +146,7 @@ export const BaseLayout = (props: any) => {
                   aria-haspopup='true'
                   aria-expanded='false'>
                   <span className='mr-2 d-none d-lg-inline text-gray-600 small'>
-                    Douglas McGee
+                    User Name
                   </span>
                   <FontAwesomeIcon icon={faUser} />{' '}
                 </a>
