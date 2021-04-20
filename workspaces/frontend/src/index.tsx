@@ -6,13 +6,14 @@ import { MainMap } from './pages';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { BaseLayout } from './components/basePage';
 import { Page404 } from './pages/404';
+import { BasesView } from './pages/bases';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Switch>
         <Route exact path='/' component={MainMap} />
-        <Route path='/bases' component={BaseLayout} />
+        <Route path='/bases' component={BasesView} />
         <Route path='/drones' component={BaseLayout} />
         <Route path='/drone-control' component={BaseLayout} />
         <Route path='/add-drone' component={BaseLayout} />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { generateRoute } from 'geo-route-generator';
@@ -23,7 +23,6 @@ export const MainMap = () => {
   const changeLocation = (i: number = 0) => {
     setTimeout(() => {
       setActualPos(() => {
-        console.log(`Index ${i} lat: ${route[i].lat}, lng: ${route[i].lng}`);
         return {
           lat: route[i].lat,
           lng: route[i].lng,
