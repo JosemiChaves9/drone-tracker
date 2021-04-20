@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { MainMap } from './pages';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <MainMap />
   </React.StrictMode>,
   document.getElementById('root')
 );
