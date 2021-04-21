@@ -1,11 +1,18 @@
 import Express from 'express';
 import { DbService } from './dbServices';
 import dotenv from 'dotenv';
+import NodeGeocoder from 'node-geocoder';
 
 dotenv.config();
 
 const app = Express();
 const PORT = process.env.PORT || 4000;
+
+const getAdress = async () => {
+  return await NodeGeocoder({ provider: 'openstreetmap' }).geocode(
+    'Bellpuig felanitx'
+  );
+};
 
 DbService.connect().then(
   () => {
@@ -18,6 +25,7 @@ DbService.connect().then(
   }
 );
 app.get('/drones', function (req, res) {
+  getAdress().then((result) => res.send(result));
   DbService.getDrones().then((rows) => res.send(rows));
 });
 

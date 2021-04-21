@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { BaseLayout } from './components/basePage';
 import { Page404 } from './pages/404';
 import { BasesView } from './pages/bases';
+import { DronesView } from './pages/drones';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,7 +15,7 @@ ReactDOM.render(
       <Switch>
         <Route exact path='/' component={MainMap} />
         <Route path='/bases' component={BasesView} />
-        <Route path='/drones' component={BaseLayout} />
+        <Route path='/drones' component={DronesView} />
         <Route path='/drone-control' component={BaseLayout} />
         <Route path='/add-drone' component={BaseLayout} />
         <Route path='/add-base' component={BaseLayout} />
