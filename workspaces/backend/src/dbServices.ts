@@ -1,6 +1,5 @@
 import { Client } from 'pg';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const client = new Client({
@@ -39,7 +38,6 @@ export class DbService {
   }
 
   static async getDroneByName(droneName: string) {
-    console.log(droneName);
     const result = await client.query(
       `SELECT *  FROM public.drones WHERE name='${droneName}'`
     );

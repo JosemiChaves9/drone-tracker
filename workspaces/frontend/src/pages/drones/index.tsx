@@ -16,7 +16,7 @@ export const DronesView = () => {
       <div className='row'>
         {response.map((drone: any) => {
           return (
-            <div className='col-6'>
+            <div className='col-12 col-lg-6'>
               <div className='card shadow mb-4'>
                 <div className='card-header py-3'>
                   <h6 className='m-0 font-weight-bold text-primary'>
@@ -26,6 +26,9 @@ export const DronesView = () => {
                 <div className='card-body'>
                   <ul>
                     <li>From: {drone.from}</li>
+                    <li onLoad={() => console.log('loading')}>
+                      To: {drone.address}
+                    </li>
                     <li>Battery: {drone.battery}%</li>
                     <li>Speed: {drone.speed} km/h</li>
                   </ul>
