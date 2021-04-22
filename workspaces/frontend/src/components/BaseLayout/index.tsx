@@ -27,7 +27,7 @@ export const BaseLayout = (props: any) => {
           <li className='nav-item active'>
             <Link className='nav-link' to='/'>
               <FontAwesomeIcon icon={faMapMarkedAlt} />
-              <span className='pl-2'>Overview</span>
+              <span className='pl-2'>Home</span>
             </Link>
           </li>
 
@@ -83,21 +83,15 @@ export const BaseLayout = (props: any) => {
 
         <div id='content-wrapper' className='d-flex flex-column'>
           <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
-            <form className='d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search'></form>
-
             <ul className='navbar-nav ml-auto'>
-              <li className='nav-item dropdown no-arrow'>
-                <Link className='nav-link dropdown-toggle' to='/signup'>
-                  <span className='mr-2 d-none d-lg-inline text-gray-600 small'>
-                    Signup
-                  </span>
+              <li className='nav-item '>
+                <Link className='nav-link' to='/signup'>
+                  <span className='mr-2 text-gray-600 small'>Signup</span>
                 </Link>
               </li>
-              <li className='nav-item dropdown no-arrow'>
-                <Link className='nav-link dropdown-toggle' to='/login'>
-                  <span className='mr-2 d-none d-lg-inline text-gray-600 small'>
-                    Login
-                  </span>
+              <li className='nav-item '>
+                <Link className='nav-link' to='/login'>
+                  <span className='mr-2 text-gray-600 small'>Login</span>
                 </Link>
               </li>
             </ul>
