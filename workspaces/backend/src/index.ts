@@ -24,6 +24,7 @@ app.get('/drones', function (req, res) {
   DbService.getDrones().then((rows) => {
     Promise.all(
       rows.map(async (drone) => {
+        console.log('fetch');
         const address = await geocoder.reverse({
           lat: drone.to_lat,
           lon: drone.to_lon,

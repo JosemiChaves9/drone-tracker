@@ -86,71 +86,18 @@ export const BaseLayout = (props: any) => {
             <form className='d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search'></form>
 
             <ul className='navbar-nav ml-auto'>
-              <li className='nav-item dropdown no-arrow mx-1'>
-                <Link
-                  className='nav-link dropdown-toggle'
-                  to='#'
-                  id='alertsDropdown'
-                  role='button'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'>
-                  <FontAwesomeIcon icon={faBell} />
-                  <span className='badge badge-danger badge-counter'>3+</span>
-                </Link>
-                <div
-                  className='dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in'
-                  aria-labelledby='alertsDropdown'>
-                  <Link
-                    className='dropdown-item d-flex align-items-center'
-                    to='#'>
-                    <div className='mr-3'>
-                      <div className='icon-circle bg-primary'>
-                        <FontAwesomeIcon icon={faFileAlt} />{' '}
-                      </div>
-                    </div>
-                  </Link>
-                  <Link
-                    className='dropdown-item d-flex align-items-center'
-                    to='#'>
-                    <div className='mr-3'>
-                      <div className='icon-circle bg-success'>
-                        <FontAwesomeIcon icon={faDonate} />{' '}
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              </li>
-
-              <li className='nav-item dropdown no-arrow mx-1'>
-                <Link
-                  className='nav-link dropdown-toggle'
-                  to='#'
-                  id='messagesDropdown'
-                  role='button'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'>
-                  <FontAwesomeIcon icon={faEnvelope} />{' '}
-                  <span className='badge badge-danger badge-counter'>7</span>
-                </Link>
-              </li>
-
-              <div className='topbar-divider d-none d-sm-block'></div>
-
               <li className='nav-item dropdown no-arrow'>
-                <Link
-                  className='nav-link dropdown-toggle'
-                  to='#'
-                  id='userDropdown'
-                  role='button'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'>
+                <Link className='nav-link dropdown-toggle' to='/signup'>
                   <span className='mr-2 d-none d-lg-inline text-gray-600 small'>
-                    User Name
+                    Signup
                   </span>
-                  <FontAwesomeIcon icon={faUser} />{' '}
+                </Link>
+              </li>
+              <li className='nav-item dropdown no-arrow'>
+                <Link className='nav-link dropdown-toggle' to='/login'>
+                  <span className='mr-2 d-none d-lg-inline text-gray-600 small'>
+                    Login
+                  </span>
                 </Link>
               </li>
             </ul>

@@ -8,6 +8,8 @@ import { Page404 } from './pages/404';
 import { BasesView } from './pages/bases';
 import { DronesView } from './pages/drones';
 import { Home } from './pages/home';
+import { Singup } from './pages/singup';
+import { Login } from './pages/login';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,6 +21,9 @@ ReactDOM.render(
         <Route path='/drone-control' component={BaseLayout} />
         <Route path='/add-drone' component={BaseLayout} />
         <Route path='/add-base' component={BaseLayout} />
+        <Route path='/signup' component={Singup} />
+        <Route path='/login' component={Login} />
+
         <Route component={Page404} />
       </Switch>
     </Router>
