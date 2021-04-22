@@ -1,10 +1,7 @@
 import { Client } from 'pg';
-import Express from 'express';
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-const app = Express();
 const client = new Client({
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
@@ -41,7 +38,6 @@ export class DbService {
   }
 
   static async getDroneByName(droneName: string) {
-    console.log(droneName);
     const result = await client.query(
       `SELECT *  FROM public.drones WHERE name='${droneName}'`
     );

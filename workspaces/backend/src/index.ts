@@ -1,11 +1,13 @@
 import Express from 'express';
 import { DbService } from './dbServices';
 import dotenv from 'dotenv';
-
+import NodeGeocoder from 'node-geocoder';
 dotenv.config();
 
 const app = Express();
 const PORT = process.env.PORT || 4000;
+
+const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
 DbService.connect().then(
   () => {
@@ -17,8 +19,22 @@ DbService.connect().then(
     throw new Error(`can't connect to DB`);
   }
 );
+
 app.get('/drones', function (req, res) {
-  DbService.getDrones().then((rows) => res.send(rows));
+  DbService.getDrones().then((rows) => {
+    Promise.all(
+      rows.map(async (drone) => {
+        const address = await geocoder.reverse({
+          lat: drone.to_lat,
+          lon: drone.to_lon,
+        });
+        return {
+          ...drone,
+          address: address[0].formattedAddress,
+        };
+      })
+    ).then((result) => res.send(result));
+  });
 });
 
 app.get('/bases', function (req, res) {
