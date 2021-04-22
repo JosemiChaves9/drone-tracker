@@ -1,4 +1,31 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+
+type Inputs = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  passwordCheck: string;
+};
+
 export const Singup = () => {
+  const [errorMessage, setErrorMessage] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
+
+  const onClickOnSignup = (data: Inputs) => {
+    const { firstName, lastName, email, password, passwordCheck } = data;
+
+    if (password != passwordCheck) {
+      setErrorMessage('¡Las contraseñas no coinciden!');
+    }
+  };
+
   return (
     <div className='bg-gradient-primary'>
       <div className='container py-5'>
@@ -12,23 +39,28 @@ export const Singup = () => {
                     <h1 className='h4 text-gray-900 mb-4'>
                       Create an Account!
                     </h1>
+                    {errorMessage && (
+                      <h6 className='alert-danger rounded p-3'>
+                        {errorMessage}
+                      </h6>
+                    )}
                   </div>
-                  <form className='user'>
+                  <form
+                    className='user'
+                    onSubmit={handleSubmit(onClickOnSignup)}>
                     <div className='form-group row'>
                       <div className='col-sm-6 mb-3 mb-sm-0'>
                         <input
-                          type='text'
                           className='form-control form-control-user'
-                          id='exampleFirstName'
                           placeholder='First Name'
+                          {...register('firstName', { required: true })}
                         />
                       </div>
                       <div className='col-sm-6'>
                         <input
-                          type='text'
                           className='form-control form-control-user'
-                          id='exampleLastName'
                           placeholder='Last Name'
+                          {...register('lastName', { required: true })}
                         />
                       </div>
                     </div>
@@ -36,8 +68,8 @@ export const Singup = () => {
                       <input
                         type='email'
                         className='form-control form-control-user'
-                        id='exampleInputEmail'
                         placeholder='Email Address'
+                        {...register('email', { required: true })}
                       />
                     </div>
                     <div className='form-group row'>
@@ -45,35 +77,33 @@ export const Singup = () => {
                         <input
                           type='password'
                           className='form-control form-control-user'
-                          id='exampleInputPassword'
                           placeholder='Password'
+                          {...register('password', { required: true })}
                         />
                       </div>
                       <div className='col-sm-6'>
                         <input
                           type='password'
                           className='form-control form-control-user'
-                          id='exampleRepeatPassword'
                           placeholder='Repeat Password'
+                          {...register('passwordCheck', { required: true })}
                         />
                       </div>
                     </div>
-                    <a
-                      href='login.html'
-                      className='btn btn-primary btn-user btn-block'>
+                    <button className='btn btn-primary btn-user btn-block'>
                       Register Account
-                    </a>
+                    </button>
                     <hr />
                   </form>
                   <div className='text-center'>
-                    <a className='small' href='forgot-password.html'>
+                    <Link className='small' to='/passwordRecovery'>
                       Forgot Password?
-                    </a>
+                    </Link>
                   </div>
                   <div className='text-center'>
-                    <a className='small' href='login.html'>
+                    <Link className='small' to='/login'>
                       Already have an account? Login!
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

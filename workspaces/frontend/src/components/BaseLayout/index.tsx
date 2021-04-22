@@ -5,11 +5,6 @@ import {
   faGamepad,
   faPlusCircle,
   faMapMarkedAlt,
-  faBell,
-  faFileAlt,
-  faDonate,
-  faEnvelope,
-  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
