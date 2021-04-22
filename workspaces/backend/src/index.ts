@@ -18,7 +18,7 @@ app.use(
   })
 );
 
-app.use(bodyParser.json());
+app.use(Express.json());
 
 const PORT = process.env.PORT || 4000;
 DbService.connect().then(
@@ -83,5 +83,5 @@ app.post('/user', async function (req, res) {
     req.body.email,
     encryptedPassword,
     token
-  ).then((response) => res.send(response));
+  ).then((response) => res.send(response.token));
 });
