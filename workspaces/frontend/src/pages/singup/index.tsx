@@ -21,7 +21,7 @@ export const Singup = () => {
   const onClickOnSignup = (data: Inputs) => {
     const { firstName, lastName, email, password, passwordCheck } = data;
 
-    if (password != passwordCheck) {
+    if (password !== passwordCheck) {
       setErrorMessage('¡Las contraseñas no coinciden!');
     }
   };
