@@ -3,9 +3,9 @@ import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { generateRoute } from 'geo-route-generator';
 import './index.scss';
-import { BaseLayout } from '../components/basePage';
+import { BaseLayout } from '../../components/BaseLayout';
 
-export const MainMap = () => {
+export const Home = () => {
   const startPos = {
     lat: 40.413599,
     lng: -3.709558,

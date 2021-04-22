@@ -2,18 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
-import { MainMap } from './pages';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { BaseLayout } from './components/basePage';
+import { BaseLayout } from './components/BaseLayout';
 import { Page404 } from './pages/404';
 import { BasesView } from './pages/bases';
 import { DronesView } from './pages/drones';
+import { Home } from './pages/home';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Switch>
-        <Route exact path='/' component={MainMap} />
+        <Route exact path='/' component={Home} />
         <Route path='/bases' component={BasesView} />
         <Route path='/drones' component={DronesView} />
         <Route path='/drone-control' component={BaseLayout} />

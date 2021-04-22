@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { BaseLayout } from '../../components/basePage';
+import { BaseLayout } from '../../components/BaseLayout';
 
 export const BasesView = () => {
   const [response, setResponse] = useState([]);
@@ -10,7 +10,7 @@ export const BasesView = () => {
     city: string;
     id: number;
     lat: number;
-    lng: number;
+    lon: number;
     name: string;
     number: number;
     postcode: string;
@@ -37,7 +37,7 @@ export const BasesView = () => {
           />
           {response.map((base: base) => {
             return (
-              <Marker position={[base.lat, base.lng]}>
+              <Marker position={[base.lat, base.lon]}>
                 <Popup>{base.name}</Popup>
               </Marker>
             );

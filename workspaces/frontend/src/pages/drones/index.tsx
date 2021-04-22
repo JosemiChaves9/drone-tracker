@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { BaseLayout } from '../../components/basePage';
+import { BaseLayout } from '../../components/BaseLayout';
 
 export const DronesView = () => {
   const [response, setResponse] = useState([]);
