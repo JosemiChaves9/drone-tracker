@@ -65,13 +65,31 @@ export class DbService {
     password: string,
     token: string
   ) {
-    await client.query(
-      `INSERT INTO public.users ( firstname, lastname, email, password, token) values ( '${firstName}', '${lastName}', '${email}', '${password}', '${token}')`
+    if (!DbService.getUserByEmail(email)) {
+      await client.query(
+        `INSERT INTO public.users (firstname, lastname, email, password, token) values ( '${firstName}', '${lastName}', '${email}', '${password}', '${token}')`
+      );
+      return {
+        token: token,
+        ok: true,
+        tokenExpirationHours: 1,
+      };
+    } else {
+      return {
+        ok: false,
+        err: 'USER_ALREADY_EXISTS',
+      };
+    }
+  }
+
+  static async getUserByEmail(email: string) {
+    const result = await client.query(
+      `SELECT * FROM public.users WHERE email='${email}'`
     );
-    return {
-      token: token,
-      ok: true,
-      tokenExpirationHours: 1,
-    };
+    if (result.rowCount) {
+      return {
+        ok: true,
+      };
+    }
   }
 }

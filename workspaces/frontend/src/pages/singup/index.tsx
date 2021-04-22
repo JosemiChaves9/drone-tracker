@@ -13,6 +13,8 @@ type Inputs = {
 
 export const Singup = () => {
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const {
     register,
     handleSubmit,
@@ -20,13 +22,19 @@ export const Singup = () => {
   } = useForm<Inputs>();
 
   const onClickOnSignup = (data: Inputs) => {
-    const { firstName, lastName, email, password, passwordCheck } = data;
+    const { password, passwordCheck } = data;
 
     if (password !== passwordCheck) {
       setErrorMessage('¡Las contraseñas no coinciden!');
     }
 
-    axios.post(`${process.env.REACT_APP_API_ADDRESS}/user`, data);
+    axios
+      .post(`${process.env.REACT_APP_API_ADDRESS}/user`, data)
+      .then((res) => {
+        res.data.ok
+          ? setSuccessMessage('User Created!')
+          : setErrorMessage(res.data.err);
+      });
   };
 
   return (
@@ -45,6 +53,11 @@ export const Singup = () => {
                     {errorMessage && (
                       <h6 className='alert-danger rounded p-3'>
                         {errorMessage}
+                      </h6>
+                    )}
+                    {successMessage && (
+                      <h6 className='alert-success rounded p-3'>
+                        {successMessage}
                       </h6>
                     )}
                   </div>

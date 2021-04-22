@@ -3,9 +3,9 @@ import { DbService } from './dbServices';
 import dotenv from 'dotenv';
 import NodeGeocoder from 'node-geocoder';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import * as EmailValidator from 'email-validator';
 dotenv.config();
 
 const app = Express();
@@ -77,11 +77,23 @@ app.post('/user', async function (req, res) {
   const token = jwt.sign({ email }, process.env.SECRET as string, {
     expiresIn: '1h',
   });
-  await DbService.createNewUser(
-    req.body.firstName,
-    req.body.lastName,
-    req.body.email,
-    encryptedPassword,
-    token
-  ).then((response) => res.send(response.token));
+
+  if (EmailValidator.validate(email)) {
+    await DbService.createNewUser(
+      req.body.firstName,
+      req.body.lastName,
+      req.body.email,
+      encryptedPassword,
+      token
+    ).then((response) => res.send(response));
+  } else {
+    res.send({
+      ok: false,
+      err: 'EMAIL NOT VALID',
+    });
+  }
+});
+
+app.get('/user/:email', async (req, res) => {
+  await DbService.getUserByEmail(req.params.email);
 });
