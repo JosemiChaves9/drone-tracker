@@ -57,4 +57,21 @@ export class DbService {
     );
     return result.rows;
   }
+
+  static async createNewUser(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+    token: string
+  ) {
+    await client.query(
+      `INSERT INTO public.users ( firstname, lastname, email, password, token) values ( '${firstName}', '${lastName}', '${email}', '${password}', '${token}')`
+    );
+    return {
+      token: token,
+      ok: true,
+      tokenExpirationHours: 1,
+    };
+  }
 }

@@ -19,8 +19,6 @@ export const Singup = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  console.log(`${process.env.REACT_APP_API_ADDRESS}/drone`);
-
   const onClickOnSignup = (data: Inputs) => {
     const { firstName, lastName, email, password, passwordCheck } = data;
 
@@ -28,7 +26,7 @@ export const Singup = () => {
       setErrorMessage('¡Las contraseñas no coinciden!');
     }
 
-    axios.post('http://localhost:3000/user', data);
+    axios.post(`${process.env.REACT_APP_API_ADDRESS}/user`, data);
   };
 
   return (

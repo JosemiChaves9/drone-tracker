@@ -37,7 +37,7 @@ export const DronesView = () => {
             </div>
           );
         })}
-      </div>{' '}
+      </div>
     </BaseLayout>
   );
 };

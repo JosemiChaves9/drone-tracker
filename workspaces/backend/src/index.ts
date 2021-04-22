@@ -2,13 +2,25 @@ import Express from 'express';
 import { DbService } from './dbServices';
 import dotenv from 'dotenv';
 import NodeGeocoder from 'node-geocoder';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 dotenv.config();
 
 const app = Express();
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_ADDRESS,
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
+
+app.use(bodyParser.json());
+
 const PORT = process.env.PORT || 4000;
-
-const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
-
 DbService.connect().then(
   () => {
     app.listen(PORT, () =>
@@ -19,6 +31,7 @@ DbService.connect().then(
     throw new Error(`can't connect to DB`);
   }
 );
+const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
 app.get('/drones', function (req, res) {
   DbService.getDrones().then((rows) => {
@@ -56,4 +69,19 @@ app.get('/bases/city/:cityName', function (req, res) {
   const cityName = req.params.cityName;
   console.log(cityName);
   DbService.getBasesByCity(cityName).then((rows) => res.send(rows));
+});
+
+app.post('/user', async function (req, res) {
+  const { email } = req.body;
+  const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
+  const token = jwt.sign({ email }, process.env.SECRET as string, {
+    expiresIn: '1h',
+  });
+  await DbService.createNewUser(
+    req.body.firstName,
+    req.body.lastName,
+    req.body.email,
+    encryptedPassword,
+    token
+  ).then((response) => res.send(response));
 });

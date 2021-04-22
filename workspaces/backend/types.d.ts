@@ -18,3 +18,11 @@ export interface base {
   lat: number;
   lon: number;
 }
+
+export interface user {
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+  token: string;
+}
