@@ -18,7 +18,7 @@ export const BasesView = () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:4000/bases').then((response) => {
+    axios.get(`${process.env.REACT_APP_API_ADDRESS}/bases`).then((response) => {
       setResponse(response.data);
     });
   }, []);

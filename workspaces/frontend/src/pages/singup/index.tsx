@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 type Inputs = {
   firstName: string;
@@ -18,12 +19,16 @@ export const Singup = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
+  console.log(`${process.env.REACT_APP_API_ADDRESS}/drone`);
+
   const onClickOnSignup = (data: Inputs) => {
     const { firstName, lastName, email, password, passwordCheck } = data;
 
     if (password !== passwordCheck) {
       setErrorMessage('¡Las contraseñas no coinciden!');
     }
+
+    axios.post('http://localhost:3000/user', data);
   };
 
   return (

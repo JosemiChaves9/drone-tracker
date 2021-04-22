@@ -7,7 +7,7 @@ export const DronesView = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:4000/drones')
+      .get(`${process.env.REACT_APP_API_ADDRESS}/drones`)
       .then((res) => setResponse(res.data));
   }, []);
 
@@ -25,7 +25,7 @@ export const DronesView = () => {
                 </div>
                 <div className='card-body'>
                   <ul>
-                    <li>From: {drone.from}</li>
+                    <li key={drone.from}>From: {drone.from}</li>
                     <li onLoad={() => console.log('loading')}>
                       To: {drone.address}
                     </li>
