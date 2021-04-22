@@ -10,6 +10,9 @@ import { DronesView } from './pages/drones';
 import { Home } from './pages/home';
 import { Singup } from './pages/singup';
 import { Login } from './pages/login';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 ReactDOM.render(
   <React.StrictMode>
