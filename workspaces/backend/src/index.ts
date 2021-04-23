@@ -97,7 +97,6 @@ app.post('/user', async function (req, res) {
       });
     }
   } catch (error) {
-    res.status(500);
     res.send({ err: error.detail, ok: false });
   }
 });
