@@ -65,7 +65,7 @@ export class DbService {
     password: string,
     token: string
   ) {
-    if (!DbService.getUserByEmail(email)) {
+    try {
       await client.query(
         `INSERT INTO public.users (firstname, lastname, email, password, token) values ( '${firstName}', '${lastName}', '${email}', '${password}', '${token}')`
       );
@@ -74,10 +74,11 @@ export class DbService {
         ok: true,
         tokenExpirationHours: 1,
       };
-    } else {
+    } catch (error) {
       return {
         ok: false,
-        err: 'USER_ALREADY_EXISTS',
+        error: error,
+        err: 'There was an error',
       };
     }
   }
@@ -86,10 +87,6 @@ export class DbService {
     const result = await client.query(
       `SELECT * FROM public.users WHERE email='${email}'`
     );
-    if (result.rowCount) {
-      return {
-        ok: true,
-      };
-    }
+    return result.rows;
   }
 }
