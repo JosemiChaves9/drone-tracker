@@ -5,7 +5,6 @@ import { BaseLayout } from '../../components/BaseLayout';
 
 export const BasesView = () => {
   const [response, setResponse] = useState([]);
-
   interface base {
     city: string;
     id: number;
