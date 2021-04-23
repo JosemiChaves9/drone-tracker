@@ -26,7 +26,6 @@ ReactDOM.render(
         <Route path='/add-base' component={BaseLayout} />
         <Route path='/signup' component={Singup} />
         <Route path='/login' component={Login} />
-
         <Route component={Page404} />
       </Switch>
     </Router>

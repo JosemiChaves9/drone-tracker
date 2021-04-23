@@ -22,6 +22,8 @@ export const Singup = () => {
   } = useForm<Inputs>();
 
   const onClickOnSignup = (data: Inputs) => {
+    setErrorMessage('');
+    setSuccessMessage('');
     const { password, passwordCheck } = data;
 
     if (password !== passwordCheck) {

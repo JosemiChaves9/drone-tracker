@@ -65,28 +65,21 @@ export class DbService {
     password: string,
     token: string
   ) {
-    try {
-      await client.query(
-        `INSERT INTO public.users (firstname, lastname, email, password, token) values ( '${firstName}', '${lastName}', '${email}', '${password}', '${token}')`
-      );
-      return {
-        token: token,
-        ok: true,
-        tokenExpirationHours: 1,
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        error: error,
-        err: 'There was an error',
-      };
-    }
+    const user = await client.query(
+      `INSERT INTO public.users (firstname, lastname, email, password, token) values ('${firstName}', '${lastName}', '${email}', '${password}', '${token}') RETURNING *`
+    );
+    return user.rows;
   }
 
   static async getUserByEmail(email: string) {
     const result = await client.query(
       `SELECT * FROM public.users WHERE email='${email}'`
     );
+    if (result.rows.length == 0) {
+      return {
+        err: "User doesn't exists",
+      };
+    }
     return result.rows;
   }
 }

@@ -76,23 +76,33 @@ app.post('/user', async function (req, res) {
   const token = jwt.sign({ email }, process.env.SECRET as string, {
     expiresIn: '1h',
   });
-
-  if (EmailValidator.validate(email)) {
-    await DbService.createNewUser(
-      req.body.firstName,
-      req.body.lastName,
-      req.body.email,
-      encryptedPassword,
-      token
-    ).then((response) => res.send(response));
-  } else {
-    res.send({
-      ok: false,
-      err: 'EMAIL NOT VALID',
-    });
+  try {
+    if (EmailValidator.validate(email)) {
+      await DbService.createNewUser(
+        req.body.firstName,
+        req.body.lastName,
+        email,
+        encryptedPassword,
+        token
+      ).then((response) => {
+        res.status(201);
+        const user = response[0];
+        res.send({ ...user, ok: true, tokenExpirationTime: '1h' });
+      });
+    } else {
+      res.status(400);
+      res.send({
+        ok: false,
+        err: 'Email not valid',
+      });
+    }
+  } catch (error) {
+    res.status(500);
+    res.send({ err: error.detail, ok: false });
   }
 });
 
 app.get('/user/:email', async (req, res) => {
-  await DbService.getUserByEmail(req.params.email);
+  const user = await DbService.getUserByEmail(req.params.email);
+  res.send(user);
 });
