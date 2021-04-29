@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { ApiService } from '../../services/apiService';
 
 type Inputs = {
   firstName: string;
@@ -30,14 +30,10 @@ export const Singup = () => {
       setErrorMessage('¡Las contraseñas no coinciden!');
     }
 
-    axios
-      .post(`${process.env.REACT_APP_API_ADDRESS}/user`, data)
-      .then((res) => {
-        res.data.ok
-          ? setSuccessMessage('User Created!')
-          : setErrorMessage(res.data.err);
-        localStorage.setItem('userToken', res.data.usertoken);
-      });
+    ApiService.createNewUser(data).then((res) => {
+      res.ok ? setSuccessMessage('User Created!') : setErrorMessage(res.err);
+      localStorage.setItem('userToken', res.usertoken);
+    });
   };
 
   return (
