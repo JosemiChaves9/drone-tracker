@@ -1,20 +1,18 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { BaseLayout } from '../../components/BaseLayout';
+import { ApiService } from '../../services/apiService';
 
 export const DronesView = () => {
-  const [response, setResponse] = useState([]);
+  const [res, setRes] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_ADDRESS}/drones`)
-      .then((res) => setResponse(res.data));
+    ApiService.getDrones().then((res) => setRes(res));
   }, []);
 
   return (
     <BaseLayout>
       <div className='row'>
-        {response.map((drone: any) => {
+        {res.map((drone: any) => {
           return (
             <div className='col-12 col-lg-6'>
               <div className='card shadow mb-4'>

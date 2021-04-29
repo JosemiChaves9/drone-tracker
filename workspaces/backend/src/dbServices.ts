@@ -66,7 +66,7 @@ export class DbService {
     userToken: string
   ) {
     const user = await client.query(
-      `INSERT INTO public.users (firstName, lastName, email, password, userToken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${userToken}') RETURNING *`
+      `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${userToken}') RETURNING *`
     );
     return user.rows;
   }
@@ -85,7 +85,7 @@ export class DbService {
 
   static async getUserByUserToken(userToken: string) {
     const result = await client.query(
-      `SELECT * FROM public.users WHERE userToken='${userToken}'`
+      `SELECT * FROM public.users WHERE usertoken='${userToken}'`
     );
     if (result.rows.length == 0) {
       return {

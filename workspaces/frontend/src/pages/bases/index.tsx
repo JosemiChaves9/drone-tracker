@@ -1,10 +1,10 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { BaseLayout } from '../../components/BaseLayout';
+import { ApiService } from '../../services/apiService';
 
 export const BasesView = () => {
-  const [response, setResponse] = useState([]);
+  const [res, setRes] = useState([]);
   interface base {
     city: string;
     id: number;
@@ -17,9 +17,7 @@ export const BasesView = () => {
   }
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_ADDRESS}/bases`).then((response) => {
-      setResponse(response.data);
-    });
+    ApiService.getBases().then((res) => setRes(res));
   }, []);
 
   return (
@@ -34,7 +32,7 @@ export const BasesView = () => {
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
             accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
-          {response.map((base: base) => {
+          {res.map((base: base) => {
             return (
               <Marker position={[base.lat, base.lon]}>
                 <Popup>{base.name}</Popup>
