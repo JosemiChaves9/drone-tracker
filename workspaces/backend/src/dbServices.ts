@@ -63,10 +63,10 @@ export class DbService {
     lastName: string,
     email: string,
     password: string,
-    token: string
+    userToken: string
   ) {
     const user = await client.query(
-      `INSERT INTO public.users (firstname, lastname, email, password, token) values ('${firstName}', '${lastName}', '${email}', '${password}', '${token}') RETURNING *`
+      `INSERT INTO public.users (firstName, lastName, email, password, userToken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${userToken}') RETURNING *`
     );
     return user.rows;
   }
@@ -74,6 +74,18 @@ export class DbService {
   static async getUserByEmail(email: string) {
     const result = await client.query(
       `SELECT * FROM public.users WHERE email='${email}'`
+    );
+    if (result.rows.length == 0) {
+      return {
+        err: "User doesn't exists",
+      };
+    }
+    return result.rows;
+  }
+
+  static async getUserByUserToken(userToken: string) {
+    const result = await client.query(
+      `SELECT * FROM public.users WHERE userToken='${userToken}'`
     );
     if (result.rows.length == 0) {
       return {

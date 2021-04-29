@@ -73,7 +73,7 @@ app.get('/bases/city/:cityName', function (req, res) {
 app.post('/user', async function (req, res) {
   const { email } = req.body;
   const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
-  const token = jwt.sign({ email }, process.env.SECRET as string, {
+  const userToken = jwt.sign({ email }, process.env.SECRET as string, {
     expiresIn: '1h',
   });
   try {
@@ -83,7 +83,7 @@ app.post('/user', async function (req, res) {
         req.body.lastName,
         email,
         encryptedPassword,
-        token
+        userToken
       ).then((response) => {
         res.status(201);
         const user = response[0];
@@ -101,7 +101,12 @@ app.post('/user', async function (req, res) {
   }
 });
 
-app.get('/user/:email', async (req, res) => {
+app.get('/user/email/:email', async (req, res) => {
   const user = await DbService.getUserByEmail(req.params.email);
+  res.send(user);
+});
+
+app.get('/user/token/:userToken', async (req, res) => {
+  const user = await DbService.getUserByUserToken(req.params.userToken);
   res.send(user);
 });

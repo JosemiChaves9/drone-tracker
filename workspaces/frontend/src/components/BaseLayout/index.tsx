@@ -8,10 +8,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
-import { UserContext } from '../userContext';
+// import { UserContext } from '../userContext';
 
 export const BaseLayout = (props: any) => {
-  const token = useContext(UserContext);
+  // const token = useContext(UserContext);
 
   return (
     <>
@@ -82,40 +82,18 @@ export const BaseLayout = (props: any) => {
 
         <div id='content-wrapper' className='d-flex flex-column'>
           <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
-            {token ? (
-              <ul className='navbar-nav ml-auto'>
-                <li className='nav-item '>
-                  <a className='nav-link'>
-                    <span className='mr-2 text-gray-600 small'>
-                      Welcome User
-                    </span>
-                  </a>
-                </li>
-                <li className='nav-item '>
-                  <a
-                    className='nav-link'
-                    onClick={() => {
-                      localStorage.clear();
-                      window.location.reload();
-                    }}>
-                    <span className='mr-2 text-gray-600 small'>Sign out</span>
-                  </a>
-                </li>
-              </ul>
-            ) : (
-              <ul className='navbar-nav ml-auto'>
-                <li className='nav-item '>
-                  <Link className='nav-link' to='/signup'>
-                    <span className='mr-2 text-gray-600 small'>Signup</span>
-                  </Link>
-                </li>
-                <li className='nav-item '>
-                  <Link className='nav-link' to='/login'>
-                    <span className='mr-2 text-gray-600 small'>Login</span>
-                  </Link>
-                </li>
-              </ul>
-            )}
+            <ul className='navbar-nav ml-auto'>
+              <li className='nav-item '>
+                <Link className='nav-link' to='/signup'>
+                  <span className='mr-2 text-gray-600 small'>Signup</span>
+                </Link>
+              </li>
+              <li className='nav-item '>
+                <Link className='nav-link' to='/login'>
+                  <span className='mr-2 text-gray-600 small'>Login</span>
+                </Link>
+              </li>
+            </ul>
           </nav>
           <div className='container-fluid'>
             <div>{props.children}</div>

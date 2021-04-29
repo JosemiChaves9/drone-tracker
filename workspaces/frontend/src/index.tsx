@@ -11,7 +11,6 @@ import { Home } from './pages/home';
 import { Singup } from './pages/singup';
 import { Login } from './pages/login';
 import dotenv from 'dotenv';
-import { UserProvider } from './components/userContext';
 
 dotenv.config();
 const token = localStorage.getItem('token');
@@ -20,17 +19,17 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Switch>
-        <UserProvider value={token}>
-          <Route exact path='/' component={Home} />
-          <Route path='/bases' component={BasesView} />
-          <Route path='/drones' component={DronesView} />
-          <Route path='/drone-control' component={BaseLayout} />
-          <Route path='/add-drone' component={BaseLayout} />
-          <Route path='/add-base' component={BaseLayout} />
-          <Route path='/signup' component={Singup} />
-          <Route path='/login' component={Login} />
-          <Route component={Page404} />
-        </UserProvider>
+        {/* <UserProvider value={token}> */}
+        <Route exact path='/' component={Home} />
+        <Route path='/bases' component={BasesView} />
+        <Route path='/drones' component={DronesView} />
+        <Route path='/drone-control' component={BaseLayout} />
+        <Route path='/add-drone' component={BaseLayout} />
+        <Route path='/add-base' component={BaseLayout} />
+        <Route path='/signup' component={Singup} />
+        <Route path='/login' component={Login} />
+        <Route component={Page404} />
+        {/* </UserProvider> */}
       </Switch>
     </Router>
   </React.StrictMode>,
