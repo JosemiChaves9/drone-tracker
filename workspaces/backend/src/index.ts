@@ -51,7 +51,18 @@ app.get('/drones', function (req, res) {
 });
 
 app.get('/bases', function (req, res) {
-  DbService.getBases().then((rows) => res.send(rows));
+  jwt.verify(
+    req.headers.usertoken as string,
+    process.env.SECRET as string,
+    function (err) {
+      if (!err) {
+        DbService.getBases().then((rows) => res.send(rows));
+      } else {
+        res.status(401);
+        res.send(err);
+      }
+    }
+  );
 });
 
 app.get('/drone/:droneName', function (req, res) {

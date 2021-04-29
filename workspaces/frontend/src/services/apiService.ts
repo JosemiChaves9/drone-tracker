@@ -11,8 +11,12 @@ const instance = axios.create({
 
 export class ApiService {
   static async getBases() {
-    const bases = await instance.get('/bases');
-    return bases.data;
+    try {
+      const bases = await instance.get('/bases');
+      return bases.data;
+    } catch (err) {
+      return err.response.data;
+    }
   }
 
   static async getDrones() {

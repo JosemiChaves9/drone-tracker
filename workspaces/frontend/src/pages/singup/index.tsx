@@ -36,7 +36,7 @@ export const Singup = () => {
         res.data.ok
           ? setSuccessMessage('User Created!')
           : setErrorMessage(res.data.err);
-        localStorage.setItem('userToken', res.data.userToken);
+        localStorage.setItem('userToken', res.data.usertoken);
       });
   };
 

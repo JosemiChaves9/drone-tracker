@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { BaseLayout } from '../../components/BaseLayout';
@@ -5,6 +6,8 @@ import { ApiService } from '../../services/apiService';
 
 export const BasesView = () => {
   const [res, setRes] = useState([]);
+  const [err, setErr] = useState('');
+
   interface base {
     city: string;
     id: number;
@@ -17,29 +20,38 @@ export const BasesView = () => {
   }
 
   useEffect(() => {
-    ApiService.getBases().then((res) => setRes(res));
+    ApiService.getBases().then((res) => {
+      if (res.message) {
+        setErr(res.name);
+      }
+      setRes(res);
+    });
   }, []);
 
   return (
     <BaseLayout>
       <div>
-        <MapContainer
-          center={[39.634929, 2.976627]}
-          zoom={10}
-          scrollWheelZoom={true}>
-          <TileLayer
-            attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
-            accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
-          />
-          {res.map((base: base) => {
-            return (
-              <Marker position={[base.lat, base.lon]}>
-                <Popup>{base.name}</Popup>
-              </Marker>
-            );
-          })}
-        </MapContainer>
+        {err ? (
+          <h1>{err}</h1>
+        ) : (
+          <MapContainer
+            center={[39.634929, 2.976627]}
+            zoom={10}
+            scrollWheelZoom={true}>
+            <TileLayer
+              attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
+              accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
+            />
+            {res.map((base: base) => {
+              return (
+                <Marker position={[base.lat, base.lon]}>
+                  <Popup>{base.name}</Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
+        )}
       </div>
     </BaseLayout>
   );
