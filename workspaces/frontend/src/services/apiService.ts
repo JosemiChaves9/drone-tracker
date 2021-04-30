@@ -19,12 +19,10 @@ type Inputs = {
 
 export class ApiService {
   static async getBases() {
-    try {
-      const bases = await instance.get('/bases');
-      return bases.data;
-    } catch (err) {
-      return err.response.data;
-    }
+    return await instance.get('/bases').then(
+      ({ data }) => data,
+      (res) => Promise.reject(res.response)
+    );
   }
 
   static async getDrones() {

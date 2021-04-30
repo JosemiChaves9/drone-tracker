@@ -20,12 +20,16 @@ export const BasesView = () => {
   }
 
   useEffect(() => {
-    ApiService.getBases().then((res) => {
-      if (res.message) {
-        setErr(res.name);
+    ApiService.getBases().then(
+      (res) => {
+        setRes(res);
+      },
+      (rej) => {
+        if (rej.status === 401) {
+          setErr('You need to login...');
+        }
       }
-      setRes(res);
-    });
+    );
   }, []);
 
   return (
