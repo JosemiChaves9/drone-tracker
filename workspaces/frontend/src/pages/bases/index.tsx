@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
 import { ApiService } from '../../services/apiService';
 
@@ -22,6 +23,7 @@ export const BasesView = () => {
   useEffect(() => {
     ApiService.getBases().then(
       (res) => {
+        console.log(res);
         setRes(res);
       },
       (rej) => {
@@ -31,6 +33,10 @@ export const BasesView = () => {
       }
     );
   }, []);
+
+  if (err) {
+    return <Redirect exact to='/login' />;
+  }
 
   return (
     <BaseLayout>
