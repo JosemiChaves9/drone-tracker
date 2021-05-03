@@ -1,5 +1,6 @@
 import { Client } from 'pg';
 import dotenv from 'dotenv';
+import { compareSync } from 'bcrypt';
 dotenv.config();
 
 const client = new Client({
@@ -80,7 +81,7 @@ export class DbService {
         err: "User doesn't exists",
       };
     }
-    return result.rows;
+    return result.rows[0];
   }
 
   static async getUserByUserToken(userToken: string) {
@@ -93,5 +94,12 @@ export class DbService {
       };
     }
     return result.rows;
+  }
+
+  static async updateToken(email: string, userToken: string) {
+    const user = await client.query(
+      `UPDATE public.users SET usertoken='${userToken}' where email='${email}' RETURNING *`
+    );
+    return user.rows[0];
   }
 }

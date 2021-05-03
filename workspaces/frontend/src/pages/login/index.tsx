@@ -1,13 +1,26 @@
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import { ApiService } from '../../services/apiService';
+
+type Inputs = {
+  email: string;
+  password: string;
+};
+
 export const Login = () => {
+  const { register, handleSubmit } = useForm<Inputs>();
+
+  const onClickOnLogin = (data: Inputs) => {
+    console.log(data);
+    ApiService.loginUser(data).then();
+  };
   return (
-    <body className='bg-gradient-primary'>
+    <div className='bg-gradient-primary'>
       <div className='container'>
-        {/* <!-- Outer Row --> */}
         <div className='row justify-content-center'>
           <div className='col-xl-10 col-lg-12 col-md-9'>
             <div className='card o-hidden border-0 shadow-lg my-5'>
               <div className='card-body p-0'>
-                {/* <!-- Nested Row within Card Body --> */}
                 <div className='row'>
                   <div className='col-lg-6 d-none d-lg-block bg-login-image'></div>
                   <div className='col-lg-6'>
@@ -15,7 +28,9 @@ export const Login = () => {
                       <div className='text-center'>
                         <h1 className='h4 text-gray-900 mb-4'>Welcome Back!</h1>
                       </div>
-                      <form className='user'>
+                      <form
+                        className='user'
+                        onSubmit={handleSubmit(onClickOnLogin)}>
                         <div className='form-group'>
                           <input
                             type='email'
@@ -23,6 +38,7 @@ export const Login = () => {
                             id='exampleInputEmail'
                             aria-describedby='emailHelp'
                             placeholder='Enter Email Address...'
+                            {...register('email', { required: true })}
                           />
                         </div>
                         <div className='form-group'>
@@ -31,6 +47,7 @@ export const Login = () => {
                             className='form-control form-control-user'
                             id='exampleInputPassword'
                             placeholder='Password'
+                            {...register('password', { required: true })}
                           />
                         </div>
                         <div className='form-group'>
@@ -47,22 +64,20 @@ export const Login = () => {
                             </label>
                           </div>
                         </div>
-                        <a
-                          href='index.html'
-                          className='btn btn-primary btn-user btn-block'>
+                        <button className='btn btn-primary btn-user btn-block'>
                           Login
-                        </a>
+                        </button>
                       </form>
                       <hr />
                       <div className='text-center'>
-                        <a className='small' href='forgot-password.html'>
+                        <Link className='small' to='/passwordRecovery'>
                           Forgot Password?
-                        </a>
+                        </Link>
                       </div>
                       <div className='text-center'>
-                        <a className='small' href='register.html'>
+                        <Link className='small' to='/signup'>
                           Create an Account!
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -72,6 +87,6 @@ export const Login = () => {
           </div>
         </div>
       </div>
-    </body>
+    </div>
   );
 };

@@ -121,3 +121,18 @@ app.get('/user/token/:userToken', async (req, res) => {
   const user = await DbService.getUserByUserToken(req.params.userToken);
   res.send(user);
 });
+
+app.put('/login', async (req, res) => {
+  const { email } = req.body;
+  const user = await DbService.getUserByEmail(email);
+  const isEqual = bcrypt.compareSync(req.body.password, user.password);
+
+  if (isEqual) {
+    const userToken = jwt.sign({ email }, process.env.SECRET as string, {
+      expiresIn: '1h',
+    });
+    await DbService.updateToken(user.email, userToken).then((user) =>
+      res.send(user)
+    );
+  }
+});
