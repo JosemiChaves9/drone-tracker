@@ -15,11 +15,7 @@ export const Singup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<Inputs>();
 
   const onClickOnSignup = (data: Inputs) => {
     setErrorMessage('');
@@ -32,7 +28,7 @@ export const Singup = () => {
 
     ApiService.createNewUser(data).then((res) => {
       res.ok ? setSuccessMessage('User Created!') : setErrorMessage(res.err);
-      localStorage.setItem('userToken', res.usertoken);
+      localStorage.setItem('usertoken', res.usertoken);
     });
   };
 

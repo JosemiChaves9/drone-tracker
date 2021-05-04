@@ -1,6 +1,5 @@
 import { Client } from 'pg';
 import dotenv from 'dotenv';
-import { compareSync } from 'bcrypt';
 dotenv.config();
 
 const client = new Client({
@@ -38,36 +37,15 @@ export class DbService {
     return result.rows;
   }
 
-  static async getDroneByName(droneName: string) {
-    const result = await client.query(
-      `SELECT *  FROM public.drones WHERE name='${droneName}'`
-    );
-    return result.rows;
-  }
-
-  static async getBaseByName(baseName: string) {
-    const result = await client.query(
-      `SELECT * FROM public.bases WHERE name='${baseName}`
-    );
-    return result.rows;
-  }
-
-  static async getBasesByCity(cityName: string) {
-    const result = await client.query(
-      `SELECT * FROM public.bases WHERE city LIKE '${cityName}'`
-    );
-    return result.rows;
-  }
-
   static async createNewUser(
     firstName: string,
     lastName: string,
     email: string,
     password: string,
-    userToken: string
+    usertoken: string
   ) {
     const user = await client.query(
-      `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${userToken}') RETURNING *`
+      `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${usertoken}') RETURNING *`
     );
     return user.rows;
   }
@@ -84,9 +62,9 @@ export class DbService {
     return result.rows[0];
   }
 
-  static async getUserByUserToken(userToken: string) {
+  static async getUserByusertoken(usertoken: any) {
     const result = await client.query(
-      `SELECT * FROM public.users WHERE usertoken='${userToken}'`
+      `SELECT email, firstname, lastname, usertoken FROM public.users WHERE usertoken='${usertoken}'`
     );
     if (result.rows.length == 0) {
       return {
@@ -96,9 +74,9 @@ export class DbService {
     return result.rows;
   }
 
-  static async updateToken(email: string, userToken: string) {
+  static async updateToken(email: string, usertoken: string) {
     const user = await client.query(
-      `UPDATE public.users SET usertoken='${userToken}' where email='${email}' RETURNING *`
+      `UPDATE public.users SET usertoken='${usertoken}' where email='${email}' RETURNING email, firstname, lastname, usertoken`
     );
     return user.rows[0];
   }

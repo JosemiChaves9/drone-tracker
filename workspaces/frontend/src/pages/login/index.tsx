@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, Redirect } from 'react-router-dom';
 import { ApiService } from '../../services/apiService';
@@ -9,15 +10,22 @@ type Inputs = {
 
 export const Login = () => {
   const { register, handleSubmit } = useForm<Inputs>();
+  const [success, setSuccess] = useState<null | string>(null);
+  const [err, setErr] = useState(null);
 
   const onClickOnLogin = (data: Inputs) => {
+    setSuccess(null);
+    setErr(null);
     ApiService.loginUser(data).then((res) => {
       if (res.ok) {
         localStorage.setItem('usertoken', res.usertoken);
+        setSuccess('Correct!');
+      } else {
+        setErr(res.err);
       }
-      return <Redirect exact to='/' />;
     });
   };
+
   return (
     <div className='bg-gradient-primary'>
       <div className='container'>
@@ -27,11 +35,19 @@ export const Login = () => {
               <div className='card-body p-0'>
                 <div className='row'>
                   <div className='col-lg-6 d-none d-lg-block bg-login-image'></div>
+
                   <div className='col-lg-6'>
                     <div className='p-5'>
                       <div className='text-center'>
                         <h1 className='h4 text-gray-900 mb-4'>Welcome Back!</h1>
                       </div>
+                      {err && (
+                        <div className='alert alert-danger text-center'>
+                          {err}
+                        </div>
+                      )}
+                      {success && <Redirect to='/' />}
+
                       <form
                         className='user'
                         onSubmit={handleSubmit(onClickOnLogin)}>

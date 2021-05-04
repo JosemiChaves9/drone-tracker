@@ -1,17 +1,34 @@
 import { useEffect, useState } from 'react';
+import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
 import { ApiService } from '../../services/apiService';
 
 export const DronesView = () => {
   const [res, setRes] = useState([]);
+  const [err, setErr] = useState('');
 
   useEffect(() => {
-    ApiService.getDrones().then((res) => setRes(res));
+    ApiService.getDrones().then(
+      (res) => {
+        setRes(res);
+      },
+      (rej) => {
+        if (rej.status === 401) {
+          setErr('ERR_USER_NOT_LOGGED');
+        }
+      }
+    );
   }, []);
 
   return (
     <BaseLayout>
       <div className='row'>
+        {err && (
+          <>
+            <Redirect to='/login' />
+          </>
+        )}
+
         {res.map((drone: any) => {
           return (
             <div className='col-12 col-lg-6'>
