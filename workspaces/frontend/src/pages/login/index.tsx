@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { ApiService } from '../../services/apiService';
 
 type Inputs = {
@@ -11,8 +11,12 @@ export const Login = () => {
   const { register, handleSubmit } = useForm<Inputs>();
 
   const onClickOnLogin = (data: Inputs) => {
-    console.log(data);
-    ApiService.loginUser(data).then();
+    ApiService.loginUser(data).then((res) => {
+      if (res.ok) {
+        localStorage.setItem('usertoken', res.usertoken);
+      }
+      return <Redirect exact to='/' />;
+    });
   };
   return (
     <div className='bg-gradient-primary'>

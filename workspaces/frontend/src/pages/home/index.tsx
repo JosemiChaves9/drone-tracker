@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { generateRoute } from 'geo-route-generator';
 import './index.scss';
 import { BaseLayout } from '../../components/BaseLayout';
+import { UserContext } from '../../components/context/index';
 
 export const Home = () => {
+  const user = useContext(UserContext);
+
   const startPos = {
     lat: 40.413599,
     lng: -3.709558,

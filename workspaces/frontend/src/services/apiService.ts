@@ -9,15 +9,15 @@ const instance = axios.create({
   },
 });
 
-type newUser = {
+interface NewUser {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   passwordCheck: string;
-};
+}
 
-type Base = {
+interface Base {
   id: number;
   lat: number;
   lon: number;
@@ -26,12 +26,12 @@ type Base = {
   number: string;
   postalcode: string;
   street: string;
-};
+}
 
-type loginUser = {
+interface LoginUser {
   email: string;
   password: string;
-};
+}
 export class ApiService {
   static async getBases() {
     return await instance.get('/bases').then(
@@ -51,16 +51,16 @@ export class ApiService {
   }
 
   static async getUserByUserToken(userToken: string) {
-    const user = await instance.get(`/user/email/${userToken}`);
+    const user = await instance.get(`/user/token/${userToken}`);
     return user.data;
   }
 
-  static async createNewUser(data: newUser) {
+  static async createNewUser(data: NewUser) {
     const user = await instance.post(`/user`, data);
     return user.data;
   }
 
-  static async loginUser(data: loginUser) {
+  static async loginUser(data: LoginUser) {
     const user = await instance.put('/login', data);
     return user.data;
   }

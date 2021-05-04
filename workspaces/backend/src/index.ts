@@ -132,7 +132,7 @@ app.put('/login', async (req, res) => {
       expiresIn: '1h',
     });
     await DbService.updateToken(user.email, userToken).then((user) =>
-      res.send(user)
+      res.send({ ok: true, ...user })
     );
   }
 });

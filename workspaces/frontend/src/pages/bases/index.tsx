@@ -34,10 +34,6 @@ export const BasesView = () => {
     );
   }, []);
 
-  if (err) {
-    return <Redirect exact to='/login' />;
-  }
-
   return (
     <BaseLayout>
       <div>

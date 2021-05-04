@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
@@ -10,26 +10,23 @@ import { DronesView } from './pages/drones';
 import { Home } from './pages/home';
 import { Singup } from './pages/singup';
 import { Login } from './pages/login';
-import dotenv from 'dotenv';
-
-dotenv.config();
-const token = localStorage.getItem('token');
+import { ContextProvider } from './components/context';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <Switch>
-        {/* <UserProvider value={token}> */}
-        <Route exact path='/' component={Home} />
-        <Route path='/bases' component={BasesView} />
-        <Route path='/drones' component={DronesView} />
-        <Route path='/drone-control' component={BaseLayout} />
-        <Route path='/add-drone' component={BaseLayout} />
-        <Route path='/add-base' component={BaseLayout} />
-        <Route path='/signup' component={Singup} />
-        <Route path='/login' component={Login} />
-        <Route component={Page404} />
-        {/* </UserProvider> */}
+        <ContextProvider>
+          <Route exact path='/' component={Home} />
+          <Route path='/bases' component={BasesView} />
+          <Route path='/drones' component={DronesView} />
+          <Route path='/drone-control' component={BaseLayout} />
+          <Route path='/add-drone' component={BaseLayout} />
+          <Route path='/add-base' component={BaseLayout} />
+          <Route path='/signup' component={Singup} />
+          <Route path='/login' component={Login} />
+          <Route component={Page404} />
+        </ContextProvider>
       </Switch>
     </Router>
   </React.StrictMode>,

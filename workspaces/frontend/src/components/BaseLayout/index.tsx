@@ -11,8 +11,7 @@ import { useContext } from 'react';
 // import { UserContext } from '../userContext';
 
 export const BaseLayout = (props: any) => {
-  // const token = useContext(UserContext);
-
+  const token = localStorage.getItem('usertoken');
   return (
     <>
       <div id='wrapper'>
@@ -81,26 +80,47 @@ export const BaseLayout = (props: any) => {
         </ul>
 
         <div id='content-wrapper' className='d-flex flex-column'>
-          <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
-            <ul className='navbar-nav ml-auto'>
-              <li className='nav-item '>
-                <Link className='nav-link' to='/signup'>
-                  <span className='mr-2 text-gray-600 small'>Signup</span>
-                </Link>
-              </li>
-              <li className='nav-item '>
-                <Link className='nav-link' to='/login'>
-                  <span className='mr-2 text-gray-600 small'>Login</span>
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          {!token ? (
+            <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
+              <ul className='navbar-nav ml-auto'>
+                <li className='nav-item '>
+                  <Link className='nav-link' to='/signup'>
+                    <span className='mr-2 text-gray-600 small'>Signup</span>
+                  </Link>
+                </li>
+                <li className='nav-item '>
+                  <Link className='nav-link' to='/login'>
+                    <span className='mr-2 text-gray-600 small'>Login</span>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          ) : (
+            <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
+              <ul className='navbar-nav ml-auto'>
+                <li className='nav-item '>
+                  <button
+                    className='btn mt-3'
+                    onClick={() => {
+                      window.location.reload();
+                      localStorage.clear();
+                    }}>
+                    <span className='mr-2 text-gray-600 small'>Signout</span>
+                  </button>
+                </li>
+                <li className='nav-item '>
+                  <Link className='nav-link' to='/user'>
+                    <span className='mr-2 text-gray-600 small'>User</span>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          )}
           <div className='container-fluid'>
             <div>{props.children}</div>
           </div>
         </div>
       </div>
-      {/*  */};
     </>
   );
 };
