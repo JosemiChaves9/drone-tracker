@@ -41,8 +41,8 @@ export class ApiService {
     return user.data;
   }
 
-  static async getUserByusertoken() {
-    const user = await instance.get(`/user/token`);
+  static async getUserByusertoken(usertoken: string) {
+    const user = await instance.get(`/user/usertoken/${usertoken}`);
     return user.data;
   }
 

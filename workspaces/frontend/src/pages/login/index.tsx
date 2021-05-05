@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, Redirect } from 'react-router-dom';
+import { UserContext } from '../../components/context';
 import { ApiService } from '../../services/apiService';
 
 type Inputs = {
@@ -12,6 +13,7 @@ export const Login = () => {
   const { register, handleSubmit } = useForm<Inputs>();
   const [success, setSuccess] = useState<null | string>(null);
   const [err, setErr] = useState(null);
+  const { changeLogged } = useContext(UserContext);
 
   const onClickOnLogin = (data: Inputs) => {
     setSuccess(null);
@@ -20,6 +22,7 @@ export const Login = () => {
       if (res.ok) {
         localStorage.setItem('usertoken', res.usertoken);
         setSuccess('Correct!');
+        changeLogged();
       } else {
         setErr(res.err);
       }

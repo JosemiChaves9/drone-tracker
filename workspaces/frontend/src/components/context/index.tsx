@@ -1,31 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { ApiService } from '../../services/apiService';
 
-interface User {
-  email: string;
-  firstname: string;
-  lastname: string;
-  token: string;
-}
-
-export const UserContext = React.createContext<User | null>(null);
+export const UserContext = React.createContext<any>(null);
 export const ContextProvider = ({ children }: any) => {
   const [user, setUser] = useState(null);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
+    const usertoken = localStorage.getItem('usertoken');
     const getUser = (async () => {
-      const user = await ApiService.getUserByusertoken();
-      if (user) {
-        setUser(user[0]);
-      } else {
-        setUser(null);
-      }
+      await ApiService.getUserByusertoken(usertoken as string).then((res) => {
+        setUser(res);
+      });
     })();
-  }, []);
+  }, [isLogged]);
 
-  console.log(user);
+  const changeLogged = () => {
+    setIsLogged(!isLogged);
+  };
+  console.log(isLogged);
 
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, changeLogged }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const UserProvider = () => React.useContext(UserContext);

@@ -47,7 +47,7 @@ export class DbService {
     const user = await client.query(
       `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${usertoken}') RETURNING *`
     );
-    return user.rows;
+    return user.rows[0];
   }
 
   static async getUserByEmail(email: string) {
@@ -71,7 +71,7 @@ export class DbService {
         err: "User doesn't exists",
       };
     }
-    return result.rows;
+    return result.rows[0];
   }
 
   static async updateToken(email: string, usertoken: string) {
@@ -79,5 +79,17 @@ export class DbService {
       `UPDATE public.users SET usertoken='${usertoken}' where email='${email}' RETURNING email, firstname, lastname, usertoken`
     );
     return user.rows[0];
+  }
+
+  static async checkIfUserExists(email: string) {
+    const user = await client.query(
+      `SELECT * FROM public.users WHERE email='${email}'`
+    );
+
+    if (user.rows.length === 0) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
