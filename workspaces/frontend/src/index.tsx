@@ -15,8 +15,8 @@ import { ContextProvider } from './components/context';
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <Switch>
-        <ContextProvider>
+      <ContextProvider>
+        <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/bases' component={BasesView} />
           <Route path='/drones' component={DronesView} />
@@ -26,8 +26,8 @@ ReactDOM.render(
           <Route path='/signup' component={Singup} />
           <Route path='/login' component={Login} />
           <Route component={Page404} />
-        </ContextProvider>
-      </Switch>
+        </Switch>
+      </ContextProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')
