@@ -87,8 +87,8 @@ app.get('/bases', function (req, res) {
 app.post('/user/newuser', async function (req, res) {
   const { email } = req.body;
 
-  DbService.checkIfUserExists(email).then((response) => {
-    if (response) {
+  DbService.getUserByEmail(email).then((user) => {
+    if (user.exists) {
       res.send({
         ok: false,
         err: 'User already exists',

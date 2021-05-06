@@ -56,10 +56,12 @@ export class DbService {
     );
     if (result.rows.length == 0) {
       return {
+        exists: false,
         err: "User doesn't exists",
       };
+    } else {
+      return { exists: true, ...result.rows[0] };
     }
-    return result.rows[0];
   }
 
   static async getUserByusertoken(usertoken: any) {
@@ -79,17 +81,5 @@ export class DbService {
       `UPDATE public.users SET usertoken='${usertoken}' where email='${email}' RETURNING email, firstname, lastname, usertoken`
     );
     return user.rows[0];
-  }
-
-  static async checkIfUserExists(email: string) {
-    const user = await client.query(
-      `SELECT * FROM public.users WHERE email='${email}'`
-    );
-
-    if (user.rows.length === 0) {
-      return false;
-    } else {
-      return true;
-    }
   }
 }
