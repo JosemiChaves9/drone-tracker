@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
-import { ApiService } from '../../services/apiService';
+import { ApiService } from '../../services/ApiService';
 
 export const DronesView = () => {
-  const [res, setRes] = useState([]);
+  const [drones, setDrones] = useState([]);
   const [err, setErr] = useState('');
 
   useEffect(() => {
     ApiService.getDrones().then(
-      (res) => {
-        setRes(res);
+      (drones) => {
+        setDrones(drones);
       },
       (rej) => {
         if (rej.status === 401) {
@@ -29,7 +29,7 @@ export const DronesView = () => {
           </>
         )}
 
-        {res.map((drone: any) => {
+        {drones.map((drone: any) => {
           return (
             <div className='col-12 col-lg-6'>
               <div className='card shadow mb-4'>

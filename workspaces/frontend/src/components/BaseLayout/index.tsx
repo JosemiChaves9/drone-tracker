@@ -12,7 +12,6 @@ import { UserContext } from '../context';
 
 export const BaseLayout = (props: any) => {
   const user = useContext(UserContext);
-  console.log(user);
 
   return (
     <>

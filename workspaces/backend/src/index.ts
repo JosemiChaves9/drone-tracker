@@ -1,5 +1,5 @@
 import Express from 'express';
-import { DbService } from './dbServices';
+import { DbService } from './DbService';
 import dotenv from 'dotenv';
 import NodeGeocoder from 'node-geocoder';
 import cors from 'cors';
@@ -84,7 +84,7 @@ app.get('/bases', function (req, res) {
   );
 });
 
-app.post('/newUser', async function (req, res) {
+app.post('/user/newuser', async function (req, res) {
   const { email } = req.body;
 
   DbService.checkIfUserExists(email).then((response) => {
@@ -142,7 +142,7 @@ app.get('/user/usertoken/:usertoken', async (req, res) => {
   res.send(user);
 });
 
-app.put('/login', async (req, res) => {
+app.put('/user/login', async (req, res) => {
   const { email } = req.body;
   const user = await DbService.getUserByEmail(email);
 

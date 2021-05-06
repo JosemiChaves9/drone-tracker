@@ -1,4 +1,4 @@
-export interface drone {
+export interface Drone {
   id: string;
   name: string;
   from: string;
@@ -9,7 +9,7 @@ export interface drone {
   address: string;
 }
 
-export interface base {
+export interface Base {
   id: string;
   name: string;
   number: string;
@@ -19,7 +19,7 @@ export interface base {
   lon: number;
 }
 
-export interface user {
+export interface User {
   name: string;
   lastName: string;
   email: string;

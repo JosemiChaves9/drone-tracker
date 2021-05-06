@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
-import { ApiService } from '../../services/apiService';
+import { ApiService } from '../../services/ApiService';
 
 export const BasesView = () => {
   const [res, setRes] = useState([]);

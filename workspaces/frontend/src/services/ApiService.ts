@@ -47,12 +47,12 @@ export class ApiService {
   }
 
   static async createNewUser(data: NewUser) {
-    const user = await instance.post(`/newUser`, data);
+    const user = await instance.post(`/user/newuser`, data);
     return user.data;
   }
 
   static async loginUser(data: LoginUser) {
-    const user = await instance.put('/login', data);
+    const user = await instance.put('/user/login', data);
     return user.data;
   }
 }

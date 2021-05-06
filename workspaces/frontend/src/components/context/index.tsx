@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ApiService } from '../../services/apiService';
+import { ApiService } from '../../services/ApiService';
 
 export const UserContext = React.createContext<any>(null);
 export const ContextProvider = ({ children }: any) => {
@@ -18,7 +18,6 @@ export const ContextProvider = ({ children }: any) => {
   const changeLogged = () => {
     setIsLogged(!isLogged);
   };
-  console.log(isLogged);
 
   return (
     <UserContext.Provider value={{ user, changeLogged }}>
