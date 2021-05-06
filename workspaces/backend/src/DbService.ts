@@ -45,7 +45,7 @@ export class DbService {
     usertoken: string
   ) {
     const user = await client.query(
-      `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${usertoken}') RETURNING *`
+      `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${usertoken}') RETURNING firstname, lastname, email, usertoken`
     );
     return user.rows[0];
   }
