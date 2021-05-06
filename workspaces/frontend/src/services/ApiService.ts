@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const usertoken = localStorage.getItem('usertoken');
-
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_ADDRESS,
-  headers: {
-    usertoken: usertoken,
-  },
+});
+
+instance.interceptors.request.use((req) => {
+  req.headers.usertoken = localStorage.getItem('usertoken');
+  return req;
 });
 
 interface NewUser {
