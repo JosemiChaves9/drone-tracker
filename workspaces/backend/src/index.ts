@@ -51,38 +51,26 @@ DbService.connect().then(
 );
 const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
-app.get(
-  '/drones',
-  (req, res, next) => {
-    validateToken(req, res, next);
-  },
-  function (req, res) {
-    DbService.getDrones().then((drones) => {
-      Promise.all(
-        drones.map(async (drone) => {
-          const address = await geocoder.reverse({
-            lat: drone.to_lat,
-            lon: drone.to_lon,
-          });
-          return {
-            ...drone,
-            address: address[0].formattedAddress,
-          };
-        })
-      ).then((droneList) => res.send(droneList));
-    });
-  }
-);
+app.get('/drones', validateToken, function (req, res) {
+  DbService.getDrones().then((drones) => {
+    Promise.all(
+      drones.map(async (drone) => {
+        const address = await geocoder.reverse({
+          lat: drone.to_lat,
+          lon: drone.to_lon,
+        });
+        return {
+          ...drone,
+          address: address[0].formattedAddress,
+        };
+      })
+    ).then((droneList) => res.send(droneList));
+  });
+});
 
-app.get(
-  '/bases',
-  (req, res, next) => {
-    validateToken(req, res, next);
-  },
-  function (req, res) {
-    DbService.getBases().then((bases) => res.send(bases));
-  }
-);
+app.get('/bases', validateToken, function (req, res) {
+  DbService.getBases().then((bases) => res.send(bases));
+});
 
 app.post('/user/newuser', async function (req, res) {
   const { email } = req.body;
