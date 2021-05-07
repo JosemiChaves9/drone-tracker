@@ -1,12 +1,10 @@
 import { Client } from 'pg';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const client = new Client({
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
-  host: 'db',
-  port: 5432,
+  host: process.env.HOST,
+  port: 5432 || process.env.DB_PORT,
   database: process.env.PGNAME,
 });
 

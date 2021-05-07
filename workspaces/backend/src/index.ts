@@ -1,12 +1,12 @@
-import Express from 'express';
-import { DbService } from './DbService';
 import dotenv from 'dotenv';
+dotenv.config();
+import Express from 'express';
 import NodeGeocoder from 'node-geocoder';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
-dotenv.config();
+import { DbService } from './DbService';
 
 const app = Express();
 
@@ -20,27 +20,23 @@ app.use(
 
 app.use(Express.json());
 
-app.use((req, res, next) => {
-  if (req.url !== '/user/login') {
-    jwt.verify(
-      req.headers.usertoken as string,
-      process.env.SECRET as string,
-      (err) => {
-        if (err) {
-          res.status(401).send({
-            ok: false,
-            err: err,
-            errorMessage: 'Something went wrong with authentication',
-          });
-        } else {
-          next();
-        }
+const validateToken = (req: any, res: any, next: any) => {
+  jwt.verify(
+    req.headers.authorization as string,
+    process.env.SECRET as string,
+    (err) => {
+      if (err) {
+        res.status(401).send({
+          ok: false,
+          err: err,
+          errorMessage: 'Something went wrong with authentication',
+        });
+      } else {
+        next();
       }
-    );
-  } else {
-    next();
-  }
-});
+    }
+  );
+};
 
 const PORT = process.env.PORT || 4000;
 DbService.connect().then(
@@ -55,26 +51,38 @@ DbService.connect().then(
 );
 const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
-app.get('/drones', function (req, res) {
-  DbService.getDrones().then((drones) => {
-    Promise.all(
-      drones.map(async (drone) => {
-        const address = await geocoder.reverse({
-          lat: drone.to_lat,
-          lon: drone.to_lon,
-        });
-        return {
-          ...drone,
-          address: address[0].formattedAddress,
-        };
-      })
-    ).then((droneList) => res.send(droneList));
-  });
-});
+app.get(
+  '/drones',
+  (req, res, next) => {
+    validateToken(req, res, next);
+  },
+  function (req, res) {
+    DbService.getDrones().then((drones) => {
+      Promise.all(
+        drones.map(async (drone) => {
+          const address = await geocoder.reverse({
+            lat: drone.to_lat,
+            lon: drone.to_lon,
+          });
+          return {
+            ...drone,
+            address: address[0].formattedAddress,
+          };
+        })
+      ).then((droneList) => res.send(droneList));
+    });
+  }
+);
 
-app.get('/bases', function (req, res) {
-  DbService.getBases().then((bases) => res.send(bases));
-});
+app.get(
+  '/bases',
+  (req, res, next) => {
+    validateToken(req, res, next);
+  },
+  function (req, res) {
+    DbService.getBases().then((bases) => res.send(bases));
+  }
+);
 
 app.post('/user/newuser', async function (req, res) {
   const { email } = req.body;

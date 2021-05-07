@@ -5,7 +5,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((req) => {
-  req.headers.usertoken = localStorage.getItem('usertoken');
+  req.headers.authorization = localStorage.getItem('usertoken');
   return req;
 });
 
@@ -23,14 +23,14 @@ interface LoginUser {
 }
 export class ApiService {
   static async getBases() {
-    return await instance.get('/bases').then(
+    return instance.get('/bases').then(
       (data) => data.data,
       (res) => Promise.reject(res.response)
     );
   }
 
   static async getDrones() {
-    return await instance.get('/drones').then(
+    return instance.get('/drones').then(
       (data) => data.data,
       (res) => Promise.reject(res.response)
     );
