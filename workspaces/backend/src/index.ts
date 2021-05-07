@@ -20,6 +20,28 @@ app.use(
 
 app.use(Express.json());
 
+app.use((req, res, next) => {
+  if (req.url !== '/user/login') {
+    jwt.verify(
+      req.headers.usertoken as string,
+      process.env.SECRET as string,
+      (err) => {
+        if (err) {
+          res.status(401).send({
+            ok: false,
+            err: err,
+            errorMessage: 'Something went wrong with authentication',
+          });
+        } else {
+          next();
+        }
+      }
+    );
+  } else {
+    next();
+  }
+});
+
 const PORT = process.env.PORT || 4000;
 DbService.connect().then(
   () => {
@@ -34,54 +56,24 @@ DbService.connect().then(
 const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
 app.get('/drones', function (req, res) {
-  jwt.verify(
-    req.headers.usertoken as string,
-    process.env.SECRET as string,
-    function (err) {
-      if (!err) {
-        DbService.getDrones().then((drones) => {
-          Promise.all(
-            drones.map(async (drone) => {
-              const address = await geocoder.reverse({
-                lat: drone.to_lat,
-                lon: drone.to_lon,
-              });
-              return {
-                ...drone,
-                address: address[0].formattedAddress,
-              };
-            })
-          ).then((droneList) => res.send(droneList));
+  DbService.getDrones().then((drones) => {
+    Promise.all(
+      drones.map(async (drone) => {
+        const address = await geocoder.reverse({
+          lat: drone.to_lat,
+          lon: drone.to_lon,
         });
-      } else {
-        res.status(401);
-        res.send({
-          ok: false,
-          err: err,
-          errorMessage: 'Something went wrong with usertoken',
-        });
-      }
-    }
-  );
+        return {
+          ...drone,
+          address: address[0].formattedAddress,
+        };
+      })
+    ).then((droneList) => res.send(droneList));
+  });
 });
 
 app.get('/bases', function (req, res) {
-  jwt.verify(
-    req.headers.usertoken as string,
-    process.env.SECRET as string,
-    function (err) {
-      if (!err) {
-        DbService.getBases().then((bases) => res.send(bases));
-      } else {
-        res.status(401);
-        res.send({
-          ok: false,
-          err: err,
-          errorMessage: 'Something went wrong with usertoken',
-        });
-      }
-    }
-  );
+  DbService.getBases().then((bases) => res.send(bases));
 });
 
 app.post('/user/newuser', async function (req, res) {
