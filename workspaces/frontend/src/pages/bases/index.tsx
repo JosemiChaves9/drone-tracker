@@ -1,10 +1,12 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
+import { ApiService } from '../../services/ApiService';
 
 export const BasesView = () => {
-  const [response, setResponse] = useState([]);
+  const [res, setRes] = useState([]);
+  const [err, setErr] = useState('');
 
   interface base {
     city: string;
@@ -18,14 +20,26 @@ export const BasesView = () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:4000/bases').then((response) => {
-      setResponse(response.data);
-    });
+    ApiService.getBases().then(
+      (res) => {
+        setRes(res);
+      },
+      (rej) => {
+        if (rej.status === 401) {
+          setErr('ERR_USER_NOT_LOGGED');
+        }
+      }
+    );
   }, []);
 
   return (
     <BaseLayout>
       <div>
+        {err && (
+          <>
+            <Redirect to='/login' />
+          </>
+        )}
         <MapContainer
           center={[39.634929, 2.976627]}
           zoom={10}
@@ -33,9 +47,9 @@ export const BasesView = () => {
           <TileLayer
             attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
-            accessToken='UrOQiBU4MfHPv8NeuE5h75QU5iWP05muWOcTLwJoBZTErJe5CCa3YXM2Co1aYEJ7'
+            accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
-          {response.map((base: base) => {
+          {res.map((base: base) => {
             return (
               <Marker position={[base.lat, base.lon]}>
                 <Popup>{base.name}</Popup>
@@ -43,6 +57,7 @@ export const BasesView = () => {
             );
           })}
         </MapContainer>
+        )
       </div>
     </BaseLayout>
   );

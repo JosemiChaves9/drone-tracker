@@ -5,15 +5,14 @@ import {
   faGamepad,
   faPlusCircle,
   faMapMarkedAlt,
-  faBell,
-  faFileAlt,
-  faDonate,
-  faEnvelope,
-  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { UserContext } from '../context';
 
 export const BaseLayout = (props: any) => {
+  const user = useContext(UserContext);
+
   return (
     <>
       <div id='wrapper'>
@@ -27,7 +26,7 @@ export const BaseLayout = (props: any) => {
           <li className='nav-item active'>
             <Link className='nav-link' to='/'>
               <FontAwesomeIcon icon={faMapMarkedAlt} />
-              <span className='pl-2'>Overview</span>
+              <span className='pl-2'>Home</span>
             </Link>
           </li>
 
@@ -82,85 +81,49 @@ export const BaseLayout = (props: any) => {
         </ul>
 
         <div id='content-wrapper' className='d-flex flex-column'>
-          <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
-            <form className='d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search'></form>
-
-            <ul className='navbar-nav ml-auto'>
-              <li className='nav-item dropdown no-arrow mx-1'>
-                <Link
-                  className='nav-link dropdown-toggle'
-                  to='#'
-                  id='alertsDropdown'
-                  role='button'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'>
-                  <FontAwesomeIcon icon={faBell} />
-                  <span className='badge badge-danger badge-counter'>3+</span>
-                </Link>
-                <div
-                  className='dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in'
-                  aria-labelledby='alertsDropdown'>
-                  <Link
-                    className='dropdown-item d-flex align-items-center'
-                    to='#'>
-                    <div className='mr-3'>
-                      <div className='icon-circle bg-primary'>
-                        <FontAwesomeIcon icon={faFileAlt} />{' '}
-                      </div>
-                    </div>
+          {user.user ? (
+            <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
+              <ul className='navbar-nav ml-auto'>
+                <li className='nav-item '>
+                  <button
+                    className='btn mt-3'
+                    onClick={() => {
+                      window.location.reload();
+                      localStorage.clear();
+                    }}>
+                    <span className='mr-2 text-gray-600 small'>Signout</span>
+                  </button>
+                </li>
+                <li className='nav-item '>
+                  <Link className='nav-link' to='/user'>
+                    <span className='mr-2 text-gray-600 small'>
+                      {user.user.email}
+                    </span>
                   </Link>
-                  <Link
-                    className='dropdown-item d-flex align-items-center'
-                    to='#'>
-                    <div className='mr-3'>
-                      <div className='icon-circle bg-success'>
-                        <FontAwesomeIcon icon={faDonate} />{' '}
-                      </div>
-                    </div>
+                </li>
+              </ul>
+            </nav>
+          ) : (
+            <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
+              <ul className='navbar-nav ml-auto'>
+                <li className='nav-item '>
+                  <Link className='nav-link' to='/signup'>
+                    <span className='mr-2 text-gray-600 small'>Signup</span>
                   </Link>
-                </div>
-              </li>
-
-              <li className='nav-item dropdown no-arrow mx-1'>
-                <Link
-                  className='nav-link dropdown-toggle'
-                  to='#'
-                  id='messagesDropdown'
-                  role='button'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'>
-                  <FontAwesomeIcon icon={faEnvelope} />{' '}
-                  <span className='badge badge-danger badge-counter'>7</span>
-                </Link>
-              </li>
-
-              <div className='topbar-divider d-none d-sm-block'></div>
-
-              <li className='nav-item dropdown no-arrow'>
-                <Link
-                  className='nav-link dropdown-toggle'
-                  to='#'
-                  id='userDropdown'
-                  role='button'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'>
-                  <span className='mr-2 d-none d-lg-inline text-gray-600 small'>
-                    User Name
-                  </span>
-                  <FontAwesomeIcon icon={faUser} />{' '}
-                </Link>
-              </li>
-            </ul>
-          </nav>
+                </li>
+                <li className='nav-item '>
+                  <Link className='nav-link' to='/login'>
+                    <span className='mr-2 text-gray-600 small'>Login</span>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          )}
           <div className='container-fluid'>
             <div>{props.children}</div>
           </div>
         </div>
       </div>
-      {/*  */};
     </>
   );
 };

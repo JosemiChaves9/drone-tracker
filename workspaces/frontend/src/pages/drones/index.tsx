@@ -1,20 +1,35 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
+import { ApiService } from '../../services/ApiService';
 
 export const DronesView = () => {
-  const [response, setResponse] = useState([]);
+  const [drones, setDrones] = useState([]);
+  const [err, setErr] = useState('');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:4000/drones')
-      .then((res) => setResponse(res.data));
+    ApiService.getDrones().then(
+      (drones) => {
+        setDrones(drones);
+      },
+      (rej) => {
+        if (rej.status === 401) {
+          setErr('ERR_USER_NOT_LOGGED');
+        }
+      }
+    );
   }, []);
 
   return (
     <BaseLayout>
       <div className='row'>
-        {response.map((drone: any) => {
+        {err && (
+          <>
+            <Redirect to='/login' />
+          </>
+        )}
+
+        {drones.map((drone: any) => {
           return (
             <div className='col-12 col-lg-6'>
               <div className='card shadow mb-4'>
@@ -25,7 +40,7 @@ export const DronesView = () => {
                 </div>
                 <div className='card-body'>
                   <ul>
-                    <li>From: {drone.from}</li>
+                    <li key={drone.from}>From: {drone.from}</li>
                     <li onLoad={() => console.log('loading')}>
                       To: {drone.address}
                     </li>
@@ -37,7 +52,7 @@ export const DronesView = () => {
             </div>
           );
         })}
-      </div>{' '}
+      </div>
     </BaseLayout>
   );
 };

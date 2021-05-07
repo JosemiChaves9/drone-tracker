@@ -1,14 +1,44 @@
-import Express from 'express';
-import { DbService } from './dbServices';
 import dotenv from 'dotenv';
-import NodeGeocoder from 'node-geocoder';
 dotenv.config();
+import Express from 'express';
+import NodeGeocoder from 'node-geocoder';
+import cors from 'cors';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import * as EmailValidator from 'email-validator';
+import { DbService } from './DbService';
 
 const app = Express();
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_ADDRESS,
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
+
+app.use(Express.json());
+
+const validateToken = (req: any, res: any, next: any) => {
+  jwt.verify(
+    req.headers.authorization as string,
+    process.env.SECRET as string,
+    (err) => {
+      if (err) {
+        res.status(401).send({
+          ok: false,
+          err: err,
+          errorMessage: 'Something went wrong with authentication',
+        });
+      } else {
+        next();
+      }
+    }
+  );
+};
+
 const PORT = process.env.PORT || 4000;
-
-const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
-
 DbService.connect().then(
   () => {
     app.listen(PORT, () =>
@@ -19,11 +49,12 @@ DbService.connect().then(
     throw new Error(`can't connect to DB`);
   }
 );
+const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
-app.get('/drones', function (req, res) {
-  DbService.getDrones().then((rows) => {
+app.get('/drones', validateToken, function (req, res) {
+  DbService.getDrones().then((drones) => {
     Promise.all(
-      rows.map(async (drone) => {
+      drones.map(async (drone) => {
         const address = await geocoder.reverse({
           lat: drone.to_lat,
           lon: drone.to_lon,
@@ -33,26 +64,93 @@ app.get('/drones', function (req, res) {
           address: address[0].formattedAddress,
         };
       })
-    ).then((result) => res.send(result));
+    ).then((droneList) => res.send(droneList));
   });
 });
 
-app.get('/bases', function (req, res) {
-  DbService.getBases().then((rows) => res.send(rows));
+app.get('/bases', validateToken, function (req, res) {
+  DbService.getBases().then((bases) => res.send(bases));
 });
 
-app.get('/drone/:droneName', function (req, res) {
-  const droneName = req.params.droneName;
-  DbService.getDroneByName(droneName).then((rows) => res.send(rows));
+app.post('/user/newuser', async function (req, res) {
+  const { email } = req.body;
+
+  DbService.getUserByEmail(email).then((user) => {
+    if (user.exists) {
+      res.send({
+        ok: false,
+        err: 'User already exists',
+      });
+      return;
+    }
+  });
+  try {
+    if (EmailValidator.validate(email)) {
+      const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
+      const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
+        expiresIn: '1h',
+      });
+      await DbService.createNewUser(
+        req.body.firstName,
+        req.body.lastName,
+        email,
+        encryptedPassword,
+        usertoken
+      ).then((newUser) => {
+        res.status(201);
+        res.send({ ...newUser, ok: true, tokenExpirationTime: '1h' });
+      });
+    } else {
+      res.status(400);
+      res.send({
+        ok: false,
+        err: 'Email not valid',
+      });
+    }
+  } catch (error) {
+    res.send({ err: error.detail, ok: false });
+  }
 });
 
-app.get('/base/:baseName', function (req, res) {
-  const baseName = req.params.baseName;
-  DbService.getBaseByName(baseName).then((rows) => res.send(rows));
+app.get('/user/email/:email', async (req, res) => {
+  const user = await DbService.getUserByEmail(req.params.email);
+  if (user.err) {
+    res.status(404);
+    res.send({ ok: false, err: user.err });
+  }
+  res.send(user);
 });
 
-app.get('/bases/city/:cityName', function (req, res) {
-  const cityName = req.params.cityName;
-  console.log(cityName);
-  DbService.getBasesByCity(cityName).then((rows) => res.send(rows));
+app.get('/user/usertoken/:usertoken', async (req, res) => {
+  const user = await DbService.getUserByusertoken(req.params.usertoken);
+  if (user.err) {
+    res.status(404);
+    res.send({ ok: false, err: user.err });
+  }
+  res.send(user);
+});
+
+app.put('/user/login', async (req, res) => {
+  const { email } = req.body;
+  const user = await DbService.getUserByEmail(email);
+
+  if (user.err) {
+    res.status(404);
+    res.send({ ok: false, err: user.err });
+  }
+
+  const isEqual = bcrypt.compareSync(req.body.password, user.password);
+
+  if (isEqual) {
+    const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
+      expiresIn: '1h',
+    });
+    await DbService.updateToken(user.email, usertoken).then((user) => {
+      res.status(201);
+      res.send({ ok: true, ...user });
+    });
+  } else {
+    res.status(400);
+    res.send({ ok: false, err: 'The password is incorrect' });
+  }
 });

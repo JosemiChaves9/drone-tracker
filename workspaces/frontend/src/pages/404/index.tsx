@@ -13,6 +13,7 @@ export const Page404 = () => {
                   <img
                     className='mb-4 img-error'
                     src='error-404-monochrome.svg'
+                    alt='404 Screen'
                   />
                   <p className='lead'>
                     This requested URL was not found on this server.
