@@ -12,21 +12,23 @@ type Inputs = {
 export const Login = () => {
   const { register, handleSubmit } = useForm<Inputs>();
   const [success, setSuccess] = useState<null | string>(null);
-  const [err, setErr] = useState(null);
+  const [err, setErr] = useState<null | string>(null);
   const { changeLogged } = useContext(UserContext);
 
   const onClickOnLogin = (data: Inputs) => {
     setSuccess(null);
     setErr(null);
-    ApiService.loginUser(data).then((res) => {
-      if (res.ok) {
-        localStorage.setItem('usertoken', res.usertoken);
-        setSuccess('Correct!');
-        changeLogged();
-      } else {
-        setErr(res.err);
-      }
-    });
+    ApiService.loginUser(data)
+      .then((res) => {
+        if (res.ok) {
+          localStorage.setItem('usertoken', res.usertoken);
+          setSuccess('Correct!');
+          changeLogged();
+        } else {
+          setErr(res.err);
+        }
+      })
+      .catch((err) => setErr('Something went wrong, check your credentials'));
   };
 
   return (

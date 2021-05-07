@@ -119,7 +119,7 @@ app.post('/user/newuser', async function (req, res) {
 app.get('/user/email/:email', async (req, res) => {
   const user = await DbService.getUserByEmail(req.params.email);
   if (user.err) {
-    res.status(400);
+    res.status(404);
     res.send({ ok: false, err: user.err });
   }
   res.send(user);
@@ -128,7 +128,7 @@ app.get('/user/email/:email', async (req, res) => {
 app.get('/user/usertoken/:usertoken', async (req, res) => {
   const user = await DbService.getUserByusertoken(req.params.usertoken);
   if (user.err) {
-    res.status(400);
+    res.status(404);
     res.send({ ok: false, err: user.err });
   }
   res.send(user);
@@ -139,7 +139,7 @@ app.put('/user/login', async (req, res) => {
   const user = await DbService.getUserByEmail(email);
 
   if (user.err) {
-    res.status(400);
+    res.status(404);
     res.send({ ok: false, err: user.err });
   }
 
@@ -154,7 +154,7 @@ app.put('/user/login', async (req, res) => {
       res.send({ ok: true, ...user });
     });
   } else {
-    res.status(404);
+    res.status(400);
     res.send({ ok: false, err: 'The password is incorrect' });
   }
 });
