@@ -41,11 +41,9 @@ export const DronesView = () => {
                 <div className='card-body'>
                   <ul>
                     <li key={drone.from}>From: {drone.from}</li>
-                    <li onLoad={() => console.log('loading')}>
-                      To: {drone.address}
-                    </li>
-                    <li>Battery: {drone.battery}%</li>
-                    <li>Speed: {drone.speed} km/h</li>
+                    <li key={drone.address}>To: {drone.address}</li>
+                    <li key={drone.battery}>Battery: {drone.battery}%</li>
+                    <li key={drone.speed}>Speed: {drone.speed} km/h</li>
                   </ul>
                 </div>
               </div>

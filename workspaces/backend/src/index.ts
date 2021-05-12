@@ -1,12 +1,13 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import Express from 'express';
+import Express, { NextFunction, Response, Request } from 'express';
 import NodeGeocoder from 'node-geocoder';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './DbService';
+import type { Drone, Base, User } from '../types';
 
 const app = Express();
 
@@ -20,7 +21,7 @@ app.use(
 
 app.use(Express.json());
 
-const validateToken = (req: any, res: any, next: any) => {
+const validateToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(
     req.headers.authorization as string,
     process.env.SECRET as string,
@@ -51,10 +52,10 @@ DbService.connect().then(
 );
 const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
-app.get('/drones', validateToken, function (req, res) {
-  DbService.getDrones().then((drones) => {
+app.get('/drones', validateToken, function (_req, res) {
+  DbService.getDrones().then((drones: Drone[]) => {
     Promise.all(
-      drones.map(async (drone) => {
+      drones.map(async (drone: Drone) => {
         const address = await geocoder.reverse({
           lat: drone.to_lat,
           lon: drone.to_lon,
@@ -68,14 +69,14 @@ app.get('/drones', validateToken, function (req, res) {
   });
 });
 
-app.get('/bases', validateToken, function (req, res) {
-  DbService.getBases().then((bases) => res.send(bases));
+app.get('/bases', validateToken, function (_req, res) {
+  DbService.getBases().then((bases: Base[]) => res.send(bases));
 });
 
 app.post('/user/newuser', async function (req, res) {
   const { email } = req.body;
 
-  DbService.getUserByEmail(email).then((user) => {
+  DbService.getUserByEmail(email).then((user: User) => {
     if (user.exists) {
       res.send({
         ok: false,
@@ -96,7 +97,7 @@ app.post('/user/newuser', async function (req, res) {
         email,
         encryptedPassword,
         usertoken
-      ).then((newUser) => {
+      ).then((newUser: User) => {
         res.status(201);
         res.send({ ...newUser, ok: true, tokenExpirationTime: '1h' });
       });
@@ -145,7 +146,7 @@ app.put('/user/login', async (req, res) => {
     const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
       expiresIn: '1h',
     });
-    await DbService.updateToken(user.email, usertoken).then((user) => {
+    await DbService.updateToken(user.email, usertoken).then((user: User) => {
       res.status(201);
       res.send({ ok: true, ...user });
     });
