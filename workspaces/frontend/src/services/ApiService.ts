@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import type { Base, UserCredentials, Drone } from '../types';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_ADDRESS,
@@ -8,30 +9,17 @@ instance.interceptors.request.use((req) => {
   req.headers.authorization = localStorage.getItem('usertoken');
   return req;
 });
-
-interface NewUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  passwordCheck: string;
-}
-
-interface LoginUser {
-  email: string;
-  password: string;
-}
 export class ApiService {
   static async getBases() {
     return instance.get('/bases').then(
-      (data) => data.data,
+      (data: AxiosResponse<Base[]>) => data.data,
       (res) => Promise.reject(res.response)
     );
   }
 
   static async getDrones() {
     return instance.get('/drones').then(
-      (data) => data.data,
+      (data: AxiosResponse<Drone[]>) => data.data,
       (res) => Promise.reject(res.response)
     );
   }
@@ -46,12 +34,12 @@ export class ApiService {
     return user.data;
   }
 
-  static async createNewUser(data: NewUser) {
+  static async createNewUser(data: UserCredentials) {
     const user = await instance.post(`/user/newuser`, data);
     return user.data;
   }
 
-  static async loginUser(data: LoginUser) {
+  static async loginUser(data: UserCredentials) {
     const user = await instance.put('/user/login', data);
     return user.data;
   }

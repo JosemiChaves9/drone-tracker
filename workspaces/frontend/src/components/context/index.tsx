@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ApiService } from '../../services/ApiService';
 
+interface User {
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+  token: string;
+}
+
 export const UserContext = React.createContext<any>(null);
 export const ContextProvider = ({ children }: any) => {
   const [user, setUser] = useState(null);

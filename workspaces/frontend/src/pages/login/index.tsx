@@ -3,23 +3,21 @@ import { useForm } from 'react-hook-form';
 import { Link, Redirect } from 'react-router-dom';
 import { UserContext } from '../../components/context';
 import { ApiService } from '../../services/ApiService';
-
-type Inputs = {
-  email: string;
-  password: string;
-};
+import { UserReponse } from '../../types';
+import type { UserCredentials } from '../../types';
 
 export const Login = () => {
-  const { register, handleSubmit } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<UserCredentials>();
   const [success, setSuccess] = useState<null | string>(null);
   const [err, setErr] = useState<null | string>(null);
   const { changeLogged } = useContext(UserContext);
 
-  const onClickOnLogin = (data: Inputs) => {
+  const onClickOnLogin = (data: UserCredentials) => {
     setSuccess(null);
     setErr(null);
     ApiService.loginUser(data)
-      .then((res) => {
+      .then((res: UserReponse) => {
+        console.log(res);
         if (res.ok) {
           localStorage.setItem('usertoken', res.usertoken);
           setSuccess('Correct!');
@@ -28,7 +26,7 @@ export const Login = () => {
           setErr(res.err);
         }
       })
-      .catch((err) => setErr('Something went wrong, check your credentials'));
+      .catch(() => setErr('Something went wrong, check your credentials'));
   };
 
   return (

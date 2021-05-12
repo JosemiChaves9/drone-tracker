@@ -3,26 +3,16 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
 import { ApiService } from '../../services/ApiService';
+import type { Base } from '../../types';
 
 export const BasesView = () => {
-  const [res, setRes] = useState([]);
-  const [err, setErr] = useState('');
-
-  interface base {
-    city: string;
-    id: number;
-    lat: number;
-    lon: number;
-    name: string;
-    number: number;
-    postcode: string;
-    street: string;
-  }
+  const [bases, setBases] = useState<Base[]>([]);
+  const [err, setErr] = useState<string>('');
 
   useEffect(() => {
     ApiService.getBases().then(
-      (res) => {
-        setRes(res);
+      (bases: Base[]) => {
+        setBases(bases);
       },
       (rej) => {
         if (rej.status === 401) {
@@ -49,7 +39,7 @@ export const BasesView = () => {
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
             accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
-          {res.map((base: base) => {
+          {bases.map((base: Base) => {
             return (
               <Marker position={[base.lat, base.lon]}>
                 <Popup>{base.name}</Popup>
