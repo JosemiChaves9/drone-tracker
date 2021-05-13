@@ -2,22 +2,15 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { ApiService } from '../../services/ApiService';
-
-type Inputs = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  passwordCheck: string;
-};
+import type { UserCredentials, UserReponse } from '../../types';
 
 export const Singup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const { register, handleSubmit } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<UserCredentials>();
 
-  const onClickOnSignup = (data: Inputs) => {
+  const onClickOnSignup = (data: UserCredentials) => {
     setErrorMessage('');
     setSuccessMessage('');
     const { password, passwordCheck } = data;
@@ -26,7 +19,7 @@ export const Singup = () => {
       setErrorMessage('¡Las contraseñas no coinciden!');
     }
 
-    ApiService.createNewUser(data).then((res) => {
+    ApiService.createNewUser(data).then((res: UserReponse) => {
       res.ok ? setSuccessMessage('User Created!') : setErrorMessage(res.err);
       localStorage.setItem('usertoken', res.usertoken);
     });

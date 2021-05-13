@@ -62,7 +62,7 @@ export class DbService {
     }
   }
 
-  static async getUserByusertoken(usertoken: any) {
+  static async getUserByusertoken(usertoken: string) {
     const result = await client.query(
       `SELECT email, firstname, lastname, usertoken FROM public.users WHERE usertoken='${usertoken}'`
     );
