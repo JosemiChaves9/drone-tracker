@@ -4,14 +4,10 @@ import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
 import { ApiService } from '../../services/ApiService';
 import type { Base } from '../../types';
-import { setLocalStorage } from '../../hooks/setLocalStorage';
 
 export const BasesView = () => {
   const [bases, setBases] = useState<Base[]>([]);
   const [err, setErr] = useState<string>('');
-  const { setEntryLocalStorage, getLocalStorageKey } = setLocalStorage();
-
-  console.log(getLocalStorageKey('usertoken'));
 
   useEffect(() => {
     ApiService.getBases().then(

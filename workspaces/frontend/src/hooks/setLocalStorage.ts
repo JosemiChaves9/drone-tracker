@@ -6,5 +6,9 @@ export const setLocalStorage = () => {
   const getLocalStorageKey = (key: string) => {
     return localStorage.getItem(key);
   };
-  return { setEntryLocalStorage, getLocalStorageKey };
+
+  const removeLocalStorageKey = (key: string) => {
+    localStorage.removeItem(key);
+  };
+  return { setEntryLocalStorage, getLocalStorageKey, removeLocalStorageKey };
 };

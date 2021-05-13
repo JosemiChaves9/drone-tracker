@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { setLocalStorage } from '../../hooks/setLocalStorage';
 import { ApiService } from '../../services/ApiService';
 import type { UserCredentials, UserReponse } from '../../types';
 
 export const Singup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const { setEntryLocalStorage } = setLocalStorage();
 
   const { register, handleSubmit } = useForm<UserCredentials>();
 
@@ -16,12 +18,16 @@ export const Singup = () => {
     const { password, passwordCheck } = data;
 
     if (password !== passwordCheck) {
-      setErrorMessage('¡Las contraseñas no coinciden!');
+      setErrorMessage("¡Password don't match!");
     }
 
     ApiService.createNewUser(data).then((res: UserReponse) => {
-      res.ok ? setSuccessMessage('User Created!') : setErrorMessage(res.err);
-      localStorage.setItem('usertoken', res.usertoken);
+      if (res.ok) {
+        setSuccessMessage('User Created!');
+        setEntryLocalStorage('usertoken', res.usertoken);
+      } else {
+        setErrorMessage(res.err);
+      }
     });
   };
 

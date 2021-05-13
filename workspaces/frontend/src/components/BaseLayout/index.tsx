@@ -9,9 +9,16 @@ import {
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { UserContext } from '../context';
+import { setLocalStorage } from '../../hooks/setLocalStorage';
 
 export const BaseLayout = (props: any) => {
-  const user = useContext(UserContext);
+  const { removeLocalStorageKey } = setLocalStorage();
+  const { user } = useContext(UserContext);
+
+  const logout = () => {
+    window.location.reload();
+    removeLocalStorageKey('usertoken');
+  };
 
   return (
     <>
@@ -81,23 +88,18 @@ export const BaseLayout = (props: any) => {
         </ul>
 
         <div id='content-wrapper' className='d-flex flex-column'>
-          {user.user ? (
+          {user ? (
             <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
               <ul className='navbar-nav ml-auto'>
                 <li className='nav-item '>
-                  <button
-                    className='btn mt-3'
-                    onClick={() => {
-                      window.location.reload();
-                      localStorage.clear();
-                    }}>
+                  <button className='btn mt-3' onClick={logout}>
                     <span className='mr-2 text-gray-600 small'>Signout</span>
                   </button>
                 </li>
                 <li className='nav-item '>
                   <Link className='nav-link' to='/user'>
                     <span className='mr-2 text-gray-600 small'>
-                      {user.user.email}
+                      {user.email}
                     </span>
                   </Link>
                 </li>
