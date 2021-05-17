@@ -18,7 +18,7 @@ export const Login = () => {
     setSuccess(null);
     setErr(null);
     ApiService.loginUser(data)
-      .then((res: UserReponse) => {
+      .then((res) => {
         if (res.ok) {
           setEntryLocalStorage('usertoken', res.usertoken);
           setSuccess('Correct!');

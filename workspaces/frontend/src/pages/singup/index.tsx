@@ -21,7 +21,7 @@ export const Singup = () => {
       setErrorMessage("¡Password don't match!");
     }
 
-    ApiService.createNewUser(data).then((res: UserReponse) => {
+    ApiService.createNewUser(data).then((res) => {
       if (res.ok) {
         setSuccessMessage('User Created!');
         setEntryLocalStorage('usertoken', res.usertoken);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { setLocalStorage } from '../../hooks/setLocalStorage';
 import { ApiService } from '../../services/ApiService';
-import { User, ContextUser } from '../../types';
+import { ContextUser } from '../../types';
 
 interface Context {
   user: null | ContextUser;

@@ -1,6 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
 import { setLocalStorage } from '../hooks/setLocalStorage';
-import type { Base, UserCredentials, Drone, ContextUser } from '../types';
+import type {
+  Base,
+  UserCredentials,
+  Drone,
+  ContextUser,
+  UserCreationResponse,
+  UserLoginResponse,
+} from '../types';
 
 const { getLocalStorageKey } = setLocalStorage();
 
@@ -37,12 +44,14 @@ export class ApiService {
     return user.data;
   }
 
-  static async createNewUser(data: UserCredentials) {
+  static async createNewUser(
+    data: UserCredentials
+  ): Promise<UserCreationResponse> {
     const user = await instance.post(`/user/newuser`, data);
     return user.data;
   }
 
-  static async loginUser(data: UserCredentials) {
+  static async loginUser(data: UserCredentials): Promise<UserLoginResponse> {
     const user = await instance.put('/user/login', data);
     return user.data;
   }
