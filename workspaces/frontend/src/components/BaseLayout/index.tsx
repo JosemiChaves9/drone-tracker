@@ -7,11 +7,11 @@ import {
   faMapMarkedAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { UserContext } from '../context';
 import { setLocalStorage } from '../../hooks/setLocalStorage';
 
-export const BaseLayout = (props: any) => {
+export const BaseLayout = (props: { children: React.ReactNode }) => {
   const { removeLocalStorageKey } = setLocalStorage();
   const { user } = useContext(UserContext);
 

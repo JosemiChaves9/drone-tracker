@@ -21,7 +21,7 @@ interface Base {
 }
 
 export interface User {
-  name: string;
+  firstname: string;
   lastName: string;
   email: string;
   password: string;
@@ -44,4 +44,11 @@ export interface UserReponse {
   lastname: string;
   usertoken: string;
   err: string;
+}
+
+export interface ContextUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  usertoken: string;
 }

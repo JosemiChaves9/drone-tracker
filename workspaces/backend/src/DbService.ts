@@ -1,4 +1,5 @@
 import { Client } from 'pg';
+import { Base, Drone, User, UserWithoutPass, UserWithExists } from '../types';
 
 const client = new Client({
   user: process.env.PGUSER,
@@ -26,12 +27,12 @@ export class DbService {
   }
 
   static async getDrones() {
-    const result = await client.query('SELECT * FROM public.drones');
+    const result = await client.query<Drone>('SELECT * FROM public.drones');
     return result.rows;
   }
 
   static async getBases() {
-    const result = await client.query('SELECT * FROM public.bases');
+    const result = await client.query<Base>('SELECT * FROM public.bases');
     return result.rows;
   }
 
@@ -42,14 +43,16 @@ export class DbService {
     password: string,
     usertoken: string
   ) {
-    const user = await client.query(
+    const user = await client.query<UserWithoutPass>(
       `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${usertoken}') RETURNING firstname, lastname, email, usertoken`
     );
     return user.rows[0];
   }
 
   static async getUserByEmail(email: string) {
+    //? Cannot puth here the type because it does not work Promise<{err?: string} | UsertWithExists>
     const result = await client.query(
+      //? Can't put type to the response also
       `SELECT * FROM public.users WHERE email='${email}'`
     );
     if (result.rows.length == 0) {
@@ -62,20 +65,23 @@ export class DbService {
     }
   }
 
-  static async getUserByusertoken(usertoken: string) {
-    const result = await client.query(
+  static async getUserByusertoken(
+    usertoken: string
+  ): Promise<{ err?: string } | UserWithoutPass> {
+    const result = await client.query<UserWithoutPass>(
       `SELECT email, firstname, lastname, usertoken FROM public.users WHERE usertoken='${usertoken}'`
     );
     if (result.rows.length == 0) {
       return {
         err: "User doesn't exists",
       };
+    } else {
+      return result.rows[0];
     }
-    return result.rows[0];
   }
 
   static async updateToken(email: string, usertoken: string) {
-    const user = await client.query(
+    const user = await client.query<UserWithoutPass>(
       `UPDATE public.users SET usertoken='${usertoken}' where email='${email}' RETURNING email, firstname, lastname, usertoken`
     );
     return user.rows[0];

@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { setLocalStorage } from '../hooks/setLocalStorage';
-import type { Base, UserCredentials, Drone } from '../types';
+import type { Base, UserCredentials, Drone, ContextUser } from '../types';
 
 const { getLocalStorageKey } = setLocalStorage();
 
@@ -32,7 +32,7 @@ export class ApiService {
     return user.data;
   }
 
-  static async getUserByusertoken(usertoken: string) {
+  static async getUserByusertoken(usertoken: string): Promise<ContextUser> {
     const user = await instance.get(`/user/usertoken/${usertoken}`);
     return user.data;
   }

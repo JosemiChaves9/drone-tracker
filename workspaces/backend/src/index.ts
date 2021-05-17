@@ -55,7 +55,7 @@ const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 app.get('/drones', validateToken, function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
     Promise.all(
-      drones.map(async (drone: Drone) => {
+      drones.map(async (drone) => {
         const address = await geocoder.reverse({
           lat: drone.to_lat,
           lon: drone.to_lon,
@@ -76,7 +76,7 @@ app.get('/bases', validateToken, function (_req, res) {
 app.post('/user/newuser', async function (req, res) {
   const { email } = req.body;
 
-  DbService.getUserByEmail(email).then((user: User) => {
+  DbService.getUserByEmail(email).then((user) => {
     if (user.exists) {
       res.send({
         ok: false,
@@ -97,7 +97,7 @@ app.post('/user/newuser', async function (req, res) {
         email,
         encryptedPassword,
         usertoken
-      ).then((newUser: User) => {
+      ).then((newUser) => {
         res.status(201);
         res.send({ ...newUser, ok: true, tokenExpirationTime: '1h' });
       });
@@ -115,6 +115,7 @@ app.post('/user/newuser', async function (req, res) {
 
 app.get('/user/email/:email', async (req, res) => {
   const user = await DbService.getUserByEmail(req.params.email);
+
   if (user.err) {
     res.status(404);
     res.send({ ok: false, err: user.err });
@@ -140,13 +141,14 @@ app.put('/user/login', async (req, res) => {
     res.send({ ok: false, err: user.err });
   }
 
-  const isEqual = bcrypt.compareSync(req.body.password, user.password);
+  const isEqual = bcrypt.compareSync(req.body.password, user.password); //? If I put the type, it says the property password does not exist in type
 
   if (isEqual) {
     const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
       expiresIn: '1h',
     });
-    await DbService.updateToken(user.email, usertoken).then((user: User) => {
+    await DbService.updateToken(user.email, usertoken).then((user) => {
+      //? Same here in email
       res.status(201);
       res.send({ ok: true, ...user });
     });

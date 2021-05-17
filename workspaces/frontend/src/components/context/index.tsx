@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { setLocalStorage } from '../../hooks/setLocalStorage';
 import { ApiService } from '../../services/ApiService';
+import { User, ContextUser } from '../../types';
 
-export const UserContext = React.createContext<any>(null);
+interface Context {
+  user: null | ContextUser;
+  changeLogged: () => void;
+}
+
+export const UserContext = React.createContext<Context>({
+  user: null,
+  changeLogged: () => {},
+});
 export const ContextProvider = ({ children }: any) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<ContextUser | null>(null);
   const [isLogged, setIsLogged] = useState(false);
   const { getLocalStorageKey } = setLocalStorage();
 

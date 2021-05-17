@@ -20,10 +20,26 @@ export interface Base {
 }
 
 export interface User {
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   password: string;
-  token: string;
-  exists: boolean;
+  usertoken: string;
+}
+export interface UserWithoutPass {
+  firstName: string;
+  lastName: string;
+  email: string;
+  usertoken: string;
+  err?: string;
+}
+
+export interface UserWithExists {
+  firstName: string;
+  lastName: string;
+  email: string;
+  usertoken: string;
+  password: string;
+  exists?: boolean;
+  err?: string;
 }
