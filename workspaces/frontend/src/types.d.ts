@@ -20,7 +20,7 @@ interface Base {
   street: string;
 }
 
-export interface UserCredentials {
+export interface NewUser {
   firstName: string;
   lastName: string;
   email: string;
@@ -28,7 +28,11 @@ export interface UserCredentials {
   passwordCheck: string;
 }
 
-export interface UserReponse {
+export interface LoginUser {
+  email: string;
+  password: string;
+}
+export interface ContextUser {
   ok: string;
   email: string;
   firstname: string;
@@ -36,14 +40,6 @@ export interface UserReponse {
   usertoken: string;
   err: string;
 }
-
-export interface ContextUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  usertoken: string;
-}
-
 export interface UserCreationResponse {
   firstName: string;
   lastName: string;

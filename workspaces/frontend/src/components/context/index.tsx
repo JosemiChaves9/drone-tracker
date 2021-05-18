@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ApiService } from '../../services/ApiService';
 import { ContextUser } from '../../types';
 
@@ -19,7 +18,7 @@ export const ContextProvider = ({ children }: any) => {
   useEffect(() => {
     const getUser = (async () => {
       console.log(usertoken);
-      await ApiService.getUserByusertoken(usertoken as string).then((res) => {
+      await ApiService.getUserByUsertoken(usertoken as string).then((res) => {
         setUser(res);
       });
     })();

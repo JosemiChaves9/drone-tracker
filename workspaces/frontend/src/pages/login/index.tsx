@@ -3,18 +3,17 @@ import { useForm } from 'react-hook-form';
 import { Link, Redirect } from 'react-router-dom';
 import { UserContext } from '../../components/context';
 import { ApiService } from '../../services/ApiService';
-import { UserReponse } from '../../types';
-import type { UserCredentials } from '../../types';
+import type { LoginUser } from '../../types';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 export const Login = () => {
-  const { register, handleSubmit } = useForm<UserCredentials>();
+  const { register, handleSubmit } = useForm<LoginUser>();
   const [success, setSuccess] = useState<null | string>(null);
   const [err, setErr] = useState<null | string>(null);
   const { changeLogged } = useContext(UserContext);
   const [usertoken, setUsertoken] = useLocalStorage('usertoken', null);
 
-  const onClickOnLogin = (data: UserCredentials) => {
+  const onClickOnLogin = (data: LoginUser) => {
     setSuccess(null);
     setErr(null);
     ApiService.loginUser(data)

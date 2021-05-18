@@ -75,7 +75,7 @@ app.get('/bases', validateToken, function (_req, res) {
 });
 
 app.post('/user/newuser', async function (req, res) {
-  const { email } = req.body;
+  const { email }: { email: string } = req.body;
 
   DbService.getUserByEmail(email).then((user) => {
     if (user) {
@@ -119,19 +119,22 @@ app.get('/user/email/:email', async (req, res) => {
   if (!user) {
     return res.status(404).send({ ok: false, err: "User doesn't exists" });
   }
-  return res.send(user);
+  return res.status(301).send(user);
 });
 
 app.get('/user/usertoken/:usertoken', async (req, res) => {
   const user = await DbService.getUserByusertoken(req.params.usertoken);
   if (!user) {
-    return res.status(404).send({ ok: false, err: "User doesn't exists" });
+    return res.status(404).send({
+      ok: false,
+      err: "User doesn't exists",
+    });
   }
-  return res.send(user);
+  return res.status(301).send(user);
 });
 
 app.put('/user/login', async (req, res) => {
-  const { email } = req.body;
+  const { email }: { email: string } = req.body;
   const user = await DbService.getUserByEmail(email);
 
   if (!user) {

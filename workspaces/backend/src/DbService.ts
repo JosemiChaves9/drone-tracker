@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { Base, Drone, User, UserWithoutPass } from '../types';
+import { Base, Drone, User, UserWithoutPassword } from '../types';
 
 const client = new Client({
   user: process.env.PGUSER,
@@ -43,7 +43,7 @@ export class DbService {
     password: string,
     usertoken: string
   ) {
-    const user = await client.query<UserWithoutPass>(
+    const user = await client.query<UserWithoutPassword>(
       `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${usertoken}') RETURNING firstname, lastname, email, usertoken`
     );
     return user.rows[0];
@@ -61,7 +61,7 @@ export class DbService {
   }
 
   static async getUserByusertoken(usertoken: string) {
-    const result = await client.query<UserWithoutPass>(
+    const result = await client.query<UserWithoutPassword>(
       `SELECT email, firstname, lastname, usertoken FROM public.users WHERE usertoken='${usertoken}'`
     );
     if (result.rows.length == 0) {
@@ -72,7 +72,7 @@ export class DbService {
   }
 
   static async updateToken(email: string, usertoken: string) {
-    const user = await client.query<UserWithoutPass>(
+    const user = await client.query<UserWithoutPassword>(
       `UPDATE public.users SET usertoken='${usertoken}' where email='${email}' RETURNING email, firstname, lastname, usertoken`
     );
     return user.rows[0];

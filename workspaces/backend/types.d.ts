@@ -26,7 +26,7 @@ export interface User {
   password: string;
   usertoken: string;
 }
-export interface UserWithoutPass {
+export interface UserWithoutPassword {
   firstName: string;
   lastName: string;
   email: string;

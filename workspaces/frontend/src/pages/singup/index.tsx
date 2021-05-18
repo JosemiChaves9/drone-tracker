@@ -3,16 +3,16 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ApiService } from '../../services/ApiService';
-import type { UserCredentials } from '../../types';
+import type { NewUser } from '../../types';
 
 export const Singup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [usertoken, setUsertoken] = useLocalStorage('usertoken', null);
 
-  const { register, handleSubmit } = useForm<UserCredentials>();
+  const { register, handleSubmit } = useForm<NewUser>();
 
-  const onClickOnSignup = (data: UserCredentials) => {
+  const onClickOnSignup = (data: NewUser) => {
     setErrorMessage('');
     setSuccessMessage('');
     const { password, passwordCheck } = data;
@@ -24,7 +24,7 @@ export const Singup = () => {
     ApiService.createNewUser(data).then((res) => {
       if (res.ok) {
         setSuccessMessage('User Created!');
-        setUsertoken('usertoken', res.usertoken);
+        setUsertoken(res.usertoken);
       } else {
         setErrorMessage(res.err);
       }
