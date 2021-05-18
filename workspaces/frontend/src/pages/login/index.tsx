@@ -5,14 +5,14 @@ import { UserContext } from '../../components/context';
 import { ApiService } from '../../services/ApiService';
 import { UserReponse } from '../../types';
 import type { UserCredentials } from '../../types';
-import { setLocalStorage } from '../../hooks/setLocalStorage';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 export const Login = () => {
   const { register, handleSubmit } = useForm<UserCredentials>();
   const [success, setSuccess] = useState<null | string>(null);
   const [err, setErr] = useState<null | string>(null);
   const { changeLogged } = useContext(UserContext);
-  const { setEntryLocalStorage } = setLocalStorage();
+  const [usertoken, setUsertoken] = useLocalStorage('usertoken', null);
 
   const onClickOnLogin = (data: UserCredentials) => {
     setSuccess(null);
@@ -20,7 +20,7 @@ export const Login = () => {
     ApiService.loginUser(data)
       .then((res) => {
         if (res.ok) {
-          setEntryLocalStorage('usertoken', res.usertoken);
+          setUsertoken(res.usertoken);
           setSuccess('Correct!');
           changeLogged();
         } else {

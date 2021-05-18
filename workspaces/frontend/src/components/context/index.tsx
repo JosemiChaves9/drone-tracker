@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { setLocalStorage } from '../../hooks/setLocalStorage';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ApiService } from '../../services/ApiService';
 import { ContextUser } from '../../types';
 
@@ -15,11 +15,10 @@ export const UserContext = React.createContext<Context>({
 export const ContextProvider = ({ children }: any) => {
   const [user, setUser] = useState<ContextUser | null>(null);
   const [isLogged, setIsLogged] = useState(false);
-  const { getLocalStorageKey } = setLocalStorage();
-
+  const usertoken = localStorage.getItem('usertoken');
   useEffect(() => {
-    const usertoken = getLocalStorageKey('usertoken');
     const getUser = (async () => {
+      console.log(usertoken);
       await ApiService.getUserByusertoken(usertoken as string).then((res) => {
         setUser(res);
       });
@@ -29,6 +28,8 @@ export const ContextProvider = ({ children }: any) => {
   const changeLogged = () => {
     setIsLogged(!isLogged);
   };
+
+  console.log(isLogged);
 
   return (
     <UserContext.Provider value={{ user, changeLogged }}>

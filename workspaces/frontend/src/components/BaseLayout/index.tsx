@@ -9,15 +9,19 @@ import {
 import { Link } from 'react-router-dom';
 import React, { useContext } from 'react';
 import { UserContext } from '../context';
-import { setLocalStorage } from '../../hooks/setLocalStorage';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 export const BaseLayout = (props: { children: React.ReactNode }) => {
-  const { removeLocalStorageKey } = setLocalStorage();
-  const { user } = useContext(UserContext);
+  const { user, changeLogged } = useContext(UserContext);
+  const [usertoken, setUserToken, removeValue] = useLocalStorage(
+    'usertoken',
+    null
+  );
 
   const logout = () => {
     window.location.reload();
-    removeLocalStorageKey('usertoken');
+    changeLogged();
+    removeValue('usertoken');
   };
 
   return (
