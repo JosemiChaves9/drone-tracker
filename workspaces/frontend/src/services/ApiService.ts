@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import { setLocalStorage } from '../hooks/setLocalStorage';
 import type {
   Base,
   UserCredentials,
@@ -9,14 +8,12 @@ import type {
   UserLoginResponse,
 } from '../types';
 
-const { getLocalStorageKey } = setLocalStorage();
-
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_ADDRESS,
 });
 
 instance.interceptors.request.use((req) => {
-  req.headers.authorization = getLocalStorageKey('usertoken');
+  req.headers.authorization = localStorage.getItem('usertoken');
   return req;
 });
 export class ApiService {

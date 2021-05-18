@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { Base, Drone, User, UserWithoutPass, UserWithExists } from '../types';
+import { Base, Drone, User, UserWithoutPass } from '../types';
 
 const client = new Client({
   user: process.env.PGUSER,
@@ -49,32 +49,23 @@ export class DbService {
     return user.rows[0];
   }
 
-  static async getUserByEmail(email: string) {
-    //? Cannot puth here the type because it does not work Promise<{err?: string} | UsertWithExists>
-    const result = await client.query(
-      //? Can't put type to the response also
+  static async getUserByEmail(email: string): Promise<null | User> {
+    const result = await client.query<User>(
       `SELECT * FROM public.users WHERE email='${email}'`
     );
     if (result.rows.length == 0) {
-      return {
-        exists: false,
-        err: "User doesn't exists",
-      };
+      return null;
     } else {
-      return { exists: true, ...result.rows[0] };
+      return { ...result.rows[0] };
     }
   }
 
-  static async getUserByusertoken(
-    usertoken: string
-  ): Promise<{ err?: string } | UserWithoutPass> {
+  static async getUserByusertoken(usertoken: string) {
     const result = await client.query<UserWithoutPass>(
       `SELECT email, firstname, lastname, usertoken FROM public.users WHERE usertoken='${usertoken}'`
     );
     if (result.rows.length == 0) {
-      return {
-        err: "User doesn't exists",
-      };
+      return null;
     } else {
       return result.rows[0];
     }

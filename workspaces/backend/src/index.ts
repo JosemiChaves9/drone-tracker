@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './DbService';
-import type { Drone, Base, User } from '../types';
+import type { Drone, Base } from '../types';
 
 const app = Express();
 
@@ -22,12 +22,13 @@ app.use(
 app.use(Express.json());
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
+  console.log(req.headers.authorization);
   jwt.verify(
     req.headers.authorization as string,
     process.env.SECRET as string,
     (err) => {
       if (err) {
-        res.status(401).send({
+        return res.status(401).send({
           ok: false,
           err: err,
           errorMessage: 'Something went wrong with authentication',
@@ -77,12 +78,11 @@ app.post('/user/newuser', async function (req, res) {
   const { email } = req.body;
 
   DbService.getUserByEmail(email).then((user) => {
-    if (user.exists) {
-      res.send({
+    if (user) {
+      return res.send({
         ok: false,
         err: 'User already exists',
       });
-      return;
     }
   });
   try {
@@ -98,62 +98,58 @@ app.post('/user/newuser', async function (req, res) {
         encryptedPassword,
         usertoken
       ).then((newUser) => {
-        res.status(201);
-        res.send({ ...newUser, ok: true, tokenExpirationTime: '1h' });
+        return res
+          .status(201)
+          .send({ ...newUser, ok: true, tokenExpirationTime: '1h' });
       });
     } else {
-      res.status(400);
-      res.send({
+      return res.status(400).send({
         ok: false,
         err: 'Email not valid',
       });
     }
   } catch (error) {
-    res.send({ err: error.detail, ok: false });
+    return res.send({ err: error.detail, ok: false });
   }
 });
 
 app.get('/user/email/:email', async (req, res) => {
   const user = await DbService.getUserByEmail(req.params.email);
 
-  if (user.err) {
-    res.status(404);
-    res.send({ ok: false, err: user.err });
+  if (!user) {
+    return res.status(404).send({ ok: false, err: "User doesn't exists" });
   }
-  res.send(user);
+  return res.send(user);
 });
 
 app.get('/user/usertoken/:usertoken', async (req, res) => {
   const user = await DbService.getUserByusertoken(req.params.usertoken);
-  if (user.err) {
-    res.status(404);
-    res.send({ ok: false, err: user.err });
+  if (!user) {
+    return res.status(404).send({ ok: false, err: "User doesn't exists" });
   }
-  res.send(user);
+  return res.send(user);
 });
 
 app.put('/user/login', async (req, res) => {
   const { email } = req.body;
   const user = await DbService.getUserByEmail(email);
 
-  if (user.err) {
-    res.status(404);
-    res.send({ ok: false, err: user.err });
+  if (!user) {
+    return res.status(404).send({ ok: false, err: "User doesn't exists" });
   }
 
-  const isEqual = bcrypt.compareSync(req.body.password, user.password); //? If I put the type, it says the property password does not exist in type
+  const isEqual = bcrypt.compareSync(req.body.password, user.password);
 
   if (isEqual) {
     const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
       expiresIn: '1h',
     });
     await DbService.updateToken(user.email, usertoken).then((user) => {
-      //? Same here in email
-      res.status(201);
-      res.send({ ok: true, ...user });
+      return res.status(201).send({ ok: true, ...user });
     });
   } else {
-    res.status(400);
-    res.send({ ok: false, err: 'The password is incorrect' });
+    return res
+      .status(400)
+      .send({ ok: false, err: 'The password is incorrect' });
   }
 });

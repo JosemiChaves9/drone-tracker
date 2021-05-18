@@ -31,15 +31,4 @@ export interface UserWithoutPass {
   lastName: string;
   email: string;
   usertoken: string;
-  err?: string;
-}
-
-export interface UserWithExists {
-  firstName: string;
-  lastName: string;
-  email: string;
-  usertoken: string;
-  password: string;
-  exists?: boolean;
-  err?: string;
 }
