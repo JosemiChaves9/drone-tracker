@@ -1,27 +1,33 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ApiService } from '../../services/ApiService';
-import type { UserCredentials, UserReponse } from '../../types';
+import type { NewUser } from '../../types';
 
 export const Singup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [usertoken, setUsertoken] = useLocalStorage('usertoken', null);
 
-  const { register, handleSubmit } = useForm<UserCredentials>();
+  const { register, handleSubmit } = useForm<NewUser>();
 
-  const onClickOnSignup = (data: UserCredentials) => {
+  const onClickOnSignup = (data: NewUser) => {
     setErrorMessage('');
     setSuccessMessage('');
     const { password, passwordCheck } = data;
 
     if (password !== passwordCheck) {
-      setErrorMessage('¡Las contraseñas no coinciden!');
+      setErrorMessage("¡Password don't match!");
     }
 
-    ApiService.createNewUser(data).then((res: UserReponse) => {
-      res.ok ? setSuccessMessage('User Created!') : setErrorMessage(res.err);
-      localStorage.setItem('usertoken', res.usertoken);
+    ApiService.createNewUser(data).then((res) => {
+      if (res.ok) {
+        setSuccessMessage('User Created!');
+        setUsertoken(res.usertoken);
+      } else {
+        setErrorMessage(res.err);
+      }
     });
   };
 
@@ -57,14 +63,14 @@ export const Singup = () => {
                         <input
                           className='form-control form-control-user'
                           placeholder='First Name'
-                          {...register('firstName', { required: true })}
+                          {...register('firstname', { required: true })}
                         />
                       </div>
                       <div className='col-sm-6'>
                         <input
                           className='form-control form-control-user'
                           placeholder='Last Name'
-                          {...register('lastName', { required: true })}
+                          {...register('lastname', { required: true })}
                         />
                       </div>
                     </div>

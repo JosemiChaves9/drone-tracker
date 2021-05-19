@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { ApiService } from '../../services/ApiService';
+import { ContextUser } from '../../types';
 
-interface User {
-  name: string;
-  lastName: string;
-  email: string;
-  password: string;
-  token: string;
+interface Context {
+  user: null | ContextUser;
+  changeLogged: () => void;
 }
 
-export const UserContext = React.createContext<any>(null);
+export const UserContext = React.createContext<Context>({
+  user: null,
+  changeLogged: () => {},
+});
 export const ContextProvider = ({ children }: any) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<ContextUser | null>(null);
   const [isLogged, setIsLogged] = useState(false);
-
+  const usertoken = localStorage.getItem('usertoken');
   useEffect(() => {
-    const usertoken = localStorage.getItem('usertoken');
     const getUser = (async () => {
-      await ApiService.getUserByusertoken(usertoken as string).then((res) => {
+      await ApiService.getUserByUsertoken(usertoken as string).then((res) => {
         setUser(res);
       });
     })();
