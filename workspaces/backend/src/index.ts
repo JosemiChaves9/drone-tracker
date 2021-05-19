@@ -22,7 +22,6 @@ app.use(
 app.use(Express.json());
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.headers.authorization);
   jwt.verify(
     req.headers.authorization as string,
     process.env.SECRET as string,

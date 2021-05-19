@@ -33,7 +33,7 @@ export class ApiService {
   }
 
   static async getUserByUsertoken(usertoken: string) {
-    const user: AxiosResponse<ContextUser> = await instance.get(
+    const user: AxiosResponse<UserLoginResponse> = await instance.get(
       `/user/usertoken/${usertoken}`
     );
     return user.data;

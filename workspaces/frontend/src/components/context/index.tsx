@@ -17,7 +17,6 @@ export const ContextProvider = ({ children }: any) => {
   const usertoken = localStorage.getItem('usertoken');
   useEffect(() => {
     const getUser = (async () => {
-      console.log(usertoken);
       await ApiService.getUserByUsertoken(usertoken as string).then((res) => {
         setUser(res);
       });
@@ -27,8 +26,6 @@ export const ContextProvider = ({ children }: any) => {
   const changeLogged = () => {
     setIsLogged(!isLogged);
   };
-
-  console.log(isLogged);
 
   return (
     <UserContext.Provider value={{ user, changeLogged }}>
