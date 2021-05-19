@@ -3,7 +3,11 @@ import { useForm } from 'react-hook-form';
 import { Link, Redirect } from 'react-router-dom';
 import { UserContext } from '../../components/context';
 import { ApiService } from '../../services/ApiService';
-import type { LoginUser } from '../../types';
+import type {
+  ApiErrorResponse,
+  ApiUserLoginResponse,
+  LoginUser,
+} from '../../types';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 export const Login = () => {
@@ -11,7 +15,7 @@ export const Login = () => {
   const [success, setSuccess] = useState<null | string>(null);
   const [err, setErr] = useState<null | string>(null);
   const { changeLogged } = useContext(UserContext);
-  const [usertoken, setUsertoken] = useLocalStorage('usertoken', null);
+  const [usertoken, setUsertoken] = useLocalStorage<string>('usertoken');
 
   const onClickOnLogin = (data: LoginUser) => {
     setSuccess(null);
@@ -19,11 +23,13 @@ export const Login = () => {
     ApiService.loginUser(data)
       .then((res) => {
         if (res.ok) {
-          setUsertoken(res.usertoken);
+          const response = res as ApiUserLoginResponse;
+          setUsertoken(response.usertoken);
           setSuccess('Correct!');
           changeLogged();
         } else {
-          setErr(res.err);
+          const error = res as ApiErrorResponse;
+          setErr(error.err);
         }
       })
       .catch(() => setErr('Something went wrong, check your credentials'));

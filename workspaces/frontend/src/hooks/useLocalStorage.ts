@@ -1,28 +1,42 @@
 import { useState } from 'react';
 
-export const useLocalStorage = (key: string, initialValue: any) => {
-  const [storedValue, setStoredValue] = useState(() => {
+export function useLocalStorage<T>(key: string, initialValue?: T) {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = localStorage.getItem(key);
-      return item ? item : initialValue;
+
+      if (!item) {
+        return initialValue;
+      }
+
+      if (typeof item === 'string' || typeof item === 'boolean') {
+        return item;
+      } else {
+        return JSON.parse(item);
+      }
     } catch (error) {
       console.error(error);
       return initialValue;
     }
   });
 
-  const setValue = (value: any) => {
+  const setValue = (value: T | ((val: T) => T)) => {
     try {
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
-      setStoredValue(value);
-      localStorage.setItem(key, valueToStore);
+      setStoredValue(valueToStore);
+
+      if (typeof valueToStore === 'string') {
+        localStorage.setItem(key, valueToStore);
+      } else {
+        localStorage.setItem(key, JSON.stringify(valueToStore));
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const removeValue = () => {
+  const removeValue = (key: string) => {
     try {
       localStorage.removeItem(key);
     } catch (error) {
@@ -30,5 +44,5 @@ export const useLocalStorage = (key: string, initialValue: any) => {
     }
   };
 
-  return [storedValue, setValue, removeValue];
-};
+  return [storedValue, setValue, removeValue] as const;
+}

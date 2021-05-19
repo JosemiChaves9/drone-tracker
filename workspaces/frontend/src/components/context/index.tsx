@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { ApiService } from '../../services/ApiService';
-import { ContextUser } from '../../types';
+import { ApiUserLoginResponse } from '../../types';
 
 interface Context {
-  user: null | ContextUser;
+  user: null | ApiUserLoginResponse;
   changeLogged: () => void;
 }
 
@@ -12,13 +12,17 @@ export const UserContext = React.createContext<Context>({
   changeLogged: () => {},
 });
 export const ContextProvider = ({ children }: any) => {
-  const [user, setUser] = useState<ContextUser | null>(null);
+  const [user, setUser] = useState<ApiUserLoginResponse | null>(null);
   const [isLogged, setIsLogged] = useState(false);
   const usertoken = localStorage.getItem('usertoken');
   useEffect(() => {
     const getUser = (async () => {
       await ApiService.getUserByUsertoken(usertoken as string).then((res) => {
-        setUser(res);
+        if (res.ok) {
+          setUser(res as ApiUserLoginResponse);
+        } else {
+          setUser(null);
+        }
       });
     })();
   }, [isLogged]);

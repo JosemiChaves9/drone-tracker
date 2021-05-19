@@ -6,7 +6,7 @@ export interface Drone {
   to_lon: number;
   speed: number;
   battery: number;
-  address: string;
+  address?: string;
 }
 
 export interface Base {
