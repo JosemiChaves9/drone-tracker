@@ -7,22 +7,11 @@ import {
   faMapMarkedAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { UserContext } from '../context';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
 
-export const BaseLayout = (props: { children: React.ReactNode }) => {
-  const { user, changeLogged } = useContext(UserContext);
-  const [usertoken, setUserToken, removeValue] = useLocalStorage(
-    'usertoken',
-    null
-  );
-
-  const logout = () => {
-    window.location.reload();
-    changeLogged();
-    removeValue('usertoken');
-  };
+export const BaseLayout = (props: any) => {
+  const user = useContext(UserContext);
 
   return (
     <>
@@ -92,18 +81,23 @@ export const BaseLayout = (props: { children: React.ReactNode }) => {
         </ul>
 
         <div id='content-wrapper' className='d-flex flex-column'>
-          {user ? (
+          {user.user ? (
             <nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow'>
               <ul className='navbar-nav ml-auto'>
                 <li className='nav-item '>
-                  <button className='btn mt-3' onClick={logout}>
+                  <button
+                    className='btn mt-3'
+                    onClick={() => {
+                      window.location.reload();
+                      localStorage.clear();
+                    }}>
                     <span className='mr-2 text-gray-600 small'>Signout</span>
                   </button>
                 </li>
                 <li className='nav-item '>
                   <Link className='nav-link' to='/user'>
                     <span className='mr-2 text-gray-600 small'>
-                      {user.email}
+                      {user.user.email}
                     </span>
                   </Link>
                 </li>

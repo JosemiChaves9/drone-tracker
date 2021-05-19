@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './DbService';
-import type { Drone, Base } from '../types';
+import type { Drone, Base, User } from '../types';
 
 const app = Express();
 
@@ -27,7 +27,7 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
     process.env.SECRET as string,
     (err) => {
       if (err) {
-        return res.status(401).send({
+        res.status(401).send({
           ok: false,
           err: err,
           errorMessage: 'Something went wrong with authentication',
@@ -55,7 +55,7 @@ const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 app.get('/drones', validateToken, function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
     Promise.all(
-      drones.map(async (drone) => {
+      drones.map(async (drone: Drone) => {
         const address = await geocoder.reverse({
           lat: drone.to_lat,
           lon: drone.to_lon,
@@ -74,14 +74,15 @@ app.get('/bases', validateToken, function (_req, res) {
 });
 
 app.post('/user/newuser', async function (req, res) {
-  const { email }: { email: string } = req.body;
+  const { email } = req.body;
 
-  DbService.getUserByEmail(email).then((user) => {
-    if (user) {
-      return res.send({
+  DbService.getUserByEmail(email).then((user: User) => {
+    if (user.exists) {
+      res.send({
         ok: false,
         err: 'User already exists',
       });
+      return;
     }
   });
   try {
@@ -96,48 +97,47 @@ app.post('/user/newuser', async function (req, res) {
         email,
         encryptedPassword,
         usertoken
-      ).then((newUser) => {
-        return res
-          .status(201)
-          .send({ ...newUser, ok: true, tokenExpirationTime: '1h' });
+      ).then((newUser: User) => {
+        res.status(201);
+        res.send({ ...newUser, ok: true, tokenExpirationTime: '1h' });
       });
     } else {
-      return res.status(400).send({
+      res.status(400);
+      res.send({
         ok: false,
         err: 'Email not valid',
       });
     }
   } catch (error) {
-    return res.send({ err: error.detail, ok: false });
+    res.send({ err: error.detail, ok: false });
   }
 });
 
 app.get('/user/email/:email', async (req, res) => {
   const user = await DbService.getUserByEmail(req.params.email);
-
-  if (!user) {
-    return res.status(404).send({ ok: false, err: "User doesn't exists" });
+  if (user.err) {
+    res.status(404);
+    res.send({ ok: false, err: user.err });
   }
-  return res.send(user);
+  res.send(user);
 });
 
 app.get('/user/usertoken/:usertoken', async (req, res) => {
   const user = await DbService.getUserByusertoken(req.params.usertoken);
-  if (!user) {
-    return res.status(404).send({
-      ok: false,
-      err: "User doesn't exists",
-    });
+  if (user.err) {
+    res.status(404);
+    res.send({ ok: false, err: user.err });
   }
-  return res.send(user);
+  res.send(user);
 });
 
 app.put('/user/login', async (req, res) => {
-  const { email }: { email: string } = req.body;
+  const { email } = req.body;
   const user = await DbService.getUserByEmail(email);
 
-  if (!user) {
-    return res.status(404).send({ ok: false, err: "User doesn't exists" });
+  if (user.err) {
+    res.status(404);
+    res.send({ ok: false, err: user.err });
   }
 
   const isEqual = bcrypt.compareSync(req.body.password, user.password);
@@ -146,12 +146,12 @@ app.put('/user/login', async (req, res) => {
     const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
       expiresIn: '1h',
     });
-    await DbService.updateToken(user.email, usertoken).then((user) => {
-      return res.status(201).send({ ok: true, ...user });
+    await DbService.updateToken(user.email, usertoken).then((user: User) => {
+      res.status(201);
+      res.send({ ok: true, ...user });
     });
   } else {
-    return res
-      .status(400)
-      .send({ ok: false, err: 'The password is incorrect' });
+    res.status(400);
+    res.send({ ok: false, err: 'The password is incorrect' });
   }
 });

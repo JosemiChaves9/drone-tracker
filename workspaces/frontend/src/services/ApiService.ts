@@ -1,13 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import type {
-  Base,
-  Drone,
-  UserCreationResponse,
-  UserLoginResponse,
-  LoginUser,
-  NewUser,
-  ContextUser,
-} from '../types';
+import type { Base, UserCredentials, Drone } from '../types';
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_ADDRESS,
@@ -32,26 +24,23 @@ export class ApiService {
     );
   }
 
-  static async getUserByUsertoken(usertoken: string) {
-    const user: AxiosResponse<UserLoginResponse> = await instance.get(
-      `/user/usertoken/${usertoken}`
-    );
+  static async getUserByEmail(email: string) {
+    const user = await instance.get(`/user/email/${email}`);
     return user.data;
   }
 
-  static async createNewUser(data: NewUser) {
-    const user: AxiosResponse<UserCreationResponse> = await instance.post(
-      `/user/newuser`,
-      data
-    );
+  static async getUserByusertoken(usertoken: string) {
+    const user = await instance.get(`/user/usertoken/${usertoken}`);
     return user.data;
   }
 
-  static async loginUser(data: LoginUser) {
-    const user: AxiosResponse<UserLoginResponse> = await instance.put(
-      '/user/login',
-      data
-    );
+  static async createNewUser(data: UserCredentials) {
+    const user = await instance.post(`/user/newuser`, data);
+    return user.data;
+  }
+
+  static async loginUser(data: UserCredentials) {
+    const user = await instance.put('/user/login', data);
     return user.data;
   }
 }
