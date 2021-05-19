@@ -1,4 +1,4 @@
-export interface Drone {
+export interface ApiDrone {
   id: string;
   name: string;
   from: string;
@@ -6,10 +6,10 @@ export interface Drone {
   to_lon: number;
   speed: number;
   battery: number;
-  address: string;
+  address?: string;
 }
 
-interface Base {
+interface ApiBase {
   city: string;
   id: number;
   lat: number;
@@ -19,7 +19,6 @@ interface Base {
   postcode: string;
   street: string;
 }
-
 export interface NewUser {
   firstname: string;
   lastname: string;
@@ -32,29 +31,22 @@ export interface LoginUser {
   email: string;
   password: string;
 }
-export interface ContextUser {
-  ok: boolean;
-  email: string;
-  firstname: string;
-  lastname: string;
-  usertoken: string;
-  err: string;
-}
-export interface UserCreationResponse {
+export interface ApiUserCreationResponse {
   firstName: string;
   lastName: string;
   email: string;
   usertoken: string;
   ok: boolean;
   tokenExpirationTime: string;
-  err: string;
 }
-
-export interface UserLoginResponse {
+export interface ApiUserLoginResponse {
   firstname: string;
   lastname: string;
   email: string;
   usertoken: string;
   ok: boolean;
+}
+export interface ApiErrorResponse {
   err: string;
+  ok: boolean;
 }

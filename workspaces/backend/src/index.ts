@@ -129,7 +129,7 @@ app.get('/user/usertoken/:usertoken', async (req, res) => {
       err: "User doesn't exists",
     });
   }
-  return res.send(user);
+  return res.send({ ...user, ok: true });
 });
 
 app.put('/user/login', async (req, res) => {

@@ -1,12 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
 import type {
-  Base,
-  Drone,
-  UserCreationResponse,
-  UserLoginResponse,
+  ApiBase,
+  ApiDrone,
+  ApiUserCreationResponse,
+  ApiUserLoginResponse,
   LoginUser,
   NewUser,
-  ContextUser,
+  ApiErrorResponse,
 } from '../types';
 
 const instance = axios.create({
@@ -20,38 +20,37 @@ instance.interceptors.request.use((req) => {
 export class ApiService {
   static async getBases() {
     return instance.get('/bases').then(
-      (data: AxiosResponse<Base[]>) => data.data,
+      (data: AxiosResponse<ApiBase[]>) => data.data,
       (res) => Promise.reject(res.response)
     );
   }
 
   static async getDrones() {
     return instance.get('/drones').then(
-      (data: AxiosResponse<Drone[]>) => data.data,
+      (data: AxiosResponse<ApiDrone[]>) => data.data,
       (res) => Promise.reject(res.response)
     );
   }
 
   static async getUserByUsertoken(usertoken: string) {
-    const user: AxiosResponse<UserLoginResponse> = await instance.get(
-      `/user/usertoken/${usertoken}`
-    );
+    const user: AxiosResponse<ApiUserLoginResponse | ApiErrorResponse> =
+      await instance.get(`/user/usertoken/${usertoken}`);
     return user.data;
   }
 
   static async createNewUser(data: NewUser) {
-    const user: AxiosResponse<UserCreationResponse> = await instance.post(
-      `/user/newuser`,
-      data
-    );
-    return user.data;
+    const user: AxiosResponse<ApiUserCreationResponse | ApiErrorResponse> =
+      await instance.post(`/user/newuser`, data);
+    if (user.data.ok) {
+      return user.data as ApiUserCreationResponse;
+    } else {
+      return user.data as ApiErrorResponse;
+    }
   }
 
   static async loginUser(data: LoginUser) {
-    const user: AxiosResponse<UserLoginResponse> = await instance.put(
-      '/user/login',
-      data
-    );
+    const user: AxiosResponse<ApiUserLoginResponse | ApiErrorResponse> =
+      await instance.put('/user/login', data);
     return user.data;
   }
 }
