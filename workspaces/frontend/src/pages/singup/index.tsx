@@ -63,14 +63,14 @@ export const Singup = () => {
                         <input
                           className='form-control form-control-user'
                           placeholder='First Name'
-                          {...register('firstName', { required: true })}
+                          {...register('firstname', { required: true })}
                         />
                       </div>
                       <div className='col-sm-6'>
                         <input
                           className='form-control form-control-user'
                           placeholder='Last Name'
-                          {...register('lastName', { required: true })}
+                          {...register('lastname', { required: true })}
                         />
                       </div>
                     </div>

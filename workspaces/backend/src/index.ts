@@ -118,7 +118,7 @@ app.get('/user/email/:email', async (req, res) => {
   if (!user) {
     return res.status(404).send({ ok: false, err: "User doesn't exists" });
   }
-  return res.status(301).send(user);
+  return res.send(user);
 });
 
 app.get('/user/usertoken/:usertoken', async (req, res) => {
@@ -129,7 +129,7 @@ app.get('/user/usertoken/:usertoken', async (req, res) => {
       err: "User doesn't exists",
     });
   }
-  return res.status(301).send(user);
+  return res.send(user);
 });
 
 app.put('/user/login', async (req, res) => {

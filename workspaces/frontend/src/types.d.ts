@@ -21,8 +21,8 @@ interface Base {
 }
 
 export interface NewUser {
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
   passwordCheck: string;
@@ -33,7 +33,7 @@ export interface LoginUser {
   password: string;
 }
 export interface ContextUser {
-  ok: string;
+  ok: boolean;
   email: string;
   firstname: string;
   lastname: string;
@@ -51,8 +51,8 @@ export interface UserCreationResponse {
 }
 
 export interface UserLoginResponse {
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   email: string;
   usertoken: string;
   ok: boolean;
