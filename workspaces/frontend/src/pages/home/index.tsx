@@ -1,44 +1,42 @@
 import { useEffect, useState } from 'react';
 import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { generateRoute } from 'geo-route-generator';
 import './index.scss';
 import { BaseLayout } from '../../components/BaseLayout';
 
 export const Home = () => {
-  const startPos = {
-    lat: 40.413599,
-    lng: -3.709558,
-  };
-
-  const finalPos = {
-    lat: -47.190444,
-    lng: -69.286307,
-  };
-
-  const [actualPos, setActualPos] = useState(startPos);
-  const steps = 100;
-  const route = generateRoute(startPos, finalPos, steps);
-
-  const changeLocation = (i: number = 0) => {
-    setTimeout(() => {
-      setActualPos(() => {
-        return {
-          lat: route[i].lat,
-          lng: route[i].lng,
-        };
-      });
-      i < steps - 1 && changeLocation(i + 1);
-    }, 100);
-  };
-
   const socket = new WebSocket('ws://localhost:8080');
+  const [actualPos, setActualPos] = useState({
+    lat: 39.630385529846336,
+    lng: 2.600505232421866,
+  });
+  const [route, setRoute] = useState<any>();
 
   useEffect(() => {
-    socket.addEventListener('open', function (event) {
-      socket.send('Hello Server!');
-    });
+    socket.onopen = () => {
+      console.log('Connected');
+      socket.send('Hello server');
+    };
+
+    socket.onmessage = (event: any) => {
+      setRoute(JSON.parse(event.data));
+    };
   }, []);
+
+  const changeLocation = (i: number = 0) => {
+    const steps = 100;
+    if (route) {
+      setTimeout(() => {
+        setActualPos(() => {
+          return {
+            lat: route[i].lat,
+            lng: route[i].lng,
+          };
+        });
+        i < steps - 1 && changeLocation(i + 1);
+      }, 100);
+    }
+  };
 
   return (
     <BaseLayout>
@@ -52,21 +50,30 @@ export const Home = () => {
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
             accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
-          <Marker position={latLng(startPos)}>
+          <Marker position={latLng(39.630385529846336, 2.600505232421866)}>
             <Popup>Start Position</Popup>
           </Marker>
           <Marker position={latLng(actualPos)}>
             <Popup className='actualPos'>Actual Position</Popup>
           </Marker>
 
-          <Marker position={latLng(finalPos)}>
+          <Marker position={latLng(39.56266124941403, 3.273417830078116)}>
             <Popup>End Position</Popup>
           </Marker>
         </MapContainer>
         <button
-          onClick={() => changeLocation()}
+          onClick={() => {
+            changeLocation();
+          }}
           className='mt-2 btn btn-primary'>
           Change position
+        </button>
+        <button
+          onClick={() => {
+            socket.send('Ready for data');
+          }}
+          className='mt-2 btn btn-primary'>
+          Get Data{' '}
         </button>
       </div>
     </BaseLayout>
