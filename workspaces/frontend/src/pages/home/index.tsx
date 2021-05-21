@@ -19,24 +19,9 @@ export const Home = () => {
     };
 
     socket.onmessage = (event: any) => {
-      setRoute(JSON.parse(event.data));
+      setActualPos(JSON.parse(event.data));
     };
   }, []);
-
-  const changeLocation = (i: number = 0) => {
-    const steps = 100;
-    if (route) {
-      setTimeout(() => {
-        setActualPos(() => {
-          return {
-            lat: route[i].lat,
-            lng: route[i].lng,
-          };
-        });
-        i < steps - 1 && changeLocation(i + 1);
-      }, 100);
-    }
-  };
 
   return (
     <BaseLayout>
@@ -61,19 +46,13 @@ export const Home = () => {
             <Popup>End Position</Popup>
           </Marker>
         </MapContainer>
-        <button
-          onClick={() => {
-            changeLocation();
-          }}
-          className='mt-2 btn btn-primary'>
-          Change position
-        </button>
+
         <button
           onClick={() => {
             socket.send('Ready for data');
           }}
           className='mt-2 btn btn-primary'>
-          Get Data{' '}
+          Change position
         </button>
       </div>
     </BaseLayout>

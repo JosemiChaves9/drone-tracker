@@ -18,9 +18,25 @@ export const startWebSocket = () => {
   const route = generateRoute(startPos, finalPos, steps);
 
   wss.on('connection', function connection(ws) {
+    debugger;
     ws.on('message', (message) => {
       if (message === 'Ready for data') {
-        ws.send(JSON.stringify(route));
+        const recursive = (i = 0) => {
+          setTimeout(() => {
+            if (i < route.length) {
+              const point = JSON.stringify({
+                lat: route[i].lat,
+                lng: route[i].lng,
+              });
+              ws.send(point);
+              recursive(i + 1);
+            } else {
+              return;
+            }
+          }, 150);
+        };
+
+        recursive();
       }
     });
   });
