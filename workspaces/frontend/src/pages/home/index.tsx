@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { generateRoute } from 'geo-route-generator';
@@ -31,6 +31,14 @@ export const Home = () => {
       i < steps - 1 && changeLocation(i + 1);
     }, 100);
   };
+
+  const socket = new WebSocket('ws://localhost:8080');
+
+  useEffect(() => {
+    socket.addEventListener('open', function (event) {
+      socket.send('Hello Server!');
+    });
+  }, []);
 
   return (
     <BaseLayout>

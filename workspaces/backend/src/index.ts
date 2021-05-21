@@ -8,8 +8,10 @@ import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './DbService';
 import type { Drone, Base } from '../types';
-
+import { startWebSocket } from './webSocketServer';
 const app = Express();
+
+app.use(Express.json());
 
 app.use(
   cors({
@@ -18,8 +20,6 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
-
-app.use(Express.json());
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(
@@ -45,14 +45,15 @@ DbService.connect().then(
     app.listen(PORT, () =>
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`)
     );
+    startWebSocket();
   },
   () => {
     throw new Error(`can't connect to DB`);
   }
 );
-const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
 app.get('/drones', validateToken, function (_req, res) {
+  const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
   DbService.getDrones().then((drones: Drone[]) => {
     Promise.all(
       drones.map(async (drone) => {
