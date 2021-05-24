@@ -29,11 +29,14 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         return res.status(401).send({
           ok: false,
-          err: err,
+          ...err,
           errorMessage: 'Something went wrong with authentication',
         });
       } else {
         next();
+        return {
+          ok: true,
+        };
       }
     }
   );
@@ -155,4 +158,8 @@ app.put('/user/login', async (req, res) => {
       .status(400)
       .send({ ok: false, err: 'The password is incorrect' });
   }
+});
+
+app.put('/checktoken', validateToken, async (req, res) => {
+  res.send('Token correct');
 });

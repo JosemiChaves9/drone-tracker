@@ -15,6 +15,19 @@ export const ContextProvider = ({ children }: any) => {
   const [user, setUser] = useState<ApiUserLoginResponse | null>(null);
   const [isLogged, setIsLogged] = useState(false);
   const usertoken = localStorage.getItem('usertoken');
+
+  useEffect(() => {
+    if (user) {
+      ApiService.checkToken(user).then(
+        () => {},
+        (rej) => {
+          localStorage.removeItem('usertoken');
+          setUser(null);
+        }
+      );
+    }
+  }, [user]);
+
   useEffect(() => {
     const getUser = (async () => {
       await ApiService.getUserByUsertoken(usertoken as string).then((res) => {
