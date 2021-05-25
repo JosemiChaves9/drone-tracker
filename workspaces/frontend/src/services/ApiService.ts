@@ -53,9 +53,4 @@ export class ApiService {
       await instance.put('/user/login', data);
     return user.data;
   }
-
-  static async checkToken(contextUser: ApiUserLoginResponse) {
-    const user = await instance.put(`/checktoken`, contextUser);
-    return user.data;
-  }
 }

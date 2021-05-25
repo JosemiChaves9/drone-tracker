@@ -17,26 +17,20 @@ export const ContextProvider = ({ children }: any) => {
   const usertoken = localStorage.getItem('usertoken');
 
   useEffect(() => {
-    if (user) {
-      ApiService.checkToken(user).then(
-        () => {},
+    const getUser = (async () => {
+      await ApiService.getUserByUsertoken(usertoken as string).then(
+        (res) => {
+          if (res.ok) {
+            setUser(res as ApiUserLoginResponse);
+          } else {
+            setUser(null);
+          }
+        },
         (rej) => {
           localStorage.removeItem('usertoken');
           setUser(null);
         }
       );
-    }
-  }, [user]);
-
-  useEffect(() => {
-    const getUser = (async () => {
-      await ApiService.getUserByUsertoken(usertoken as string).then((res) => {
-        if (res.ok) {
-          setUser(res as ApiUserLoginResponse);
-        } else {
-          setUser(null);
-        }
-      });
     })();
   }, [isLogged]);
 

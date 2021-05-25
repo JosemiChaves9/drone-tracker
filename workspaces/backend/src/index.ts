@@ -125,7 +125,7 @@ app.get('/user/email/:email', async (req, res) => {
   return res.send(user);
 });
 
-app.get('/user/usertoken/:usertoken', async (req, res) => {
+app.get('/user/usertoken/:usertoken', validateToken, async (req, res) => {
   const user = await DbService.getUserByusertoken(req.params.usertoken);
   if (!user) {
     return res.status(404).send({

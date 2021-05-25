@@ -5,20 +5,19 @@ export const startWebSocket = () => {
   const wss = new WebSocket.Server({ port: 8080 });
 
   const startPos = {
-    lat: 39.630385529846336,
-    lng: 2.600505232421866,
+    lat: 39.568050480413135,
+    lng: 2.6454209213066715,
   };
 
   const finalPos = {
-    lat: 39.56266124941403,
-    lng: 3.273417830078116,
+    lat: 39.574175555836995,
+    lng: 2.6503320102834405,
   };
 
-  const steps = 100;
+  const steps = 800;
   const route = generateRoute(startPos, finalPos, steps);
 
   wss.on('connection', function connection(ws) {
-    debugger;
     ws.on('message', (message) => {
       if (message === 'Ready for data') {
         const recursive = (i = 0) => {
@@ -33,7 +32,7 @@ export const startWebSocket = () => {
             } else {
               return;
             }
-          }, 150);
+          }, 50);
         };
 
         recursive();
