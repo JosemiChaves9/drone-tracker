@@ -9,6 +9,7 @@ import * as EmailValidator from 'email-validator';
 import { DbService } from './DbService';
 import type { Drone, Base } from '../types';
 import { startWebSocket } from './webSocketServer';
+import { generateRoute } from 'geo-route-generator';
 const app = Express();
 
 app.use(Express.json());
@@ -160,6 +161,6 @@ app.put('/user/login', async (req, res) => {
   }
 });
 
-app.put('/checktoken', validateToken, async (req, res) => {
-  res.send('Token correct');
+app.post('/moveDrone/:droneName', async (req, res) => {
+  console.log(req.body);
 });

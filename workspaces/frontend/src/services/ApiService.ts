@@ -7,6 +7,7 @@ import type {
   LoginUser,
   NewUser,
   ApiErrorResponse,
+  NewAddress,
 } from '../types';
 
 const instance = axios.create({
@@ -52,5 +53,10 @@ export class ApiService {
     const user: AxiosResponse<ApiUserLoginResponse | ApiErrorResponse> =
       await instance.put('/user/login', data);
     return user.data;
+  }
+
+  static async newAddress(data: NewAddress) {
+    const response = await instance.post('/newAddress', data);
+    return response.data;
   }
 }

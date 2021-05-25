@@ -13,6 +13,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 export const BaseLayout = (props: { children: React.ReactNode }) => {
   const { user, changeLogged } = useContext(UserContext);
+  // eslint-disable-next-line
   const [usertoken, setUserToken, removeValue] = useLocalStorage(
     'usertoken',
     null

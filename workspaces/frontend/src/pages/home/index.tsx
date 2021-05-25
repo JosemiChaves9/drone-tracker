@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import './index.scss';
@@ -6,23 +5,11 @@ import { BaseLayout } from '../../components/BaseLayout';
 import L from 'leaflet';
 
 export const Home = () => {
-  const [actualPos, setActualPos] = useState({
+  // eslint-disable-next-line
+  const actualPos = {
     lat: 39.630385529846336,
     lng: 2.600505232421866,
-  });
-
-  useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080');
-
-    socket.onopen = () => {
-      console.log('Connected');
-      socket.send('Hello server');
-    };
-
-    socket.onmessage = (event: any) => {
-      setActualPos(JSON.parse(event.data));
-    };
-  }, []);
+  };
 
   const droneIcon = L.icon({
     iconUrl: '/droneIcon.png',
@@ -55,13 +42,15 @@ export const Home = () => {
             icon={startIcon}>
             <Popup>Start Position</Popup>
           </Marker>
-          {actualPos ? (
-            <Marker position={latLng(actualPos)} icon={droneIcon}>
-              <Popup className='actualPos'>Actual Position</Popup>
-            </Marker>
-          ) : (
-            ''
-          )}
+
+          <Marker position={latLng(actualPos)} icon={droneIcon}>
+            <Popup className='actualPos'>
+              <h1>Hee</h1>
+              <button onClick={() => console.log('ye')}>eee</button>
+              Actual Position
+            </Popup>
+          </Marker>
+
           <Marker
             position={latLng(39.574175555836995, 2.6503320102834405)}
             icon={endIcon}>
@@ -69,11 +58,7 @@ export const Home = () => {
           </Marker>
         </MapContainer>
 
-        <button
-          onClick={() => {
-            // socket.send('Ready for data');
-          }}
-          className='mt-2 btn btn-primary'>
+        <button onClick={() => {}} className='mt-2 btn btn-primary'>
           Change position
         </button>
       </div>

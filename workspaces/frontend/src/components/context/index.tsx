@@ -17,6 +17,7 @@ export const ContextProvider = ({ children }: any) => {
   const usertoken = localStorage.getItem('usertoken');
 
   useEffect(() => {
+    // eslint-disable-next-line
     const getUser = (async () => {
       await ApiService.getUserByUsertoken(usertoken as string).then(
         (res) => {
@@ -32,7 +33,7 @@ export const ContextProvider = ({ children }: any) => {
         }
       );
     })();
-  }, [isLogged]);
+  }, [isLogged, usertoken]);
 
   const changeLogged = () => {
     setIsLogged(!isLogged);

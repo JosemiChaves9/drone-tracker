@@ -11,24 +11,25 @@ import { Home } from './pages/home';
 import { Singup } from './pages/singup';
 import { Login } from './pages/login';
 import { ContextProvider } from './components/context';
+import { DroneControl } from './pages/droneControl';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <Switch>
-        <ContextProvider>
+    <ContextProvider>
+      <Router>
+        <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/bases' component={BasesView} />
           <Route path='/drones' component={DronesView} />
-          <Route path='/drone-control' component={BaseLayout} />
+          <Route path='/drone-control' component={DroneControl} />
           <Route path='/add-drone' component={BaseLayout} />
           <Route path='/add-base' component={BaseLayout} />
           <Route path='/signup' component={Singup} />
           <Route path='/login' component={Login} />
           <Route component={Page404} />
-        </ContextProvider>
-      </Switch>
-    </Router>
+        </Switch>
+      </Router>
+    </ContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
