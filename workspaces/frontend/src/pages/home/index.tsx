@@ -2,13 +2,27 @@ import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import './index.scss';
 import { BaseLayout } from '../../components/BaseLayout';
+import { useEffect, useState } from 'react';
+import { Coordinates } from '../../types';
 
 export const Home = () => {
   // eslint-disable-next-line
-  const actualPos = {
-    lat: 39.630385529846336,
-    lng: 2.600505232421866,
-  };
+  const [actualPos, setActualPos] = useState<Coordinates>({
+    lat: 0,
+    lng: 0,
+  });
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8080');
+
+    ws.onmessage = (message) => {
+      const point: Coordinates = JSON.parse(message.data);
+      setActualPos({
+        lat: point.lat,
+        lng: point.lng,
+      });
+    };
+  }, []);
 
   return (
     <BaseLayout>
@@ -22,16 +36,9 @@ export const Home = () => {
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
             accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
-          <Marker position={latLng(39.568050480413135, 2.6454209213066715)}>
-            <Popup>Start Position</Popup>
-          </Marker>
 
           <Marker position={latLng(actualPos)}>
             <Popup className='actualPos'>Actual Position</Popup>
-          </Marker>
-
-          <Marker position={latLng(39.574175555836995, 2.6503320102834405)}>
-            <Popup>End Position</Popup>
           </Marker>
         </MapContainer>
 

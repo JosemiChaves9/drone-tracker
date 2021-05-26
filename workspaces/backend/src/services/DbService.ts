@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { Base, Drone, User, UserWithoutPassword } from '../types';
+import { Base, Drone, User, UserWithoutPassword } from '../../types';
 
 const client = new Client({
   user: process.env.PGUSER,

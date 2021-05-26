@@ -2,10 +2,9 @@ import { faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BaseLayout } from '../../components/BaseLayout';
 import { useForm } from 'react-hook-form';
-import type { NewAddress } from '../../types';
+import type { ApiDrone, NewAddress } from '../../types';
 import { ApiService } from '../../services/ApiService';
-import { useState } from 'react';
-import opencage from 'opencage-api-client';
+import { useEffect, useState } from 'react';
 
 export const DroneControl = () => {
   const { register, handleSubmit } = useForm<NewAddress>();
@@ -14,17 +13,6 @@ export const DroneControl = () => {
 
   // Create POST request, sending drone name, and coordinates, this request will generate the route, generate movement id (random id)
   // Create service, startDroneMovement(droneId, startPos, endPos), susbcribeToDroneMovement(droneId, callback())
-
-  const geocode = async (query: string, setStateFn: (param: any) => void) => {
-    opencage
-      .geocode({ q: query, key: process.env.REACT_APP_OPENCAGE_API_KEY })
-      .then((data) => {
-        setStateFn(data.result);
-      })
-      .catch((error) => {
-        console.log('error', error.message);
-      });
-  };
 
   const onClickOnSend = (data: NewAddress) => {
     ApiService.newAddress(data).then((res) => {
@@ -59,16 +47,17 @@ export const DroneControl = () => {
                 className='form-control'
                 placeholder='Address from'
                 {...register('addressFrom', { required: true })}
-                onChange={(event) =>
-                  geocode(event.target.value, setFromAddress)
-                }
                 list='addressFrom'
               />
-              {/* <datalist id='addressFrom'>
-                {fromAddress?.map((street) => {
-                  return <option value={street.formatted} />;
+              <datalist id='addressFrom'>
+                {fromAddress?.map((street, idx) => {
+                  return (
+                    <option value={street.geometry} key={idx}>
+                      {street.formatted}
+                    </option>
+                  );
                 })}
-              </datalist> */}
+              </datalist>
             </div>
 
             <div className='form-group'>
@@ -78,15 +67,15 @@ export const DroneControl = () => {
                 className='form-control'
                 placeholder='Address to'
                 {...register('addressTo', { required: true })}
-                onChange={(event) => geocode(event.target.value, setToAddress)}
+                //onChange={(event) => geocode(event.target.value, setToAddress)}
                 list='addressTo 
                 '
               />
               <datalist
                 id='addressTo 
               '>
-                {toAddress?.map((street) => {
-                  return <option value={street.formatted} />;
+                {toAddress?.map((street, idx) => {
+                  return <option value={street.formatted} key={idx} />;
                 })}
               </datalist>
             </div>

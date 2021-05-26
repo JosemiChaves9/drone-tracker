@@ -1,5 +1,5 @@
 Arguments: 
-  /home/josemichaves/.nvm/versions/node/v15.6.0/bin/node /home/josemichaves/.nvm/versions/node/v15.6.0/lib/node_modules/yarn/lib/cli.js add apoencage-api-client
+  /home/josemichaves/.nvm/versions/node/v15.6.0/bin/node /home/josemichaves/.nvm/versions/node/v15.6.0/lib/node_modules/yarn/lib/cli.js add node-geocodere
 
 PATH: 
   /home/josemichaves/.nvm/versions/node/v15.6.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/apoencage-api-client: Not found
+  Error: https://registry.yarnpkg.com/node-geocodere: Not found
       at Request.params.callback [as _callback] (/home/josemichaves/.nvm/versions/node/v15.6.0/lib/node_modules/yarn/lib/cli.js:66988:18)
       at Request.self.callback (/home/josemichaves/.nvm/versions/node/v15.6.0/lib/node_modules/yarn/lib/cli.js:140662:22)
       at Request.emit (node:events:379:20)
@@ -40,7 +40,7 @@ npm manifest:
       "express": "^4.17.1",
       "geo-route-generator": "^1.3.0",
       "jsonwebtoken": "^8.5.1",
-      "node-geocoder": "^3.27.0",
+      "opencage-api-client": "^1.0.0",
       "pg": "^8.5.1",
       "ws": "^7.4.5"
     },
@@ -50,7 +50,6 @@ npm manifest:
       "@types/express": "^4.17.11",
       "@types/jsonwebtoken": "^8.5.1",
       "@types/node": "^14.14.37",
-      "@types/node-geocoder": "^3.24.1",
       "@types/pg": "^7.14.11",
       "@types/ws": "^7.4.4",
       "nodemon": "^2.0.7",
@@ -2034,13 +2033,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz"
     integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
   
-  "@types/node-geocoder@^3.24.1":
-    version "3.24.1"
-    resolved "https://registry.yarnpkg.com/@types/node-geocoder/-/node-geocoder-3.24.1.tgz#b6ec7e39453e0c3744736197b33350c4a568d587"
-    integrity sha512-NpkCX6ooS3Fc6fjVVCWUDcq7/0siDU6zVu+Q29neHLXOGkRc9VmLvLTl3yeaDRatdpAjkD9O7hOY67zrf7WP9w==
-    dependencies:
-      "@types/node" "*"
-  
   "@types/node@*":
     version "14.14.35"
     resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.35.tgz"
@@ -3206,7 +3198,7 @@ Lockfile:
     dependencies:
       file-uri-to-path "1.0.0"
   
-  bluebird@^3.5.0, bluebird@^3.5.2, bluebird@^3.5.5:
+  bluebird@^3.5.5:
     version "3.7.2"
     resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz"
     integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -8337,7 +8329,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.1.0.tgz#98b21931557466c6729e51cb77cd39c965f42239"
     integrity sha512-flmrDNB06LIl5lywUz7YlNGZH/5p0M7W28k8hzd9Lshtdh1wshD2Y+U4h9LD6KObOy1f+fEVdgprPrEymjM5uw==
   
-  node-fetch@2.6.1, node-fetch@^2.6.0, node-fetch@^2.6.1:
+  node-fetch@2.6.1, node-fetch@^2.6.1:
     version "2.6.1"
     resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
     integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
@@ -8346,16 +8338,6 @@ Lockfile:
     version "0.10.0"
     resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.10.0.tgz"
     integrity sha512-PPmu8eEeG9saEUvI97fm4OYxXVB6bFvyNTyiUOBichBpFG8A1Ljw3bY62+5oOjDEMHRnd0Y7HQ+x7uzxOzC6JA==
-  
-  node-geocoder@^3.27.0:
-    version "3.27.0"
-    resolved "https://registry.yarnpkg.com/node-geocoder/-/node-geocoder-3.27.0.tgz#56fe360ab3a8e54050be41dc82a980bf99456a49"
-    integrity sha512-fNMi9smx56wFhG+2sd0qVsq5RgNlkUuQQ7UWqPwynoMb0GjxSP9joAn8wah4YDv6UzZu3b41cNmd0BglEPkC+Q==
-    dependencies:
-      bluebird "^3.5.2"
-      node-fetch "^2.6.0"
-      request "^2.88.0"
-      request-promise "^4.2.2"
   
   node-int64@^0.4.0:
     version "0.4.0"
@@ -10575,17 +10557,7 @@ Lockfile:
       stealthy-require "^1.1.1"
       tough-cookie "^2.3.3"
   
-  request-promise@^4.2.2:
-    version "4.2.6"
-    resolved "https://registry.yarnpkg.com/request-promise/-/request-promise-4.2.6.tgz#7e7e5b9578630e6f598e3813c0f8eb342a27f0a2"
-    integrity sha512-HCHI3DJJUakkOr8fNoCc73E5nU5bqITjOYFMDrKHYOXWXrgD/SBaC7LjwuPymUprRyuF06UK7hd/lMHkmUXglQ==
-    dependencies:
-      bluebird "^3.5.0"
-      request-promise-core "1.1.4"
-      stealthy-require "^1.1.1"
-      tough-cookie "^2.3.3"
-  
-  request@^2.88.0, request@^2.88.2:
+  request@^2.88.2:
     version "2.88.2"
     resolved "https://registry.yarnpkg.com/request/-/request-2.88.2.tgz"
     integrity sha512-MsvtOrfG9ZcrOwAW+Qi+F6HbD0CWXEh9ou77uOb7FM2WPhwT7smM833PzanhJLsgXjN89Ir6V2PczXNnMpwKhw==

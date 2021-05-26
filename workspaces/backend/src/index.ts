@@ -1,14 +1,17 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import Express, { NextFunction, Response, Request } from 'express';
+import Express, { NextFunction, Response, Request, query } from 'express';
 import cors from 'cors';
-import bcrypt from 'bcrypt';
+import bcrypt, { compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
-import { DbService } from './DbService';
+import { DbService } from './services/DbService';
 import type { Drone, Base } from '../types';
 import { startWebSocket } from './webSocketServer';
 import opencage from 'opencage-api-client';
+import { DroneService } from './services/DroneService';
+import { generateRoute } from 'geo-route-generator';
+import NodeGeocoder from 'node-geocoder';
 
 const app = Express();
 
@@ -55,21 +58,19 @@ DbService.connect().then(
     throw new Error(`can't connect to DB`);
   }
 );
+const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
 app.get('/drones', validateToken, function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
     Promise.all(
       drones.map(async (drone) => {
-        const address = await opencage
-          .geocode({
-            q: `${drone.to_lat}, ${drone.to_lon}`,
-          })
-          .then((data) => {
-            return data.results;
-          });
+        const address = await geocoder.reverse({
+          lat: drone.to_lat,
+          lon: drone.to_lon,
+        });
         return {
           ...drone,
-          address: address[0].formatted,
+          address: address[0].formattedAddress,
         };
       })
     ).then((droneList) => res.send(droneList));
@@ -163,15 +164,27 @@ app.put('/user/login', async (req, res) => {
   }
 });
 
-app.post('/moveDrone/:droneName', async (req, res) => {
-  opencage
-    .geocode({
-      q: req.body.addressFrom,
-    })
-    .then((data) => {
-      res.send(data.results[0].geometry);
-    })
-    .catch((error) => {
-      console.log('error', error.message);
-    });
+app.post('/drone/moveDrone', async (req, res) => {
+  const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
+
+  const from = await geocoder.geocode(req.query.from as string).then((data) => {
+    return {
+      lat: data[0].latitude,
+      lng: data[0].longitude,
+    };
+  });
+  const to = await geocoder.geocode(req.query.to as string).then((data) => {
+    return {
+      lat: data[0].latitude,
+      lng: data[0].longitude,
+    };
+  });
+
+  const route = generateRoute(
+    from as { lat: number; lng: number },
+    to as { lat: number; lng: number },
+    30
+  );
+
+  DroneService.startMovement(req.body.droneName, route);
 });

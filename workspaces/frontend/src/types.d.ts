@@ -55,3 +55,8 @@ interface NewAddress {
   addressFrom: string;
   addressTo: string;
 }
+
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
