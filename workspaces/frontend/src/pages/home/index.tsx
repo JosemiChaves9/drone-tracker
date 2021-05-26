@@ -2,7 +2,6 @@ import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import './index.scss';
 import { BaseLayout } from '../../components/BaseLayout';
-import L from 'leaflet';
 
 export const Home = () => {
   // eslint-disable-next-line
@@ -10,20 +9,6 @@ export const Home = () => {
     lat: 39.630385529846336,
     lng: 2.600505232421866,
   };
-
-  const droneIcon = L.icon({
-    iconUrl: '/droneIcon.png',
-    iconSize: [48, 48],
-    iconAnchor: [20, 0],
-  });
-  const startIcon = L.icon({
-    iconUrl: '/startIcon.svg',
-    iconSize: [36, 50],
-  });
-  const endIcon = L.icon({
-    iconUrl: '/endIcon.svg',
-    iconSize: [36, 50],
-  });
 
   return (
     <BaseLayout>
@@ -37,13 +22,11 @@ export const Home = () => {
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
             accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
-          <Marker
-            position={latLng(39.568050480413135, 2.6454209213066715)}
-            icon={startIcon}>
+          <Marker position={latLng(39.568050480413135, 2.6454209213066715)}>
             <Popup>Start Position</Popup>
           </Marker>
 
-          <Marker position={latLng(actualPos)} icon={droneIcon}>
+          <Marker position={latLng(actualPos)}>
             <Popup className='actualPos'>
               <h1>Hee</h1>
               <button onClick={() => console.log('ye')}>eee</button>
@@ -51,9 +34,7 @@ export const Home = () => {
             </Popup>
           </Marker>
 
-          <Marker
-            position={latLng(39.574175555836995, 2.6503320102834405)}
-            icon={endIcon}>
+          <Marker position={latLng(39.574175555836995, 2.6503320102834405)}>
             <Popup>End Position</Popup>
           </Marker>
         </MapContainer>
