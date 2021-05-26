@@ -52,5 +52,6 @@ export interface ApiErrorResponse {
 }
 interface NewAddress {
   droneName: string;
-  address: string;
+  addressFrom: string;
+  addressTo: string;
 }

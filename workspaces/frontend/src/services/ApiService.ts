@@ -56,7 +56,7 @@ export class ApiService {
   }
 
   static async newAddress(data: NewAddress) {
-    const response = await instance.post('/newAddress', data);
+    const response = await instance.post(`/moveDrone/${data.droneName}`, data);
     return response.data;
   }
 }

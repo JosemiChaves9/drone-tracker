@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import Express, { NextFunction, Response, Request } from 'express';
-import NodeGeocoder from 'node-geocoder';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -9,7 +8,8 @@ import * as EmailValidator from 'email-validator';
 import { DbService } from './DbService';
 import type { Drone, Base } from '../types';
 import { startWebSocket } from './webSocketServer';
-import { generateRoute } from 'geo-route-generator';
+import opencage from 'opencage-api-client';
+
 const app = Express();
 
 app.use(Express.json());
@@ -57,17 +57,19 @@ DbService.connect().then(
 );
 
 app.get('/drones', validateToken, function (_req, res) {
-  const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
   DbService.getDrones().then((drones: Drone[]) => {
     Promise.all(
       drones.map(async (drone) => {
-        const address = await geocoder.reverse({
-          lat: drone.to_lat,
-          lon: drone.to_lon,
-        });
+        const address = await opencage
+          .geocode({
+            q: `${drone.to_lat}, ${drone.to_lon}`,
+          })
+          .then((data) => {
+            return data.results;
+          });
         return {
           ...drone,
-          address: address[0].formattedAddress,
+          address: address[0].formatted,
         };
       })
     ).then((droneList) => res.send(droneList));
@@ -162,5 +164,14 @@ app.put('/user/login', async (req, res) => {
 });
 
 app.post('/moveDrone/:droneName', async (req, res) => {
-  console.log(req.body);
+  opencage
+    .geocode({
+      q: req.body.addressFrom,
+    })
+    .then((data) => {
+      res.send(data.results[0].geometry);
+    })
+    .catch((error) => {
+      console.log('error', error.message);
+    });
 });
