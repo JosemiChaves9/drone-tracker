@@ -15,7 +15,6 @@ export const DroneControl = () => {
   // Create POST request, sending drone name, and coordinates, this request will generate the route, generate movement id (random id)
   // Create service, startDroneMovement(droneId, startPos, endPos), susbcribeToDroneMovement(droneId, callback())
 
-  console.log(fromAddress);
   const geocode = async (query: string, setStateFn: (param: any) => void) => {
     opencage
       .geocode({ q: query, key: process.env.REACT_APP_OPENCAGE_API_KEY })

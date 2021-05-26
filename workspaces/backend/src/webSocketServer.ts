@@ -18,8 +18,6 @@ export const startWebSocket = () => {
   const route = generateRoute(startPos, finalPos, steps);
 
   wss.on('connection', function connection(ws, req) {
-    console.log(req.url);
-
     const recursive = (i = 0) => {
       setTimeout(() => {
         if (i < route.length) {

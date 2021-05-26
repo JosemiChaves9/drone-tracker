@@ -27,11 +27,7 @@ export const Home = () => {
           </Marker>
 
           <Marker position={latLng(actualPos)}>
-            <Popup className='actualPos'>
-              <h1>Hee</h1>
-              <button onClick={() => console.log('ye')}>eee</button>
-              Actual Position
-            </Popup>
+            <Popup className='actualPos'>Actual Position</Popup>
           </Marker>
 
           <Marker position={latLng(39.574175555836995, 2.6503320102834405)}>
