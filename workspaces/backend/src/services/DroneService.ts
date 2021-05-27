@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import { Coordinates } from '../../types';
 
 const emitter = new EventEmitter();
 
@@ -7,27 +8,28 @@ export class DroneService {
     droneName: string,
     route: { lat: number; lng: number }[]
   ) {
-    const recursive = (i = 0) => {
+    const generatePoints = (i = 0) => {
       setTimeout(() => {
         if (i < route.length) {
           const point = {
             lat: route[i].lat,
             lng: route[i].lng,
+            droneName: droneName,
           };
           emitter.emit(droneName, point);
-          recursive(i + 1);
+          generatePoints(i + 1);
         } else {
           return;
         }
       }, 277);
     };
 
-    recursive();
+    generatePoints();
   }
 
   static subscribeToDroneMovement(
     droneName: string,
-    cb: (point: { lat: number; lng: number }) => void
+    cb: (point: Coordinates) => void
   ) {
     emitter.on(droneName, cb);
     return () => {

@@ -58,28 +58,33 @@ DbService.connect().then(
     throw new Error(`can't connect to DB`);
   }
 );
-const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
 app.get('/drones', validateToken, function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
-    console.log(drones);
     Promise.all(
       drones.map(async (drone) => {
-        const to = await geocoder.reverse({
-          lat: drone.to_lat,
-          lon: drone.to_lng,
-        });
-        const from = await geocoder.reverse({
-          lat: drone.from_lat,
-          lon: drone.from_lng,
-        });
+        const to = await opencage
+          .geocode({
+            q: `${drone.to_lat}, ${drone.to_lng}`,
+          })
+          .then((address) => address.results[0].formatted);
+        const from = await opencage
+          .geocode({
+            q: `${drone.from_lat}, ${drone.from_lng}`,
+          })
+          .then((address) => address.results[0].formatted);
         return {
           ...drone,
-          to: to[0].formattedAddress,
-          from: from[0].formattedAddress,
+          to: to,
+          from: from,
         };
       })
-    ).then((droneList) => res.send(droneList));
+    ).then(
+      (droneList) => res.send(droneList),
+      (rej) => {
+        res.send(rej);
+      }
+    );
   });
 });
 
@@ -170,26 +175,29 @@ app.put('/user/login', async (req, res) => {
   }
 });
 
-app.post('/drone/moveDrone', async (req, res) => {
-  const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
+app.post('/drone/newDelivery', async (req, res) => {
+  const from = await opencage
+    .geocode({ q: req.query.from as string })
+    .then((address) => {
+      return {
+        lat: address.results[0].geometry.lat,
+        lng: address.results[0].geometry.lng,
+      };
+    });
 
-  const from = await geocoder.geocode(req.query.from as string).then((data) => {
-    return {
-      lat: data[0].latitude,
-      lng: data[0].longitude,
-    };
-  });
-  const to = await geocoder.geocode(req.query.to as string).then((data) => {
-    return {
-      lat: data[0].latitude,
-      lng: data[0].longitude,
-    };
-  });
+  const to = await opencage
+    .geocode({ q: req.query.to as string })
+    .then((address) => {
+      return {
+        lat: address.results[0].geometry.lat,
+        lng: address.results[0].geometry.lng,
+      };
+    });
 
   const route = generateRoute(
     from as { lat: number; lng: number },
     to as { lat: number; lng: number },
-    15
+    100
   );
 
   DbService.updateDroneAddress(
@@ -199,5 +207,5 @@ app.post('/drone/moveDrone', async (req, res) => {
   );
   DroneService.startMovement(`/${req.query.droneName}` as string, route);
 
-  res.status(201).send({ from, to });
+  res.status(201).send({ ok: true, err: '' });
 });

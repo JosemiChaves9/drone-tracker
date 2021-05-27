@@ -7,7 +7,7 @@ import type {
   LoginUser,
   NewUser,
   ApiErrorResponse,
-  NewAddress,
+  NewDelivery,
 } from '../types';
 
 const instance = axios.create({
@@ -55,11 +55,12 @@ export class ApiService {
     return user.data;
   }
 
-  static async newAddress(data: NewAddress) {
-    const response = await instance.post(
-      `/drone/moveDrone/?droneName=${data.droneName}&from=${data.addressFrom}&to=${data.addressTo}`,
-      data
-    );
+  static async newDelivery(data: NewDelivery) {
+    const response: AxiosResponse<{ ok: boolean; err: string }> =
+      await instance.post(
+        `/drone/newDelivery/?droneName=${data.droneName}&from=${data.addressFrom}&to=${data.addressTo}`,
+        data
+      );
     return response.data;
   }
 }

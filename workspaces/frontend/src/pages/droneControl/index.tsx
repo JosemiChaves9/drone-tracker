@@ -2,17 +2,45 @@ import { faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BaseLayout } from '../../components/BaseLayout';
 import { useForm } from 'react-hook-form';
-import type { Coordinates, NewAddress } from '../../types';
+import type { NewDelivery } from '../../types';
 import { ApiService } from '../../services/ApiService';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import opencage from 'opencage-api-client';
 
 export const DroneControl = () => {
-  const { register, handleSubmit } = useForm<NewAddress>();
-  const [fromAddress, _setFromAddress] = useState<Coordinates[]>();
-  const [toAddress, _setToAddress] = useState<Coordinates[]>();
+  const { register, handleSubmit } = useForm<NewDelivery>();
+  const [fromAddress, setFromAddress] = useState<any[]>();
+  const [toAddress, setToAddress] = useState<any[]>();
+  const [drones, setDrones] = useState<any[]>([]);
+  const [success, setSuccess] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const onClickOnSend = (data: NewAddress) => {
-    ApiService.newAddress(data).then((res) => {});
+  useEffect(() => {
+    ApiService.getDrones().then((res) => setDrones(res));
+  }, []);
+
+  // ? how to type setState?
+  const geocode = (query: string, setState: any) => {
+    if (query.length > 5) {
+      opencage
+        .geocode({ q: query, key: process.env.REACT_APP_OPENCAGE_API_KEY })
+        .then((data) => {
+          setState(data.results);
+        });
+    } else {
+      return;
+    }
+  };
+
+  const onClickOnSend = (data: NewDelivery) => {
+    console.log(data);
+    ApiService.newDelivery(data).then((res) => {
+      if (res.ok) {
+        setSuccess(true);
+      } else {
+        setError(res.err);
+      }
+    });
   };
 
   return (
@@ -22,6 +50,16 @@ export const DroneControl = () => {
           <h6 className='m-0 font-weight-bold text-primary'>Drone Control</h6>
         </div>
         <div className='card-body'>
+          {success && (
+            <div className='alert alert-success' role='alert'>
+              New delivery on the way!
+            </div>
+          )}
+          {error && (
+            <div className='alert alert-danger' role='alert'>
+              There was an error:
+            </div>
+          )}
           <form className='user' onSubmit={handleSubmit(onClickOnSend)}>
             <div className='form-group'>
               <h5>Drone name</h5>
@@ -32,46 +70,51 @@ export const DroneControl = () => {
                 <option value='placeholder' disabled>
                   Select a drone
                 </option>
-                <option value='1MZ50'>1MZ50</option>
+                {drones?.map((drone) => {
+                  return (
+                    <option value={drone.name} key={drone.id}>
+                      {drone.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className='form-group'>
-              <h5>New direction</h5>
+              <h5>From:</h5>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Address from'
                 {...register('addressFrom', { required: true })}
+                onChange={(event) =>
+                  geocode(event.target.value, setFromAddress)
+                }
                 list='addressFrom'
               />
               <datalist id='addressFrom'>
-                {/* {fromAddress?.map((street, idx) => {
-                  return (
-                    <option value={street.geometry} key={idx}>
-                      {street.formatted}
-                    </option>
-                  );
-                })} */}
+                {fromAddress?.map((street, idx) => {
+                  return <option value={street.formatted} key={idx} />;
+                })}
               </datalist>
             </div>
 
             <div className='form-group'>
-              <h5>New direction</h5>
+              <h5>To:</h5>
               <input
                 type='text'
                 className='form-control'
                 placeholder='Address to'
                 {...register('addressTo', { required: true })}
-                //onChange={(event) => geocode(event.target.value, setToAddress)}
+                onChange={(event) => geocode(event.target.value, setToAddress)}
                 list='addressTo 
                 '
               />
               <datalist
                 id='addressTo 
               '>
-                {/* {toAddress?.map((street, idx) => {
+                {toAddress?.map((street, idx) => {
                   return <option value={street.formatted} key={idx} />;
-                })} */}
+                })}
               </datalist>
             </div>
 

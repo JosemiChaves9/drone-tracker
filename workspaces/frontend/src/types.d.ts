@@ -10,7 +10,6 @@ export interface ApiDrone {
   from: string;
   to: string;
 }
-
 interface ApiBase {
   city: string;
   id: number;
@@ -28,7 +27,6 @@ export interface NewUser {
   password: string;
   passwordCheck: string;
 }
-
 export interface LoginUser {
   email: string;
   password: string;
@@ -52,13 +50,18 @@ export interface ApiErrorResponse {
   err: string;
   ok: boolean;
 }
-interface NewAddress {
+interface NewDelivery {
   droneName: string;
   addressFrom: string;
   addressTo: string;
 }
 
-interface Coordinates {
+interface ApiWebSocketResponse {
   lat: number;
   lng: number;
+  droneName: string;
+}
+interface Coordinates {
+  lat?: number;
+  lng?: number;
 }
