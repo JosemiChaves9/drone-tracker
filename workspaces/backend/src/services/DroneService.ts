@@ -14,7 +14,7 @@ export class DroneService {
             lat: route[i].lat,
             lng: route[i].lng,
           };
-          emitter.emit('1MZ50', point);
+          emitter.emit(droneName, point);
           recursive(i + 1);
         } else {
           return;
@@ -29,16 +29,12 @@ export class DroneService {
     droneName: string,
     cb: (point: { lat: number; lng: number }) => void
   ) {
-    emitter.on('1MZ50', cb);
-    //return () => emitter.off(droneName, cb);
+    emitter.on(droneName, cb);
+    return () => {
+      emitter.off(droneName, cb);
+    };
   }
 }
 
-// const unsubscribe = DroneService.subscribeToDroneMovement(
-//   'ABCE',
-//   (lat, lng) => {
-//     console.log(lat, lng);
-//   }
-// );
-
-//unsubscribe();
+// const unsubscribe = DroneService.subscribeToDroneMovement('1MZ50', () => {});
+// unsubscribe();

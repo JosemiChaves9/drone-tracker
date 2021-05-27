@@ -1,5 +1,11 @@
 import { Client } from 'pg';
-import { Base, Drone, User, UserWithoutPassword } from '../../types';
+import {
+  Base,
+  Coordinates,
+  Drone,
+  User,
+  UserWithoutPassword,
+} from '../../types';
 
 const client = new Client({
   user: process.env.PGUSER,
@@ -76,5 +82,16 @@ export class DbService {
       `UPDATE public.users SET usertoken='${usertoken}' where email='${email}' RETURNING email, firstname, lastname, usertoken`
     );
     return user.rows[0];
+  }
+
+  static async updateDroneAddress(
+    from: Coordinates,
+    to: Coordinates,
+    droneName: string
+  ) {
+    const address = await client.query(
+      `UPDATE public.drones SET from_lng='${from.lng}', from_lat='${from.lat}', to_lng='${to.lng}', to_lat='${to.lat}' WHERE name='${droneName}'`
+    );
+    return address.rows[0];
   }
 }

@@ -6,7 +6,7 @@ import bcrypt, { compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './services/DbService';
-import type { Drone, Base } from '../types';
+import type { Drone, Base, Coordinates } from '../types';
 import { startWebSocket } from './webSocketServer';
 import opencage from 'opencage-api-client';
 import { DroneService } from './services/DroneService';
@@ -62,15 +62,21 @@ const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
 app.get('/drones', validateToken, function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
+    console.log(drones);
     Promise.all(
       drones.map(async (drone) => {
-        const address = await geocoder.reverse({
+        const to = await geocoder.reverse({
           lat: drone.to_lat,
-          lon: drone.to_lon,
+          lon: drone.to_lng,
+        });
+        const from = await geocoder.reverse({
+          lat: drone.from_lat,
+          lon: drone.from_lng,
         });
         return {
           ...drone,
-          address: address[0].formattedAddress,
+          to: to[0].formattedAddress,
+          from: from[0].formattedAddress,
         };
       })
     ).then((droneList) => res.send(droneList));
@@ -183,8 +189,15 @@ app.post('/drone/moveDrone', async (req, res) => {
   const route = generateRoute(
     from as { lat: number; lng: number },
     to as { lat: number; lng: number },
-    30
+    15
   );
 
-  DroneService.startMovement(req.body.droneName, route);
+  DbService.updateDroneAddress(
+    from as Coordinates,
+    to as Coordinates,
+    req.query.droneName as string
+  );
+  DroneService.startMovement(`/${req.query.droneName}` as string, route);
+
+  res.status(201).send({ from, to });
 });

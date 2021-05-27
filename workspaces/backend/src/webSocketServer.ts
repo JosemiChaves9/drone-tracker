@@ -5,9 +5,9 @@ export const startWebSocket = () => {
   const wss = new WebSocket.Server({ port: 8080 });
 
   wss.on('connection', function connection(ws, req) {
-    //ws.send('WebSocket connected with client');
+    ws.send('WebSocket connected with client');
 
-    DroneService.subscribeToDroneMovement('1MZ50', (point) =>
+    DroneService.subscribeToDroneMovement(req.url as string, (point) =>
       ws.send(JSON.stringify(point))
     );
   });

@@ -41,7 +41,7 @@ export const BasesView = () => {
           />
           {bases.map((base: ApiBase) => {
             return (
-              <Marker position={[base.lat, base.lon]}>
+              <Marker position={[base.lat, base.lng]}>
                 <Popup>{base.name}</Popup>
               </Marker>
             );

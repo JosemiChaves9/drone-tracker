@@ -1,19 +1,21 @@
 export interface ApiDrone {
   id: string;
   name: string;
-  from: string;
+  from_lat: number;
+  from_lng: number;
   to_lat: number;
-  to_lon: number;
+  to_lng: number;
   speed: number;
   battery: number;
-  address?: string;
+  from: string;
+  to: string;
 }
 
 interface ApiBase {
   city: string;
   id: number;
   lat: number;
-  lon: number;
+  lng: number;
   name: string;
   number: number;
   postcode: string;

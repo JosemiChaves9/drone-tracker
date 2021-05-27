@@ -13,7 +13,7 @@ export const Home = () => {
   });
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
+    const ws = new WebSocket('ws://localhost:8080/1MZ50');
 
     ws.onmessage = (message) => {
       const point: Coordinates = JSON.parse(message.data);
@@ -41,10 +41,6 @@ export const Home = () => {
             <Popup className='actualPos'>Actual Position</Popup>
           </Marker>
         </MapContainer>
-
-        <button onClick={() => {}} className='mt-2 btn btn-primary'>
-          Change position
-        </button>
       </div>
     </BaseLayout>
   );

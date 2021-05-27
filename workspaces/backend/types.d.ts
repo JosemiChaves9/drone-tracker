@@ -1,9 +1,10 @@
 export interface Drone {
   id: string;
   name: string;
-  from: string;
+  from_lat: number;
+  from_lng: number;
   to_lat: number;
-  to_lon: number;
+  to_lng: number;
   speed: number;
   battery: number;
   address?: string;
@@ -16,7 +17,7 @@ export interface Base {
   postcode: string;
   city: string;
   lat: number;
-  lon: number;
+  lng: number;
 }
 
 export interface User {
@@ -31,4 +32,9 @@ export interface UserWithoutPassword {
   lastName: string;
   email: string;
   usertoken: string;
+}
+
+export interface Coordinates {
+  lng: number;
+  lat: number;
 }

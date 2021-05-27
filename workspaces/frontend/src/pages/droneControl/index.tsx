@@ -2,22 +2,17 @@ import { faLocationArrow } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BaseLayout } from '../../components/BaseLayout';
 import { useForm } from 'react-hook-form';
-import type { ApiDrone, NewAddress } from '../../types';
+import type { Coordinates, NewAddress } from '../../types';
 import { ApiService } from '../../services/ApiService';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const DroneControl = () => {
   const { register, handleSubmit } = useForm<NewAddress>();
-  const [fromAddress, setFromAddress] = useState<any[]>();
-  const [toAddress, setToAddress] = useState<any[]>();
-
-  // Create POST request, sending drone name, and coordinates, this request will generate the route, generate movement id (random id)
-  // Create service, startDroneMovement(droneId, startPos, endPos), susbcribeToDroneMovement(droneId, callback())
+  const [fromAddress, _setFromAddress] = useState<Coordinates[]>();
+  const [toAddress, _setToAddress] = useState<Coordinates[]>();
 
   const onClickOnSend = (data: NewAddress) => {
-    ApiService.newAddress(data).then((res) => {
-      console.log(res);
-    });
+    ApiService.newAddress(data).then((res) => {});
   };
 
   return (
@@ -50,13 +45,13 @@ export const DroneControl = () => {
                 list='addressFrom'
               />
               <datalist id='addressFrom'>
-                {fromAddress?.map((street, idx) => {
+                {/* {fromAddress?.map((street, idx) => {
                   return (
                     <option value={street.geometry} key={idx}>
                       {street.formatted}
                     </option>
                   );
-                })}
+                })} */}
               </datalist>
             </div>
 
@@ -74,9 +69,9 @@ export const DroneControl = () => {
               <datalist
                 id='addressTo 
               '>
-                {toAddress?.map((street, idx) => {
+                {/* {toAddress?.map((street, idx) => {
                   return <option value={street.formatted} key={idx} />;
-                })}
+                })} */}
               </datalist>
             </div>
 
