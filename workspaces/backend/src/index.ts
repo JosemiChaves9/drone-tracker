@@ -209,3 +209,18 @@ app.post('/drone/newDelivery', async (req, res) => {
 
   res.status(201).send({ ok: true, err: '' });
 });
+
+app.put('/test', (req, res) => {
+  DbService.updateDroneAddress(
+    req.body.from,
+    req.body.to,
+    req.body.droneName
+  ).then(
+    (response) => {
+      return res.status(204).send('');
+    },
+    (rej) => {
+      res.send(rej);
+    }
+  );
+});

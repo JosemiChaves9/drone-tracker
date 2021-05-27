@@ -89,9 +89,8 @@ export class DbService {
     to: Coordinates,
     droneName: string
   ) {
-    const address = await client.query(
+    await client.query(
       `UPDATE public.drones SET from_lng='${from.lng}', from_lat='${from.lat}', to_lng='${to.lng}', to_lat='${to.lat}' WHERE name='${droneName}'`
     );
-    return address.rows[0];
   }
 }

@@ -33,7 +33,6 @@ export const DroneControl = () => {
   };
 
   const onClickOnSend = (data: NewDelivery) => {
-    console.log(data);
     ApiService.newDelivery(data).then((res) => {
       if (res.ok) {
         setSuccess(true);

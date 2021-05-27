@@ -13,6 +13,8 @@ export const Home = () => {
     lng: 0,
   });
   const [drones, setDrones] = useState<ApiDrone[] | null>(null);
+  const [drone, setDrone] = useState<ApiDrone>();
+
   useEffect(() => {
     ApiService.getDrones().then((res) => setDrones(res));
   }, []);
@@ -21,8 +23,7 @@ export const Home = () => {
     if (!drones) {
       return;
     } else {
-      const drone = drones.find((element: any) => element.name === '1MZ50');
-      console.log(drone);
+      setDrone(drones.find((drone: any) => drone.name === '1MZ50'));
     }
   }, [drones]);
 
@@ -31,7 +32,6 @@ export const Home = () => {
 
     ws.onmessage = (message) => {
       const point: ApiWebSocketResponse = JSON.parse(message.data);
-
       setActualPos({
         lat: point.lat,
         lng: point.lng,
@@ -52,7 +52,7 @@ export const Home = () => {
             accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
 
-          {drones ? (
+          {drones && (
             <>
               <Marker
                 position={latLng({
@@ -69,8 +69,6 @@ export const Home = () => {
                 <Popup className='actualPos'>To {drones[0].name}</Popup>
               </Marker>
             </>
-          ) : (
-            ''
           )}
 
           <Marker position={latLng(actualPos as { lat: number; lng: number })}>
