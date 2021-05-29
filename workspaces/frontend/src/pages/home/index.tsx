@@ -7,35 +7,30 @@ import { ApiDrone, ApiWebSocketResponse, Coordinates } from '../../types';
 import { ApiService } from '../../services/ApiService';
 
 export const Home = () => {
+  const [droneMoving, setDroneMoving] = useState<ApiDrone[] | null>(null);
   // eslint-disable-next-line
   const [actualPos, setActualPos] = useState<Coordinates>({
     lat: 0,
     lng: 0,
   });
-  const [drones, setDrones] = useState<ApiDrone[] | null>(null);
-  const [drone, setDrone] = useState<ApiDrone>();
-
-  useEffect(() => {
-    ApiService.getDrones().then((res) => setDrones(res));
-  }, []);
-
-  useEffect(() => {
-    if (!drones) {
-      return;
-    } else {
-      setDrone(drones.find((drone: any) => drone.name === '1MZ50'));
-    }
-  }, [drones]);
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080/1MZ50');
 
-    ws.onmessage = (message) => {
-      const point: ApiWebSocketResponse = JSON.parse(message.data);
-      setActualPos({
-        lat: point.lat,
-        lng: point.lng,
+    const getDroneMoving = async (droneName: string) => {
+      await ApiService.getDrones().then((res) => {
+        setDroneMoving(res.filter((drone) => drone.name === droneName));
       });
+
+      getDroneMoving('1MZ50');
+
+      ws.onmessage = (message) => {
+        const point: ApiWebSocketResponse = JSON.parse(message.data);
+        setActualPos({
+          lat: point.lat,
+          lng: point.lng,
+        });
+      };
     };
   }, []);
 
@@ -52,27 +47,31 @@ export const Home = () => {
             accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
           />
 
-          {drones && (
-            <>
-              <Marker
-                position={latLng({
-                  lat: drones[0].from_lat,
-                  lng: drones[0].from_lng,
-                })}>
-                <Popup className='actualPos'>From {drones[0].name}</Popup>
-              </Marker>
-              <Marker
-                position={latLng({
-                  lat: drones[0].to_lat,
-                  lng: drones[0].to_lng,
-                })}>
-                <Popup className='actualPos'>To {drones[0].name}</Popup>
-              </Marker>
-            </>
-          )}
+          {droneMoving?.map((drone) => {
+            return (
+              <>
+                <Marker
+                  position={latLng({
+                    lat: drone.from_lat,
+                    lng: drone.from_lng,
+                  })}>
+                  <Popup className='actualPos'>From {drone.name}</Popup>
+                </Marker>
+                <Marker
+                  position={latLng({
+                    lat: drone.to_lat,
+                    lng: drone.to_lng,
+                  })}>
+                  <Popup className='actualPos'>To {drone.name}</Popup>
+                </Marker>
+              </>
+            );
+          })}
 
-          <Marker position={latLng(actualPos as { lat: number; lng: number })}>
-            <Popup className='actualPos'>{drones ? drones[0].name : ''}</Popup>
+          <Marker position={latLng(actualPos)}>
+            <Popup className='actualPos'>
+              {droneMoving?.map((drone) => drone.name)}
+            </Popup>
           </Marker>
         </MapContainer>
       </div>
