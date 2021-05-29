@@ -6,6 +6,7 @@ import type { NewDelivery } from '../../types';
 import { ApiService } from '../../services/ApiService';
 import { useEffect, useState } from 'react';
 import opencage from 'opencage-api-client';
+import { Redirect } from 'react-router';
 
 export const DroneControl = () => {
   const { register, handleSubmit } = useForm<NewDelivery>();
@@ -16,7 +17,12 @@ export const DroneControl = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    ApiService.getDrones().then((res) => setDrones(res));
+    ApiService.getDrones().then(
+      (res) => setDrones(res),
+      (rej) => {
+        setError('ERR_USER_NOT_LOGGED');
+      }
+    );
   }, []);
 
   // ? how to type setState?
@@ -44,6 +50,11 @@ export const DroneControl = () => {
 
   return (
     <BaseLayout>
+      {error === 'ERR_USER_NOT_LOGGED' && (
+        <>
+          <Redirect to='/login' />
+        </>
+      )}
       <div className='card shadow mb-4'>
         <div className='card-header py-3'>
           <h6 className='m-0 font-weight-bold text-primary'>Drone Control</h6>

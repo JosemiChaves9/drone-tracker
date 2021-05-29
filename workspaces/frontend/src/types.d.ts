@@ -62,6 +62,6 @@ interface ApiWebSocketResponse {
   droneName: string;
 }
 interface Coordinates {
-  lat?: number;
-  lng?: number;
+  lat: number;
+  lng: number;
 }

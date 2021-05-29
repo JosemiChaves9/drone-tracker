@@ -4,11 +4,15 @@ import { DroneService } from './services/DroneService';
 export const startWebSocket = () => {
   const wss = new WebSocket.Server({ port: 8080 });
 
-  wss.on('connection', function connection(ws, req) {
+  wss.on('connection', (ws, req) => {
     ws.send('WebSocket connected with client');
 
-    DroneService.subscribeToDroneMovement(req.url as string, (point) =>
-      ws.send(JSON.stringify(point))
-    );
+    if (!req.url) {
+      wss.off('close', () => ws.send('data missing'));
+    } else {
+      DroneService.subscribeToDroneMovement(req.url, (point) =>
+        ws.send(JSON.stringify(point))
+      );
+    }
   });
 };

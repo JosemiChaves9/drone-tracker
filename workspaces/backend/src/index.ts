@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import Express, { NextFunction, Response, Request, query } from 'express';
+import Express, { NextFunction, Response, Request } from 'express';
 import cors from 'cors';
-import bcrypt, { compareSync } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './services/DbService';
@@ -11,7 +11,6 @@ import { startWebSocket } from './webSocketServer';
 import opencage from 'opencage-api-client';
 import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
-import NodeGeocoder from 'node-geocoder';
 
 const app = Express();
 
@@ -176,6 +175,10 @@ app.put('/user/login', async (req, res) => {
 });
 
 app.post('/drone/newDelivery', async (req, res) => {
+  if (!req.query.from || !req.query.to) {
+    return res.send('err');
+  }
+
   const from = await opencage
     .geocode({ q: req.query.from as string })
     .then((address) => {
@@ -194,33 +197,15 @@ app.post('/drone/newDelivery', async (req, res) => {
       };
     });
 
-  const route = generateRoute(
-    from as { lat: number; lng: number },
-    to as { lat: number; lng: number },
-    100
-  );
+  const route = generateRoute(from, to, 100);
 
-  DbService.updateDroneAddress(
+  await DbService.updateDroneAddress(
     from as Coordinates,
     to as Coordinates,
     req.query.droneName as string
-  );
-  DroneService.startMovement(`/${req.query.droneName}` as string, route);
+  ).then(() => {
+    DroneService.startMovement(`/${req.query.droneName}`, route);
+  });
 
   res.status(201).send({ ok: true, err: '' });
-});
-
-app.put('/test', (req, res) => {
-  DbService.updateDroneAddress(
-    req.body.from,
-    req.body.to,
-    req.body.droneName
-  ).then(
-    (response) => {
-      return res.status(204).send('');
-    },
-    (rej) => {
-      res.send(rej);
-    }
-  );
 });
