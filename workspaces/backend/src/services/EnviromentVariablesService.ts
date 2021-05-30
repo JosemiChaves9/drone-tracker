@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
+var debug = require('debug')('serverEnvVar');
 
-console.log(process.env);
+debug(process.env);
 
 export class EnviromentVariables {
   static getPort() {

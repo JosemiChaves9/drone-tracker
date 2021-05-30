@@ -10,7 +10,6 @@ import opencage from 'opencage-api-client';
 import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
 import { EnviromentVariables } from './services/EnviromentVariablesService';
-
 const app = Express();
 
 app.use(Express.json());
