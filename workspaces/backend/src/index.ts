@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './services/DbService';
-import type { Drone, Base, Coordinates } from '../types';
+import type { Drone, Base, Address } from '../types';
 import { startWebSocket } from './webSocketServer';
 import opencage from 'opencage-api-client';
 import { DroneService } from './services/DroneService';
@@ -58,32 +58,9 @@ DbService.connect().then(
   }
 );
 
-app.get('/drones', validateToken, function (_req, res) {
+app.get('/drones', function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
-    Promise.all(
-      drones.map(async (drone) => {
-        const to = await opencage
-          .geocode({
-            q: `${drone.to_lat}, ${drone.to_lng}`,
-          })
-          .then((address) => address.results[0].formatted);
-        const from = await opencage
-          .geocode({
-            q: `${drone.from_lat}, ${drone.from_lng}`,
-          })
-          .then((address) => address.results[0].formatted);
-        return {
-          ...drone,
-          to: to,
-          from: from,
-        };
-      })
-    ).then(
-      (droneList) => res.send(droneList),
-      (rej) => {
-        res.send(rej);
-      }
-    );
+    res.send(drones);
   });
 });
 
@@ -175,33 +152,31 @@ app.put('/user/login', async (req, res) => {
 });
 
 app.post('/drone/newDelivery', async (req, res) => {
-  if (!req.query.from || !req.query.to) {
-    return res.send('err');
-  }
-
-  const from = await opencage
+  const from: Address = await opencage
     .geocode({ q: req.query.from as string })
     .then((address) => {
       return {
         lat: address.results[0].geometry.lat,
         lng: address.results[0].geometry.lng,
+        formatted: req.query.from as string,
       };
     });
 
-  const to = await opencage
+  const to: Address = await opencage
     .geocode({ q: req.query.to as string })
     .then((address) => {
       return {
         lat: address.results[0].geometry.lat,
         lng: address.results[0].geometry.lng,
+        formatted: req.query.to as string,
       };
     });
 
   const route = generateRoute(from, to, 100);
 
   await DbService.updateDroneAddress(
-    from as Coordinates,
-    to as Coordinates,
+    from,
+    to,
     req.query.droneName as string
   ).then(() => {
     DroneService.startMovement(`/${req.query.droneName}`, route);

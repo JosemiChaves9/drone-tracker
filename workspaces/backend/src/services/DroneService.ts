@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { Coordinates } from '../../types';
+import { Address } from '../../types';
 
 const emitter = new EventEmitter();
 
@@ -29,7 +29,7 @@ export class DroneService {
 
   static subscribeToDroneMovement(
     droneName: string,
-    cb: (point: Coordinates) => void
+    cb: (point: Address) => void
   ) {
     emitter.on(droneName, cb);
     return () => {

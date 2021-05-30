@@ -21,16 +21,16 @@ export const Home = () => {
       await ApiService.getDrones().then((res) => {
         setDroneMoving(res.filter((drone) => drone.name === droneName));
       });
+    };
 
-      getDroneMoving('1MZ50');
+    getDroneMoving('1MZ50');
 
-      ws.onmessage = (message) => {
-        const point: ApiWebSocketResponse = JSON.parse(message.data);
-        setActualPos({
-          lat: point.lat,
-          lng: point.lng,
-        });
-      };
+    ws.onmessage = (message) => {
+      const point: ApiWebSocketResponse = JSON.parse(message.data);
+      setActualPos({
+        lat: point.lat,
+        lng: point.lng,
+      });
     };
   }, []);
 
