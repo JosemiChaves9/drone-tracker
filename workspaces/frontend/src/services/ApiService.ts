@@ -7,10 +7,11 @@ import type {
   LoginUser,
   NewUser,
   ApiErrorResponse,
+  NewDelivery,
 } from '../types';
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_ADDRESS,
+  baseURL: 'http://localhost:4000',
 });
 
 instance.interceptors.request.use((req) => {
@@ -52,5 +53,14 @@ export class ApiService {
     const user: AxiosResponse<ApiUserLoginResponse | ApiErrorResponse> =
       await instance.put('/user/login', data);
     return user.data;
+  }
+
+  static async newDelivery(data: NewDelivery) {
+    const response: AxiosResponse<{ ok: boolean; err: string }> =
+      await instance.post(
+        `/drone/newDelivery/?droneName=${data.droneName}&from=${data.addressFrom}&to=${data.addressTo}`,
+        data
+      );
+    return response.data;
   }
 }

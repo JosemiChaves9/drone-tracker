@@ -15,17 +15,25 @@ export const ContextProvider = ({ children }: any) => {
   const [user, setUser] = useState<ApiUserLoginResponse | null>(null);
   const [isLogged, setIsLogged] = useState(false);
   const usertoken = localStorage.getItem('usertoken');
+
   useEffect(() => {
+    // eslint-disable-next-line
     const getUser = (async () => {
-      await ApiService.getUserByUsertoken(usertoken as string).then((res) => {
-        if (res.ok) {
-          setUser(res as ApiUserLoginResponse);
-        } else {
+      await ApiService.getUserByUsertoken(usertoken as string).then(
+        (res) => {
+          if (res.ok) {
+            setUser(res as ApiUserLoginResponse);
+          } else {
+            setUser(null);
+          }
+        },
+        (rej) => {
+          localStorage.removeItem('usertoken');
           setUser(null);
         }
-      });
+      );
     })();
-  }, [isLogged]);
+  }, [isLogged, usertoken]);
 
   const changeLogged = () => {
     setIsLogged(!isLogged);

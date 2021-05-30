@@ -15,6 +15,7 @@ export const Login = () => {
   const [success, setSuccess] = useState<null | string>(null);
   const [err, setErr] = useState<null | string>(null);
   const { changeLogged } = useContext(UserContext);
+  // eslint-disable-next-line
   const [usertoken, setUsertoken] = useLocalStorage<string>('usertoken');
 
   const onClickOnLogin = (data: LoginUser) => {

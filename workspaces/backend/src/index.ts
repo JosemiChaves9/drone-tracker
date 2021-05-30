@@ -1,71 +1,64 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import Express, { NextFunction, Response, Request } from 'express';
-import NodeGeocoder from 'node-geocoder';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
-import { DbService } from './DbService';
-import type { Drone, Base } from '../types';
-
+import { DbService } from './services/DbService';
+import type { Drone, Base, Address } from '../types';
+import { startWebSocket } from './webSocketServer';
+import opencage from 'opencage-api-client';
+import { DroneService } from './services/DroneService';
+import { generateRoute } from 'geo-route-generator';
+import { EnviromentVariables } from './services/EnviromentVariablesService';
 const app = Express();
+
+app.use(Express.json());
 
 app.use(
   cors({
-    origin: process.env.CLIENT_ADDRESS,
+    origin: 'http://localhost:3000',
     credentials: true,
     optionsSuccessStatus: 200,
   })
 );
 
-app.use(Express.json());
-
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(
     req.headers.authorization as string,
-    process.env.SECRET as string,
+    EnviromentVariables.getSecret,
     (err) => {
       if (err) {
         return res.status(401).send({
           ok: false,
-          err: err,
+          ...err,
           errorMessage: 'Something went wrong with authentication',
         });
       } else {
         next();
+        return {
+          ok: true,
+        };
       }
     }
   );
 };
 
-const PORT = process.env.PORT || 4000;
+const PORT = EnviromentVariables.getPort();
 DbService.connect().then(
   () => {
     app.listen(PORT, () =>
       console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`)
     );
+    startWebSocket();
   },
   () => {
     throw new Error(`can't connect to DB`);
   }
 );
-const geocoder = NodeGeocoder({ provider: 'openstreetmap' });
 
-app.get('/drones', validateToken, function (_req, res) {
+app.get('/drones', function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
-    Promise.all(
-      drones.map(async (drone) => {
-        const address = await geocoder.reverse({
-          lat: drone.to_lat,
-          lon: drone.to_lon,
-        });
-        return {
-          ...drone,
-          address: address[0].formattedAddress,
-        };
-      })
-    ).then((droneList) => res.send(droneList));
+    res.send(drones);
   });
 });
 
@@ -87,7 +80,7 @@ app.post('/user/newuser', async function (req, res) {
   try {
     if (EmailValidator.validate(email)) {
       const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
-      const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
+      const usertoken = jwt.sign({ email }, EnviromentVariables.getSecret(), {
         expiresIn: '1h',
       });
       await DbService.createNewUser(
@@ -121,7 +114,7 @@ app.get('/user/email/:email', async (req, res) => {
   return res.send(user);
 });
 
-app.get('/user/usertoken/:usertoken', async (req, res) => {
+app.get('/user/usertoken/:usertoken', validateToken, async (req, res) => {
   const user = await DbService.getUserByusertoken(req.params.usertoken);
   if (!user) {
     return res.status(404).send({
@@ -143,7 +136,7 @@ app.put('/user/login', async (req, res) => {
   const isEqual = bcrypt.compareSync(req.body.password, user.password);
 
   if (isEqual) {
-    const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
+    const usertoken = jwt.sign({ email }, EnviromentVariables.getSecret(), {
       expiresIn: '1h',
     });
     await DbService.updateToken(user.email, usertoken).then((user) => {
@@ -154,4 +147,38 @@ app.put('/user/login', async (req, res) => {
       .status(400)
       .send({ ok: false, err: 'The password is incorrect' });
   }
+});
+
+app.post('/drone/newDelivery', async (req, res) => {
+  const from: Address = await opencage
+    .geocode({ q: req.query.from as string })
+    .then((address) => {
+      return {
+        lat: address.results[0].geometry.lat,
+        lng: address.results[0].geometry.lng,
+        formatted: req.query.from as string,
+      };
+    });
+
+  const to: Address = await opencage
+    .geocode({ q: req.query.to as string })
+    .then((address) => {
+      return {
+        lat: address.results[0].geometry.lat,
+        lng: address.results[0].geometry.lng,
+        formatted: req.query.to as string,
+      };
+    });
+
+  const route = generateRoute(from, to, 100);
+
+  await DbService.updateDroneAddress(
+    from,
+    to,
+    req.query.droneName as string
+  ).then(() => {
+    DroneService.startMovement(`/${req.query.droneName}`, route);
+  });
+
+  res.status(201).send({ ok: true, err: '' });
 });

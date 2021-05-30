@@ -1,19 +1,20 @@
 export interface ApiDrone {
   id: string;
   name: string;
-  from: string;
-  to_lat: number;
-  to_lon: number;
+  address_from: string;
+  address_to: string;
   speed: number;
   battery: number;
-  address?: string;
+  to_lng: number;
+  to_lat: number;
+  from_lng: number;
+  from_lat: number;
 }
-
 interface ApiBase {
   city: string;
   id: number;
   lat: number;
-  lon: number;
+  lng: number;
   name: string;
   number: number;
   postcode: string;
@@ -26,7 +27,6 @@ export interface NewUser {
   password: string;
   passwordCheck: string;
 }
-
 export interface LoginUser {
   email: string;
   password: string;
@@ -49,4 +49,19 @@ export interface ApiUserLoginResponse {
 export interface ApiErrorResponse {
   err: string;
   ok: boolean;
+}
+interface NewDelivery {
+  droneName: string;
+  addressFrom: string;
+  addressTo: string;
+}
+
+interface ApiWebSocketResponse {
+  lat: number;
+  lng: number;
+  droneName: string;
+}
+interface Coordinates {
+  lat: number;
+  lng: number;
 }

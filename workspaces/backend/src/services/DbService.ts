@@ -1,12 +1,13 @@
 import { Client } from 'pg';
-import { Base, Drone, User, UserWithoutPassword } from '../types';
+import { Base, Address, Drone, User, UserWithoutPassword } from '../../types';
+import { EnviromentVariables } from './EnviromentVariablesService';
 
 const client = new Client({
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  host: process.env.HOST,
-  port: 5432 || process.env.DB_PORT,
-  database: process.env.PGNAME,
+  user: EnviromentVariables.getPostgresUser(),
+  password: EnviromentVariables.getPostgresPassword(),
+  host: EnviromentVariables.getHostDb(),
+  port: 5432,
+  database: EnviromentVariables.getPostgresDbName(),
 });
 
 export class DbService {
@@ -76,5 +77,15 @@ export class DbService {
       `UPDATE public.users SET usertoken='${usertoken}' where email='${email}' RETURNING email, firstname, lastname, usertoken`
     );
     return user.rows[0];
+  }
+
+  static async updateDroneAddress(
+    from: Address,
+    to: Address,
+    droneName: string
+  ) {
+    await client.query(
+      `UPDATE public.drones SET address_from='${from.formatted}', from_lat='${from.lat}', from_lng='${from.lng}', to_lat='${to.lat}', to_lng='${to.lng}', address_to='${to.formatted}' WHERE name='${droneName}'`
+    );
   }
 }

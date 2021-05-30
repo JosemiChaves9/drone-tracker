@@ -18,6 +18,7 @@ services:
       - mb-net
     ports:
       - "4000:4000"
+      - "8080:8080"
       - "9223:9223"
     depends_on:
      - db

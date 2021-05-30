@@ -12,8 +12,8 @@ import type {
 export const Singup = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  // eslint-disable-next-line
   const [usertoken, setUsertoken] = useLocalStorage('usertoken');
-
   const { register, handleSubmit } = useForm<NewUser>();
 
   const onClickOnSignup = (data: NewUser) => {

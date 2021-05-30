@@ -1,65 +1,80 @@
-import { useState } from 'react';
 import { latLng } from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { generateRoute } from 'geo-route-generator';
 import './index.scss';
 import { BaseLayout } from '../../components/BaseLayout';
+import { useEffect, useState } from 'react';
+import { ApiDrone, ApiWebSocketResponse, Coordinates } from '../../types';
+import { ApiService } from '../../services/ApiService';
+import { EnviromentVariables } from '../../services/EnviromentVariablesService';
 
 export const Home = () => {
-  const startPos = {
-    lat: 40.413599,
-    lng: -3.709558,
-  };
+  const [droneMoving, setDroneMoving] = useState<ApiDrone[] | null>(null);
+  // eslint-disable-next-line
+  const [actualPos, setActualPos] = useState<Coordinates>({
+    lat: 0,
+    lng: 0,
+  });
 
-  const finalPos = {
-    lat: -47.190444,
-    lng: -69.286307,
-  };
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8080/1MZ50');
 
-  const [actualPos, setActualPos] = useState(startPos);
-  const steps = 100;
-  const route = generateRoute(startPos, finalPos, steps);
-
-  const changeLocation = (i: number = 0) => {
-    setTimeout(() => {
-      setActualPos(() => {
-        return {
-          lat: route[i].lat,
-          lng: route[i].lng,
-        };
+    const getDroneMoving = async (droneName: string) => {
+      await ApiService.getDrones().then((res) => {
+        setDroneMoving(res.filter((drone) => drone.name === droneName));
       });
-      i < steps - 1 && changeLocation(i + 1);
-    }, 100);
-  };
+    };
+
+    getDroneMoving('1MZ50');
+
+    ws.onmessage = (message) => {
+      const point: ApiWebSocketResponse = JSON.parse(message.data);
+      setActualPos({
+        lat: point.lat,
+        lng: point.lng,
+      });
+    };
+  }, []);
 
   return (
     <BaseLayout>
       <div>
         <MapContainer
-          center={[39.634929, 2.976627]}
-          zoom={10}
+          center={[39.5695818, 2.6500745]}
+          zoom={14}
           scrollWheelZoom={true}>
           <TileLayer
             attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
-            accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
+            accessToken={EnviromentVariables.getMapAccessToken()}
           />
-          <Marker position={latLng(startPos)}>
-            <Popup>Start Position</Popup>
-          </Marker>
-          <Marker position={latLng(actualPos)}>
-            <Popup className='actualPos'>Actual Position</Popup>
-          </Marker>
 
-          <Marker position={latLng(finalPos)}>
-            <Popup>End Position</Popup>
+          {droneMoving?.map((drone) => {
+            return (
+              <>
+                <Marker
+                  position={latLng({
+                    lat: drone.from_lat,
+                    lng: drone.from_lng,
+                  })}>
+                  <Popup className='actualPos'>From {drone.name}</Popup>
+                </Marker>
+                <Marker
+                  position={latLng({
+                    lat: drone.to_lat,
+                    lng: drone.to_lng,
+                  })}>
+                  <Popup className='actualPos'>To {drone.name}</Popup>
+                </Marker>
+              </>
+            );
+          })}
+
+          <Marker position={latLng(actualPos)}>
+            <Popup className='actualPos'>
+              {droneMoving?.map((drone) => drone.name)}
+            </Popup>
           </Marker>
         </MapContainer>
-        <button
-          onClick={() => changeLocation()}
-          className='mt-2 btn btn-primary'>
-          Change position
-        </button>
       </div>
     </BaseLayout>
   );
