@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import Express, { NextFunction, Response, Request } from 'express';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
@@ -11,6 +9,7 @@ import { startWebSocket } from './webSocketServer';
 import opencage from 'opencage-api-client';
 import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
+import { EnviromentVariables } from './services/EnviromentVariablesService';
 
 const app = Express();
 
@@ -18,7 +17,7 @@ app.use(Express.json());
 
 app.use(
   cors({
-    origin: process.env.CLIENT_ADDRESS,
+    origin: 'http://localhost:3000',
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -27,7 +26,7 @@ app.use(
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(
     req.headers.authorization as string,
-    process.env.SECRET as string,
+    EnviromentVariables.getSecret,
     (err) => {
       if (err) {
         return res.status(401).send({
@@ -45,7 +44,7 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
-const PORT = process.env.PORT || 4000;
+const PORT = EnviromentVariables.getPort();
 DbService.connect().then(
   () => {
     app.listen(PORT, () =>
@@ -82,7 +81,7 @@ app.post('/user/newuser', async function (req, res) {
   try {
     if (EmailValidator.validate(email)) {
       const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
-      const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
+      const usertoken = jwt.sign({ email }, EnviromentVariables.getSecret(), {
         expiresIn: '1h',
       });
       await DbService.createNewUser(
@@ -138,7 +137,7 @@ app.put('/user/login', async (req, res) => {
   const isEqual = bcrypt.compareSync(req.body.password, user.password);
 
   if (isEqual) {
-    const usertoken = jwt.sign({ email }, process.env.SECRET as string, {
+    const usertoken = jwt.sign({ email }, EnviromentVariables.getSecret(), {
       expiresIn: '1h',
     });
     await DbService.updateToken(user.email, usertoken).then((user) => {

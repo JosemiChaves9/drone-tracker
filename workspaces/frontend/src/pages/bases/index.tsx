@@ -3,6 +3,7 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
 import { ApiService } from '../../services/ApiService';
+import { EnviromentVariables } from '../../services/EnviromentVariablesService';
 import type { ApiBase } from '../../types';
 
 export const BasesView = () => {
@@ -37,7 +38,7 @@ export const BasesView = () => {
           <TileLayer
             attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
-            accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
+            accessToken={EnviromentVariables.getMapAccessToken()}
           />
           {bases.map((base: ApiBase) => {
             return (

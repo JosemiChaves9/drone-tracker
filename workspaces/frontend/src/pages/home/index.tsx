@@ -5,6 +5,7 @@ import { BaseLayout } from '../../components/BaseLayout';
 import { useEffect, useState } from 'react';
 import { ApiDrone, ApiWebSocketResponse, Coordinates } from '../../types';
 import { ApiService } from '../../services/ApiService';
+import { EnviromentVariables } from '../../services/EnviromentVariablesService';
 
 export const Home = () => {
   const [droneMoving, setDroneMoving] = useState<ApiDrone[] | null>(null);
@@ -44,7 +45,7 @@ export const Home = () => {
           <TileLayer
             attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
-            accessToken={process.env.REACT_APP_MAP_ACCESS_TOKEN}
+            accessToken={EnviromentVariables.getMapAccessToken()}
           />
 
           {droneMoving?.map((drone) => {

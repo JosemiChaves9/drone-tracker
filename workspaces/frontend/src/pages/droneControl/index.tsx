@@ -7,6 +7,7 @@ import { ApiService } from '../../services/ApiService';
 import { useEffect, useState } from 'react';
 import opencage from 'opencage-api-client';
 import { Redirect } from 'react-router';
+import { EnviromentVariables } from '../../services/EnviromentVariablesService';
 
 export const DroneControl = () => {
   const { register, handleSubmit } = useForm<NewDelivery>();
@@ -29,7 +30,7 @@ export const DroneControl = () => {
   const geocode = (query: string, setState: any) => {
     if (query.length > 5) {
       opencage
-        .geocode({ q: query, key: process.env.REACT_APP_OPENCAGE_API_KEY })
+        .geocode({ q: query, key: EnviromentVariables.getOpencageApiKey() })
         .then((data) => {
           setState(data.results);
         });

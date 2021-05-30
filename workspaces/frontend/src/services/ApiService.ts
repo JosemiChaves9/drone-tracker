@@ -11,7 +11,7 @@ import type {
 } from '../types';
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_ADDRESS,
+  baseURL: 'http://localhost:4000',
 });
 
 instance.interceptors.request.use((req) => {

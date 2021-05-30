@@ -1,12 +1,13 @@
 import { Client } from 'pg';
 import { Base, Address, Drone, User, UserWithoutPassword } from '../../types';
+import { EnviromentVariables } from './EnviromentVariablesService';
 
 const client = new Client({
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  host: process.env.HOST,
-  port: 5432 || process.env.DB_PORT,
-  database: process.env.PGNAME,
+  user: EnviromentVariables.getPostgresUser(),
+  password: EnviromentVariables.getPostgresPassword(),
+  host: EnviromentVariables.getHostDb(),
+  port: 5432,
+  database: EnviromentVariables.getPostgresDbName(),
 });
 
 export class DbService {
