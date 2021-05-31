@@ -21,7 +21,7 @@ app.use(Express.json());
 
 app.use(
   cors({
-    origin: EnviromentVariables.getClientAddress(),
+    origin: EnviromentVariables.getClientAddressAndPort(),
     credentials: true,
     optionsSuccessStatus: 200,
   })

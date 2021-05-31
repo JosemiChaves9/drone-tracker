@@ -31,7 +31,11 @@ export class EnviromentVariables {
     return parseInt(process.env.DB_PORT as string) || 5432;
   }
 
-  static getClientAddress() {
-    return `${process.env.SERVER_ADDRESS}:${process.env.CLIENT_PORT}`;
+  static getClientAddressAndPort() {
+    return `http://${process.env.SERVER_ADDRESS}:${process.env.CLIENT_PORT}`;
+  }
+
+  static getWebSocketPort() {
+    return parseInt(process.env.WEBSOCKET_PORT as string);
   }
 }

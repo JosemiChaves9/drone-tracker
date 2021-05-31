@@ -1,8 +1,11 @@
 import WebSocket from 'ws';
 import { DroneService } from './services/DroneService';
+import { EnviromentVariables } from './services/EnviromentVariablesService';
 
 export const startWebSocket = () => {
-  const wss = new WebSocket.Server({ port: 8080 });
+  const wss = new WebSocket.Server({
+    port: EnviromentVariables.getWebSocketPort(),
+  });
 
   wss.on('connection', (ws, req) => {
     ws.send('WebSocket connected with client');
