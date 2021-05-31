@@ -32,7 +32,7 @@ export class EnviromentVariables {
   }
 
   static getClientAddressAndPort() {
-    return `http://${process.env.SERVER_ADDRESS}:${process.env.CLIENT_PORT}`;
+    return `http://${process.env.CLIENT_ADDRESS}:${process.env.CLIENT_PORT}`;
   }
 
   static getWebSocketPort() {
