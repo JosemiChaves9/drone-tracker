@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
 import Express, { NextFunction, Response, Request } from 'express';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
@@ -13,19 +11,12 @@ import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
 import { EnviromentVariables } from './services/EnviromentVariablesService';
 const app = Express();
-const debug = require('debug')('serverEnvVar');
-
-debug(process.env);
+const websocketEvents = require('debug')('websocket:events');
+const serverEvents = require('debug')('server:events');
+const databaseEvents = require('debug')('database:events');
 
 app.use(Express.json());
-
-app.use(
-  cors({
-    origin: EnviromentVariables.getClientAddressAndPort(),
-    credentials: true,
-    optionsSuccessStatus: 200,
-  })
-);
+app.use(cors());
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(
@@ -52,7 +43,10 @@ const PORT = EnviromentVariables.getPort();
 DbService.connect().then(
   () => {
     app.listen(PORT, () =>
-      console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`)
+      serverEvents(`⚡️[server]: Server is running at http://localhost:${PORT}`)
+    );
+    websocketEvents(
+      `Starting websocket server in port ${EnviromentVariables.getWebSocketPort()}`
     );
     startWebSocket();
   },
@@ -161,6 +155,10 @@ app.put('/user/login', async (req, res) => {
 });
 
 app.post('/drone/newDelivery', async (req, res) => {
+  websocketEvents(
+    `recieved from ${req.query.from}, recieved to ${req.query.to}, recieved droneName ${req.query.droneName}`
+  );
+
   const from: Address = await opencage
     .geocode({ q: req.query.from as string })
     .then((address) => {
@@ -183,11 +181,17 @@ app.post('/drone/newDelivery', async (req, res) => {
 
   const route = generateRoute(from, to, 100);
 
+  websocketEvents(`route generated ${route.length}`);
+
   await DbService.updateDroneAddress(
     from,
     to,
     req.query.droneName as string
   ).then(() => {
+    databaseEvents(
+      `Database from updated with ${from}, Database to updated with ${to}, droneName updated with ${req.query.droneName}`
+    );
+
     DroneService.startMovement(`/${req.query.droneName}`, route);
   });
 

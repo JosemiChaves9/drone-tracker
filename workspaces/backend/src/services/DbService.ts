@@ -1,6 +1,19 @@
+import dotenv from 'dotenv';
+dotenv.config();
+const events = require('debug')('database:events');
+const credentials = require('debug')('database:credentials');
 import { Client } from 'pg';
 import { Base, Address, Drone, User, UserWithoutPassword } from '../../types';
 import { EnviromentVariables } from './EnviromentVariablesService';
+
+events('Database starting');
+credentials({
+  user: EnviromentVariables.getPostgresUser(),
+  password: EnviromentVariables.getPostgresPassword(),
+  host: EnviromentVariables.getHostDb(),
+  port: EnviromentVariables.getDbPort(),
+  database: EnviromentVariables.getPostgresDbName(),
+});
 
 const client = new Client({
   user: EnviromentVariables.getPostgresUser(),

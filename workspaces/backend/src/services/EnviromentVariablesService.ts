@@ -1,3 +1,6 @@
+var enviromentVar = require('debug')('envvar');
+enviromentVar(process.env);
+
 export class EnviromentVariables {
   static getPort() {
     return process.env.PORT || 4000;

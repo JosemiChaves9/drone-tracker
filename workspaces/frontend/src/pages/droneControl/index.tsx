@@ -51,11 +51,7 @@ export const DroneControl = () => {
 
   return (
     <BaseLayout>
-      {error === 'ERR_USER_NOT_LOGGED' && (
-        <>
-          <Redirect to='/login' />
-        </>
-      )}
+      {error === 'ERR_USER_NOT_LOGGED' && <Redirect to='/login' />}
       <div className='card shadow mb-4'>
         <div className='card-header py-3'>
           <h6 className='m-0 font-weight-bold text-primary'>Drone Control</h6>
