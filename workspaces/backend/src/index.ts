@@ -13,8 +13,7 @@ import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
 import { EnviromentVariables } from './services/EnviromentVariablesService';
 const app = Express();
-
-var debug = require('debug')('serverEnvVar');
+const debug = require('debug')('serverEnvVar');
 
 debug(process.env);
 
@@ -22,7 +21,7 @@ app.use(Express.json());
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: EnviromentVariables.getClientAddress(),
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -31,7 +30,7 @@ app.use(
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(
     req.headers.authorization as string,
-    EnviromentVariables.getSecret,
+    EnviromentVariables.getSecret(),
     (err) => {
       if (err) {
         return res.status(401).send({
@@ -62,7 +61,11 @@ DbService.connect().then(
   }
 );
 
-app.get('/drones', function (_req, res) {
+app.get('', (req, res) => {
+  res.send(req.headers);
+});
+
+app.get('/drones', validateToken, function (_req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
     res.send(drones);
   });
@@ -73,6 +76,8 @@ app.get('/bases', validateToken, function (_req, res) {
 });
 
 app.post('/user/newuser', async function (req, res) {
+  console.log(req.body);
+
   const { email }: { email: string } = req.body;
 
   DbService.getUserByEmail(email).then((user) => {
@@ -90,8 +95,8 @@ app.post('/user/newuser', async function (req, res) {
         expiresIn: '1h',
       });
       await DbService.createNewUser(
-        req.body.firstName,
-        req.body.lastName,
+        req.body.firstname,
+        req.body.lastname,
         email,
         encryptedPassword,
         usertoken

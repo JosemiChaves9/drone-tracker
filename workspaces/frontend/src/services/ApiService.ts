@@ -9,9 +9,11 @@ import type {
   ApiErrorResponse,
   NewDelivery,
 } from '../types';
+import { EnviromentVariables } from './EnviromentVariablesService';
 
+console.log(EnviromentVariables.getServerAddressAndPort());
 const instance = axios.create({
-  baseURL: 'http://localhost:4000',
+  baseURL: EnviromentVariables.getServerAddressAndPort(),
 });
 
 instance.interceptors.request.use((req) => {

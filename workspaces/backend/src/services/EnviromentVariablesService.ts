@@ -30,4 +30,8 @@ export class EnviromentVariables {
   static getDbPort() {
     return parseInt(process.env.DB_PORT as string) || 5432;
   }
+
+  static getClientAddress() {
+    return `${process.env.SERVER_ADDRESS}:${process.env.CLIENT_PORT}`;
+  }
 }

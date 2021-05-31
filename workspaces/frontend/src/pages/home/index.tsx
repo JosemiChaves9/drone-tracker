@@ -16,7 +16,9 @@ export const Home = () => {
   });
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080/1MZ50');
+    const ws = new WebSocket(
+      `${EnviromentVariables.getWebSocketAddressAndPort()}/1MZ50`
+    );
 
     const getDroneMoving = async (droneName: string) => {
       await ApiService.getDrones().then((res) => {

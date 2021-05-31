@@ -38,14 +38,14 @@ export class DbService {
   }
 
   static async createNewUser(
-    firstName: string,
-    lastName: string,
+    firstname: string,
+    lastname: string,
     email: string,
     password: string,
     usertoken: string
   ) {
     const user = await client.query<UserWithoutPassword>(
-      `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstName}', '${lastName}', '${email}', '${password}', '${usertoken}') RETURNING firstname, lastname, email, usertoken`
+      `INSERT INTO public.users (firstname, lastname, email, password, usertoken) values ('${firstname}', '${lastname}', '${email}', '${password}', '${usertoken}') RETURNING firstname, lastname, email, usertoken`
     );
     return user.rows[0];
   }
