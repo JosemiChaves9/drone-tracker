@@ -6,7 +6,7 @@ const client = new Client({
   user: EnviromentVariables.getPostgresUser(),
   password: EnviromentVariables.getPostgresPassword(),
   host: EnviromentVariables.getHostDb(),
-  port: 5432,
+  port: EnviromentVariables.getDbPort(),
   database: EnviromentVariables.getPostgresDbName(),
 });
 

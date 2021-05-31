@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import Express, { NextFunction, Response, Request } from 'express';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
@@ -11,6 +13,10 @@ import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
 import { EnviromentVariables } from './services/EnviromentVariablesService';
 const app = Express();
+
+var debug = require('debug')('serverEnvVar');
+
+debug(process.env);
 
 app.use(Express.json());
 

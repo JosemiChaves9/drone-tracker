@@ -1,9 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-var debug = require('debug')('serverEnvVar');
-
-debug(process.env);
-
 export class EnviromentVariables {
   static getPort() {
     return process.env.PORT || 4000;
@@ -31,5 +25,9 @@ export class EnviromentVariables {
 
   static getOpencageApiKey() {
     return process.env.OPENCAGE_API_KEY || '';
+  }
+
+  static getDbPort() {
+    return parseInt(process.env.DB_PORT as string) || 5432;
   }
 }
