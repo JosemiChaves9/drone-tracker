@@ -11,7 +11,6 @@ import type {
 } from '../types';
 import { EnviromentVariables } from './EnviromentVariablesService';
 
-console.log(EnviromentVariables.getServerAddressAndPort());
 const instance = axios.create({
   baseURL: EnviromentVariables.getServerAddressAndPort(),
 });
