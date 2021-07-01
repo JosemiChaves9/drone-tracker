@@ -16,8 +16,6 @@ export const startWebSocket = () => {
     websocketEvent(
       `Web socket has started with port ${EnviromentVariables.getWebSocketPort()}`
     );
-    ws.send('WebSocket connected with client');
-
     if (!req.url) {
       websocketEvent('Data is missing');
       wss.off('close', () => ws.send('data missing'));
