@@ -16,6 +16,7 @@ export const Home = () => {
   });
 
   useEffect(() => {
+    console.log(process.env);
     const ws = new WebSocket(
       `${EnviromentVariables.getWebSocketAddressAndPort()}/1MZ50`
     );
