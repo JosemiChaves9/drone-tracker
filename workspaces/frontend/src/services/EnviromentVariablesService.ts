@@ -17,6 +17,6 @@ export class EnviromentVariables {
   }
 
   static getWebSocketAddressAndPort() {
-    return `ws://${process.env.REACT_APP_WEBSOCKET_ADDRESS}:${process.env.REACT_APP_WEBSOCKET_PORT}`;
+    return `ws://${process.env.REACT_APP_SERVER_ADDRESS}:${process.env.REACT_APP_WEBSOCKET_PORT}`;
   }
 }

@@ -155,6 +155,7 @@ app.put('/user/login', async (req, res) => {
 });
 
 app.post('/drone/newDelivery', async (req, res) => {
+  debugger;
   websocketEvents(
     `recieved from ${req.query.from}, recieved to ${req.query.to}, recieved droneName ${req.query.droneName}`
   );
