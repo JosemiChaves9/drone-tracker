@@ -3,7 +3,7 @@ dotenv.config();
 const events = require('debug')('database:events');
 const credentials = require('debug')('database:credentials');
 import { Client } from 'pg';
-import { Base, Address, Drone, User, UserWithoutPassword } from '../../types';
+import { Base, Address, Drone, User, UserWithoutPassword } from './types';
 import { EnviromentVariables } from './EnviromentVariablesService';
 
 events('Database starting');

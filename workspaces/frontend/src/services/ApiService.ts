@@ -12,7 +12,7 @@ import type {
 import { EnviromentVariables } from './EnviromentVariablesService';
 
 const instance = axios.create({
-  baseURL: EnviromentVariables.getServerAddressAndPort(),
+  baseURL: EnviromentVariables.getServerAddress(),
 });
 
 instance.interceptors.request.use((req) => {

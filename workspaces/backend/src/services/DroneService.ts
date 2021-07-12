@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 const events = require('debug')('droneservice:events');
 const data = require('debug')('droneservice:data');
-import { Address } from '../../types';
+import { Address } from './types';
 
 const emitter = new EventEmitter();
 

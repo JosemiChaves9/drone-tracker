@@ -5,8 +5,6 @@ WORKDIR /home/node/app
 COPY package* ./
 COPY tsconfig* ./
 
-
-
 COPY ./src /home/node/app/
 
 RUN npm install

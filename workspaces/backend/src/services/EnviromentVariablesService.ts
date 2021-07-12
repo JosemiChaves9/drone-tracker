@@ -3,7 +3,7 @@ enviromentVar(process.env);
 
 export class EnviromentVariables {
   static getPort() {
-    return process.env.PORT || 4000;
+    return parseInt(process.env.PORT as string) || 4000;
   }
 
   static getPostgresUser() {
@@ -32,13 +32,5 @@ export class EnviromentVariables {
 
   static getDbPort() {
     return parseInt(process.env.DB_PORT as string) || 5432;
-  }
-
-  static getClientAddressAndPort() {
-    return `http://${process.env.CLIENT_ADDRESS}:${process.env.CLIENT_PORT}`;
-  }
-
-  static getWebSocketPort() {
-    return parseInt(process.env.WEBSOCKET_PORT as string);
   }
 }

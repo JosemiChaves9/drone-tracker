@@ -17,7 +17,7 @@ export const Home = () => {
 
   useEffect(() => {
     const ws = new WebSocket(
-      `${EnviromentVariables.getWebSocketAddressAndPort()}/1MZ50`
+      `${EnviromentVariables.getWebSocketAddress()}/1MZ50`
     );
 
     const getDroneMoving = async (droneName: string) => {

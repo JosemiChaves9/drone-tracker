@@ -4,13 +4,14 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './services/DbService';
-import type { Drone, Base, Address } from '../types';
+import type { Drone, Base, Address } from './services/types';
 import { startWebSocket } from './webSocketServer';
 import opencage from 'opencage-api-client';
 import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
 import { EnviromentVariables } from './services/EnviromentVariablesService';
 const app = Express();
+const server = require('http').createServer(app);
 const websocketEvents = require('debug')('websocket:events');
 const serverEvents = require('debug')('server:events');
 const databaseEvents = require('debug')('database:events');
@@ -42,13 +43,13 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
 const PORT = EnviromentVariables.getPort();
 DbService.connect().then(
   () => {
-    app.listen(PORT, () =>
+    server.listen(PORT, () =>
       serverEvents(`⚡️[server]: Server is running at http://localhost:${PORT}`)
     );
     websocketEvents(
-      `Starting websocket server in port ${EnviromentVariables.getWebSocketPort()}`
+      `Starting websocket server in port ${EnviromentVariables.getPort()}`
     );
-    startWebSocket();
+    startWebSocket(server);
   },
   () => {
     throw new Error(`can't connect to DB`);

@@ -1,20 +1,21 @@
+import { Server } from 'http';
 import WebSocket from 'ws';
 import { DroneService } from './services/DroneService';
 import { EnviromentVariables } from './services/EnviromentVariablesService';
 const websocketEvent = require('debug')('websocket:events');
 
-export const startWebSocket = () => {
+export const startWebSocket = (server: Server) => {
   const wss = new WebSocket.Server({
-    port: EnviromentVariables.getWebSocketPort(),
+    server: server,
   });
 
   websocketEvent(
-    `Websocket server created in ${EnviromentVariables.getWebSocketPort()}`
+    `Websocket server created in ${EnviromentVariables.getPort()}`
   );
 
   wss.on('connection', (ws, req) => {
     websocketEvent(
-      `Web socket has started with port ${EnviromentVariables.getWebSocketPort()}`
+      `Web socket has started with port ${EnviromentVariables.getPort()}`
     );
     if (!req.url) {
       websocketEvent('Data is missing');
