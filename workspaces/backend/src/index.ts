@@ -199,3 +199,43 @@ app.post('/drone/newDelivery', async (req, res) => {
 
   res.status(201).send({ ok: true, err: '' });
 });
+
+app.post('/drone/newDrone', validateToken, async (req, res) => {
+  const base = await DbService.getBase(req.body.baseName);
+
+  if (!base) {
+    res.send({ ok: false, err: 'Base not found' }).status(400);
+    return;
+  }
+
+  const generateRandNum = () => {
+    return Math.floor(Math.random() * 100);
+  };
+
+  await DbService.newDrone(
+    req.body.droneName,
+    generateRandNum(),
+    generateRandNum(),
+    base.street,
+    base.lat,
+    base.lng
+  ).then(
+    (response) => {
+      console.log(response);
+      res
+        .send({
+          ok: true,
+          err: '',
+        })
+        .status(201);
+    },
+    () => {
+      res
+        .send({
+          ok: false,
+          err: 'Something went wrong',
+        })
+        .status(400);
+    }
+  );
+});

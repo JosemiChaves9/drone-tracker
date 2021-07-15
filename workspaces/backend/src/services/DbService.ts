@@ -50,6 +50,17 @@ export class DbService {
     return result.rows;
   }
 
+  static async getBase(baseName: string) {
+    const result = await client.query<Base>(
+      `SELECT * FROM public.bases WHERE name='${baseName}'`
+    );
+    if (result.rows.length == 0) {
+      return null;
+    } else {
+      return result.rows[0];
+    }
+  }
+
   static async createNewUser(
     firstname: string,
     lastname: string,
@@ -100,5 +111,17 @@ export class DbService {
     await client.query(
       `UPDATE public.drones SET address_from='${from.formatted}', from_lat='${from.lat}', from_lng='${from.lng}', to_lat='${to.lat}', to_lng='${to.lng}', address_to='${to.formatted}' WHERE name='${droneName}'`
     );
+  }
+
+  static async newDrone(
+    name: string,
+    battery: number,
+    speed: number,
+    address_from: string,
+    from_lat: number,
+    from_lng: number
+  ) {
+    await client.query(`INSERT INTO public.drones (name, battery, speed,address_from, from_lat, from_lng ) values (
+    '${name}', '${battery}', '${speed}', '${address_from}', '${from_lat}', '${from_lng}')`);
   }
 }

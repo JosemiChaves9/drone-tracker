@@ -13,7 +13,8 @@ import { ApiService } from '../../services/ApiService';
 export const AddDrone = () => {
   const { handleSubmit, register } = useForm();
   const [bases, setBases] = useState<ApiBase[]>();
-  const [selectedBase, setSelectedBase] = useState<ApiBase>();
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     ApiService.getBases().then((bases) => {
@@ -22,7 +23,18 @@ export const AddDrone = () => {
   }, []);
 
   const onClickOnAdd = (data: { droneName: string; baseName: string }) => {
-    const base = bases?.find((base) => base.name === data.baseName);
+    ApiService.newDrone(data).then(
+      (res) => {
+        if (res.ok) {
+          setSuccess(`New drone created with name ${data.droneName}.`);
+        } else {
+          setError('Something went wrong');
+        }
+      },
+      () => {
+        setError('That was an internal error, contact with customer support.');
+      }
+    );
   };
   return (
     <BaseLayout>
@@ -31,6 +43,16 @@ export const AddDrone = () => {
           <h6 className='m-0 font-weight-bold text-primary'>Add a new drone</h6>
         </div>
         <div className='card-body'>
+          {success && (
+            <div className='alert alert-success' role='alert'>
+              {success}
+            </div>
+          )}
+          {error && (
+            <div className='alert alert-danger' role='alert'>
+              {error}
+            </div>
+          )}
           <form className='user' onSubmit={handleSubmit(onClickOnAdd)}>
             <div className='form-group'>
               <h5>Drone name</h5>

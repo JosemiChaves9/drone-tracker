@@ -65,7 +65,7 @@ export class ApiService {
     return response.data;
   }
 
-  static async addBase(data: { droneName: string; base: ApiBase }) {
+  static async newDrone(data: { droneName: string; baseName: string }) {
     const drone: AxiosResponse<{ ok: boolean; err: string }> =
       await instance.post('/drone/newDrone', data);
     return drone.data;
