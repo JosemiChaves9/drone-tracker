@@ -45,37 +45,49 @@ export const Home = () => {
           zoom={14}
           scrollWheelZoom={true}>
           <TileLayer
-            attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution='&copy; <a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank"> <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>  contributors'
             url='https://{s}.tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token={accessToken}'
             accessToken={EnviromentVariables.getMapAccessToken()}
           />
 
-          {droneMoving?.map((drone) => {
-            return (
-              <>
-                <Marker
-                  position={latLng({
-                    lat: drone.from_lat,
-                    lng: drone.from_lng,
-                  })}>
-                  <Popup className='actualPos'>From {drone.name}</Popup>
-                </Marker>
-                <Marker
-                  position={latLng({
-                    lat: drone.to_lat,
-                    lng: drone.to_lng,
-                  })}>
-                  <Popup className='actualPos'>To {drone.name}</Popup>
-                </Marker>
-              </>
-            );
-          })}
+          {droneMoving && (
+            <>
+              {droneMoving.map((drone) => {
+                return (
+                  <>
+                    <Marker
+                      position={latLng({
+                        lat: drone.from_lat,
+                        lng: drone.from_lng,
+                      })}>
+                      <Popup className='actualPos'>From {drone.name}</Popup>
+                    </Marker>
+                    <Marker
+                      position={latLng({
+                        lat: drone.to_lat,
+                        lng: drone.to_lng,
+                      })}>
+                      <Popup className='actualPos'>To {drone.name}</Popup>
+                    </Marker>
+                  </>
+                );
+              })}
 
-          <Marker position={latLng(actualPos)}>
-            <Popup className='actualPos'>
-              {droneMoving?.map((drone) => drone.name)}
-            </Popup>
-          </Marker>
+              <Marker position={latLng(actualPos)}>
+                <Popup className='actualPos'>
+                  {droneMoving.map((drone) => {
+                    return (
+                      <>
+                        <p>Drone: {drone.name}</p>
+                        <p>Speed: {drone.speed} km/h</p>
+                        <p>Battery: {drone.battery} %</p>
+                      </>
+                    );
+                  })}
+                </Popup>
+              </Marker>
+            </>
+          )}
         </MapContainer>
       </div>
     </BaseLayout>

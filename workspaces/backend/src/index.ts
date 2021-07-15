@@ -181,7 +181,7 @@ app.post('/drone/newDelivery', async (req, res) => {
       };
     });
 
-  const route = generateRoute(from, to, 100);
+  const route = generateRoute(from, to, 1024);
 
   websocketEvents(`route generated ${route.length}`);
 

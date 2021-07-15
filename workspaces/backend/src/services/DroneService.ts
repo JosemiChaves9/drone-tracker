@@ -27,7 +27,7 @@ export class DroneService {
         } else {
           return;
         }
-      }, 277);
+      }, 500);
     };
 
     generatePoints();

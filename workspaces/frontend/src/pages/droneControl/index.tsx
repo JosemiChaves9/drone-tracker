@@ -8,8 +8,10 @@ import { useEffect, useState } from 'react';
 import opencage from 'opencage-api-client';
 import { Redirect } from 'react-router';
 import { EnviromentVariables } from '../../services/EnviromentVariablesService';
+import { useHistory } from 'react-router-dom';
 
 export const DroneControl = () => {
+  const history = useHistory();
   const { register, handleSubmit } = useForm<NewDelivery>();
   const [fromAddress, setFromAddress] = useState<any[]>();
   const [toAddress, setToAddress] = useState<any[]>();
@@ -43,6 +45,7 @@ export const DroneControl = () => {
     ApiService.newDelivery(data).then((res) => {
       if (res.ok) {
         setSuccess(true);
+        history.push('/');
       } else {
         setError(res.err);
       }
