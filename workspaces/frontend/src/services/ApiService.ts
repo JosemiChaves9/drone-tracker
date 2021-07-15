@@ -64,4 +64,10 @@ export class ApiService {
       );
     return response.data;
   }
+
+  static async addBase(data: { droneName: string; base: ApiBase }) {
+    const drone: AxiosResponse<{ ok: boolean; err: string }> =
+      await instance.post('/drone/newDrone', data);
+    return drone.data;
+  }
 }

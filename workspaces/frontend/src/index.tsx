@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { BaseLayout } from './components/BaseLayout';
 import { Page404 } from './pages/404';
 import { BasesView } from './pages/bases';
 import { DronesView } from './pages/drones';
@@ -12,6 +11,8 @@ import { Singup } from './pages/singup';
 import { Login } from './pages/login';
 import { ContextProvider } from './components/context';
 import { DroneControl } from './pages/droneControl';
+import { AddBase } from './pages/addBase';
+import { AddDrone } from './pages/addDrone';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -22,8 +23,8 @@ ReactDOM.render(
           <Route path='/bases' component={BasesView} />
           <Route path='/drones' component={DronesView} />
           <Route path='/drone-control' component={DroneControl} />
-          <Route path='/add-drone' component={BaseLayout} />
-          <Route path='/add-base' component={BaseLayout} />
+          <Route path='/add-drone' component={AddDrone} />
+          <Route path='/add-base' component={AddBase} />
           <Route path='/signup' component={Singup} />
           <Route path='/login' component={Login} />
           <Route component={Page404} />
