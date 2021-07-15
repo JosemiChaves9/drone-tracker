@@ -124,4 +124,18 @@ export class DbService {
     await client.query(`INSERT INTO public.drones (name, battery, speed,address_from, from_lat, from_lng ) values (
     '${name}', '${battery}', '${speed}', '${address_from}', '${from_lat}', '${from_lng}')`);
   }
+
+  static async newBase(
+    name: string,
+    street: string,
+    number: string,
+    city: string,
+    postalcode: string,
+    lng: number,
+    lat: number
+  ) {
+    await client.query(
+      `INSERT INTO public.bases (name, street, number, city, postalcode, lng, lat) values ('${name}', '${street}', '${number}', '${city}', '${postalcode}', '${lng}', '${lat}')`
+    );
+  }
 }

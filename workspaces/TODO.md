@@ -1,6 +1,5 @@
 ## Frontend
 
-TODO: Add form to add a new drone
 TODO: Add form to add a new base
 TODO: Try to be able to store ' in database
 TODO: Style the pointers to be red the destiny, green the begining and a drone

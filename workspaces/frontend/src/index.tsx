@@ -11,8 +11,8 @@ import { Singup } from './pages/singup';
 import { Login } from './pages/login';
 import { ContextProvider } from './components/context';
 import { DroneControl } from './pages/droneControl';
-import { AddBase } from './pages/addBase';
-import { AddDrone } from './pages/addDrone';
+import { NewBase } from './pages/addBase';
+import { NewDrone } from './pages/addDrone';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -23,8 +23,8 @@ ReactDOM.render(
           <Route path='/bases' component={BasesView} />
           <Route path='/drones' component={DronesView} />
           <Route path='/drone-control' component={DroneControl} />
-          <Route path='/add-drone' component={AddDrone} />
-          <Route path='/add-base' component={AddBase} />
+          <Route path='/new-drone' component={NewDrone} />
+          <Route path='/new-base' component={NewBase} />
           <Route path='/signup' component={Singup} />
           <Route path='/login' component={Login} />
           <Route component={Page404} />

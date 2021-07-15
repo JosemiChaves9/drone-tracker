@@ -46,7 +46,7 @@ export interface ApiUserLoginResponse {
   usertoken: string;
   ok: boolean;
 }
-export interface ApiErrorResponse {
+export interface ApiGenericResponse {
   err: string;
   ok: boolean;
 }

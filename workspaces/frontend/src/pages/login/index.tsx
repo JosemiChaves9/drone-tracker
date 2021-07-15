@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { UserContext } from '../../components/context';
 import { ApiService } from '../../services/ApiService';
 import type {
-  ApiErrorResponse,
+  ApiGenericResponse,
   ApiUserLoginResponse,
   LoginUser,
 } from '../../types';
@@ -29,7 +29,7 @@ export const Login = () => {
           setSuccess('Correct!');
           changeLogged();
         } else {
-          const error = res as ApiErrorResponse;
+          const error = res as ApiGenericResponse;
           setErr(error.err);
         }
       })

@@ -6,7 +6,7 @@ import type {
   ApiUserLoginResponse,
   LoginUser,
   NewUser,
-  ApiErrorResponse,
+  ApiGenericResponse,
   NewDelivery,
 } from '../types';
 import { EnviromentVariables } from './EnviromentVariablesService';
@@ -35,39 +35,54 @@ export class ApiService {
   }
 
   static async getUserByUsertoken(usertoken: string) {
-    const user: AxiosResponse<ApiUserLoginResponse | ApiErrorResponse> =
+    const user: AxiosResponse<ApiUserLoginResponse | ApiGenericResponse> =
       await instance.get(`/user/usertoken/${usertoken}`);
     return user.data;
   }
 
   static async createNewUser(data: NewUser) {
-    const user: AxiosResponse<ApiUserCreationResponse | ApiErrorResponse> =
+    const user: AxiosResponse<ApiUserCreationResponse | ApiGenericResponse> =
       await instance.post(`/user/newuser`, data);
     if (user.data.ok) {
       return user.data as ApiUserCreationResponse;
     } else {
-      return user.data as ApiErrorResponse;
+      return user.data as ApiGenericResponse;
     }
   }
 
   static async loginUser(data: LoginUser) {
-    const user: AxiosResponse<ApiUserLoginResponse | ApiErrorResponse> =
+    const user: AxiosResponse<ApiUserLoginResponse | ApiGenericResponse> =
       await instance.put('/user/login', data);
     return user.data;
   }
 
   static async newDelivery(data: NewDelivery) {
-    const response: AxiosResponse<{ ok: boolean; err: string }> =
-      await instance.post(
-        `/drone/newDelivery/?droneName=${data.droneName}&from=${data.addressFrom}&to=${data.addressTo}`,
-        data
-      );
+    const response: AxiosResponse<ApiGenericResponse> = await instance.post(
+      `/drone/newDelivery/?droneName=${data.droneName}&from=${data.addressFrom}&to=${data.addressTo}`,
+      data
+    );
     return response.data;
   }
 
   static async newDrone(data: { droneName: string; baseName: string }) {
-    const drone: AxiosResponse<{ ok: boolean; err: string }> =
-      await instance.post('/drone/newDrone', data);
+    const drone: AxiosResponse<ApiGenericResponse> = await instance.post(
+      '/drone/newDrone',
+      data
+    );
     return drone.data;
+  }
+
+  static async newBase(data: {
+    baseName: string;
+    baseStreetName: string;
+    baseBuildingNumber: string;
+    baseCity: string;
+    baseCityPostalcode: string;
+  }) {
+    const base: AxiosResponse<ApiGenericResponse> = await instance.post(
+      '/base/newBase',
+      data
+    );
+    return base.data;
   }
 }

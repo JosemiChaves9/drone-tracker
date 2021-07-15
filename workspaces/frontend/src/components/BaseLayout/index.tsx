@@ -76,7 +76,7 @@ export const BaseLayout = (props: { children: React.ReactNode }) => {
           <div className='sidebar-heading'>Add</div>
 
           <li className='nav-item'>
-            <Link className='nav-link' to='/add-drone'>
+            <Link className='nav-link' to='/new-drone'>
               <FontAwesomeIcon icon={faPaperPlane} className='mr-2' />
               <FontAwesomeIcon icon={faPlusCircle} />
               <span className='pl-2'> New drone </span>
@@ -84,7 +84,7 @@ export const BaseLayout = (props: { children: React.ReactNode }) => {
           </li>
 
           <li className='nav-item'>
-            <Link className='nav-link' to='/add-base'>
+            <Link className='nav-link' to='/new-base'>
               <FontAwesomeIcon icon={faBuilding} className='mr-2' />
               <FontAwesomeIcon icon={faPlusCircle} />
               <span className='pl-2'> New Base</span>

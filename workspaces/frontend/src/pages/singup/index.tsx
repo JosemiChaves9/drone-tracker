@@ -5,7 +5,7 @@ import { UserContext } from '../../components/context';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ApiService } from '../../services/ApiService';
 import type {
-  ApiErrorResponse,
+  ApiGenericResponse,
   ApiUserCreationResponse,
   NewUser,
 } from '../../types';
@@ -36,7 +36,7 @@ export const Singup = () => {
         history.push('/');
         changeLogged();
       } else {
-        const error = res as ApiErrorResponse;
+        const error = res as ApiGenericResponse;
         setErrorMessage(error.err);
       }
     });

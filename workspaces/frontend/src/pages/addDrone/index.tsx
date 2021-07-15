@@ -1,16 +1,13 @@
 import { BaseLayout } from '../../components/BaseLayout';
 import { useForm } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faLocationArrow,
-  faPlusCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { ApiBase } from '../../types';
 import { useEffect } from 'react';
 import { ApiService } from '../../services/ApiService';
 
-export const AddDrone = () => {
+export const NewDrone = () => {
   const { handleSubmit, register } = useForm();
   const [bases, setBases] = useState<ApiBase[]>();
   const [success, setSuccess] = useState<string | null>(null);
@@ -55,7 +52,7 @@ export const AddDrone = () => {
           )}
           <form className='user' onSubmit={handleSubmit(onClickOnAdd)}>
             <div className='form-group'>
-              <h5>Drone name</h5>
+              <h5>Drone name:</h5>
               <input
                 type='text'
                 className='form-control'
