@@ -1,6 +1,6 @@
 import Express, { NextFunction, Response, Request, response } from 'express';
 import cors from 'cors';
-import bcrypt from 'bcrypt';
+import bcrypt, { compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import * as EmailValidator from 'email-validator';
 import { DbService } from './services/DbService';
@@ -10,7 +10,7 @@ import opencage from 'opencage-api-client';
 import { DroneService } from './services/DroneService';
 import { generateRoute } from 'geo-route-generator';
 import { EnviromentVariables } from './services/EnviromentVariablesService';
-const app = Express();
+export const app = Express();
 const server = require('http').createServer(app);
 const websocketEvents = require('debug')('websocket:events');
 const serverEvents = require('debug')('server:events');
@@ -18,6 +18,22 @@ const databaseEvents = require('debug')('database:events');
 
 app.use(Express.json());
 app.use(cors());
+
+const PORT = EnviromentVariables.getPort();
+DbService.connect().then(
+  () => {
+    server.listen(PORT, () =>
+      serverEvents(`⚡️[server]: Server is running at http://localhost:${PORT}`)
+    );
+    websocketEvents(
+      `Starting websocket server in port ${EnviromentVariables.getPort()}`
+    );
+    startWebSocket(server);
+  },
+  () => {
+    throw new Error(`can't connect to DB`);
+  }
+);
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(
@@ -36,22 +52,6 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
-const PORT = EnviromentVariables.getPort();
-DbService.connect().then(
-  () => {
-    server.listen(PORT, () =>
-      serverEvents(`⚡️[server]: Server is running at http://localhost:${PORT}`)
-    );
-    websocketEvents(
-      `Starting websocket server in port ${EnviromentVariables.getPort()}`
-    );
-    startWebSocket(server);
-  },
-  () => {
-    throw new Error(`can't connect to DB`);
-  }
-);
-
 app.get('/drones', validateToken, function (req, res) {
   DbService.getDrones().then((drones: Drone[]) => {
     res.send(drones);
@@ -60,6 +60,12 @@ app.get('/drones', validateToken, function (req, res) {
 
 app.get('/bases', validateToken, function (req, res) {
   DbService.getBases().then((bases: Base[]) => res.send(bases));
+});
+
+app.get('/base', function (req, res) {
+  DbService.getBase(req.query.name as string).then((base) => {
+    res.send(base);
+  });
 });
 
 app.post(
