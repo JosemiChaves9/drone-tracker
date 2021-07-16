@@ -30,7 +30,7 @@ export const Home = () => {
     });
 
     const ws = new WebSocket(
-      `${EnviromentVariables.getWebSocketAddress()}:4000/1MZ50`
+      `${EnviromentVariables.getWebSocketAddress()}/1MZ50`
     );
 
     const getDroneMoving = async (droneName: string) => {

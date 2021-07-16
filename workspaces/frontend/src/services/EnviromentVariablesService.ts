@@ -13,10 +13,22 @@ export class EnviromentVariables {
   }
 
   static getWebSocketAddress() {
-    return `ws://${process.env.REACT_APP_SERVER_ADDRESS}`;
+    if (EnviromentVariables.getEnviroment() === 'prod') {
+      return `wss://${process.env.REACT_APP_SERVER_ADDRESS}`;
+    } else {
+      return `ws://${process.env.REACT_APP_SERVER_ADDRESS}:${process.env.REACT_APP_PORT}`;
+    }
   }
 
   static getServerAddress() {
-    return `http://${process.env.REACT_APP_SERVER_ADDRESS}`;
+    if (EnviromentVariables.getEnviroment() === 'prod') {
+      return `https://${process.env.REACT_APP_SERVER_ADDRESS}`;
+    } else {
+      return `http://${process.env.REACT_APP_SERVER_ADDRESS}:${process.env.REACT_APP_PORT}`;
+    }
+  }
+
+  static getEnviroment() {
+    return process.env.REACT_APP_ENVIROMENT;
   }
 }
