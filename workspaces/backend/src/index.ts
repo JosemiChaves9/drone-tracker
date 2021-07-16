@@ -27,14 +27,10 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         return res.status(401).send({
           ok: false,
-          ...err,
           errorMessage: 'Something went wrong with authentication',
         });
       } else {
         next();
-        return {
-          ok: true,
-        };
       }
     }
   );

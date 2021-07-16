@@ -126,7 +126,7 @@ export const BaseLayout = (props: { children: React.ReactNode }) => {
               </ul>
             </nav>
           )}
-          <div className='container-fluid'>
+          <div>
             <div>{props.children}</div>
           </div>
         </div>

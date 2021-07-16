@@ -11,8 +11,8 @@ import { Singup } from './pages/singup';
 import { Login } from './pages/login';
 import { ContextProvider } from './components/context';
 import { DroneControl } from './pages/droneControl';
-import { NewBase } from './pages/addBase';
-import { NewDrone } from './pages/addDrone';
+import { NewBase } from './pages/newBase';
+import { NewDrone } from './pages/newDrone';
 
 ReactDOM.render(
   <React.StrictMode>

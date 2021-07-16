@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { Redirect } from 'react-router';
 import { BaseLayout } from '../../components/BaseLayout';
+import Leaflet from 'leaflet';
 import { ApiService } from '../../services/ApiService';
 import { EnviromentVariables } from '../../services/EnviromentVariablesService';
 import type { ApiBase } from '../../types';
+import { baseIcon } from '../../icons/baseIcon';
 
 export const BasesView = () => {
   const [bases, setBases] = useState<ApiBase[]>([]);
@@ -42,7 +44,7 @@ export const BasesView = () => {
           />
           {bases.map((base: ApiBase) => {
             return (
-              <Marker position={[base.lat, base.lng]}>
+              <Marker position={[base.lat, base.lng]} icon={baseIcon}>
                 <Popup>{base.name}</Popup>
               </Marker>
             );
