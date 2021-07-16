@@ -45,5 +45,5 @@ export class DroneService {
   }
 }
 
-// const unsubscribe = DroneService.subscribeToDroneMovement('1MZ50', () => {});
-// unsubscribe();
+const unsubscribe = DroneService.subscribeToDroneMovement('1MZ50', () => {});
+unsubscribe();
