@@ -14,6 +14,7 @@ export interface Drone {
 export interface Base {
   id: string;
   name: string;
+  street: string;
   number: string;
   postcode: string;
   city: string;

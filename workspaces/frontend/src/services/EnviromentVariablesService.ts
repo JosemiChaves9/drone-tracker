@@ -13,10 +13,10 @@ export class EnviromentVariables {
   }
 
   static getWebSocketAddress() {
-    return `wss://${process.env.REACT_APP_SERVER_ADDRESS}`;
+    return `ws://${process.env.REACT_APP_SERVER_ADDRESS}`;
   }
 
   static getServerAddress() {
-    return `https://${process.env.REACT_APP_SERVER_ADDRESS}`;
+    return `http://${process.env.REACT_APP_SERVER_ADDRESS}`;
   }
 }

@@ -23,34 +23,38 @@ export const DronesView = () => {
 
   return (
     <BaseLayout>
-      <div className='row'>
-        {err && (
-          <>
-            <Redirect to='/login' />
-          </>
-        )}
+      <div className='container-fluid'>
+        <div className='row'>
+          {err && (
+            <>
+              <Redirect to='/login' />
+            </>
+          )}
 
-        {drones.map((drone: ApiDrone) => {
-          return (
-            <div className='col-12 col-lg-6'>
-              <div className='card shadow mb-4'>
-                <div className='card-header py-3'>
-                  <h6 className='m-0 font-weight-bold text-primary'>
-                    Drone: {drone.name}
-                  </h6>
-                </div>
-                <div className='card-body'>
-                  <ul>
-                    <li key={drone.address_from}>From: {drone.address_from}</li>
-                    <li key={drone.address_to}>To: {drone.address_to}</li>
-                    <li key={drone.battery}>Battery: {drone.battery}%</li>
-                    <li key={drone.speed}>Speed: {drone.speed} km/h</li>
-                  </ul>
+          {drones.map((drone: ApiDrone) => {
+            return (
+              <div className='col-12 col-lg-6'>
+                <div className='card shadow mb-4'>
+                  <div className='card-header py-3'>
+                    <h6 className='m-0 font-weight-bold text-primary'>
+                      Drone: {drone.name}
+                    </h6>
+                  </div>
+                  <div className='card-body'>
+                    <ul>
+                      <li key={drone.address_from}>
+                        From: {drone.address_from}
+                      </li>
+                      <li key={drone.address_to}>To: {drone.address_to}</li>
+                      <li key={drone.battery}>Battery: {drone.battery}%</li>
+                      <li key={drone.speed}>Speed: {drone.speed} km/h</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </BaseLayout>
   );

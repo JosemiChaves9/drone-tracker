@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, Router, useHistory } from 'react-router-dom';
+import { UserContext } from '../../components/context';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { ApiService } from '../../services/ApiService';
 import type {
-  ApiErrorResponse,
+  ApiGenericResponse,
   ApiUserCreationResponse,
   NewUser,
 } from '../../types';
 
 export const Singup = () => {
+  const history = useHistory();
+  const { changeLogged } = useContext(UserContext);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   // eslint-disable-next-line
@@ -30,8 +33,10 @@ export const Singup = () => {
         const response = res as ApiUserCreationResponse;
         setSuccessMessage('User Created!');
         setUsertoken(response.usertoken);
+        history.push('/');
+        changeLogged();
       } else {
-        const error = res as ApiErrorResponse;
+        const error = res as ApiGenericResponse;
         setErrorMessage(error.err);
       }
     });
